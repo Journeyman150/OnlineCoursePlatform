@@ -37,10 +37,6 @@ public class PeopleDAO {
     @Autowired
     public PeopleDAO() {
         peopleList = new ArrayList<>();
-    }
-
-    public List<Person> getPeopleList() {
-        peopleList.clear();
         try {
             Statement statement = connection.createStatement();
             String SQL = "SELECT * FROM Person";
@@ -57,7 +53,9 @@ public class PeopleDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    public List<Person> getPeopleList() {
         return peopleList;
     }
 
