@@ -67,10 +67,13 @@ public class PeopleDAO {
         if (peopleList.size() != 0)
             person.setId(peopleList.get(peopleList.size()-1).getId() + 1);
         try {
-            Statement statement = connection.createStatement();
-            String SQL = "INSERT INTO Person VALUES ('" + person.getId() + "', '" + person.getName() + "', '" + person.getSurname()
-                    + "', '" + person.getAge() + "', '" + person.getEmail() + "')";
-            statement.execute(SQL);
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Person VALUES(?, ?, ?, ?, ?)");
+            preparedStatement.setInt(1, person.getId());
+            preparedStatement.setString(2, person.getName());
+            preparedStatement.setString(3, person.getSurname());
+            preparedStatement.setInt(4, person.getAge());
+            preparedStatement.setString(5, person.getEmail());
+            preparedStatement.executeUpdate();
             peopleList.add(person);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,20 +81,42 @@ public class PeopleDAO {
     }
 
     public Person getPersonById(int id) {
-        return peopleList.stream().filter(p -> p.getId() == id).findAny().get();
+        Person person = null;
+        try {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement("SELECT * FROM Person WHERE id = ?");
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            person = new Person();
+            resultSet.next();
+            person.setId(resultSet.getInt("id"));
+            person.setName(resultSet.getString("name"));
+            person.setSurname(resultSet.getString("surname"));
+            person.setAge(resultSet.getInt("age"));
+            person.setEmail(resultSet.getString("email"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return person;
     }
 
     public void update(int id, Person updatedPerson) {
         Person personToBeUpdated = this.getPersonById(id);
         try {
-            Statement statement = connection.createStatement();
-            String SQL = "UPDATE Person SET " +
-                    "name =" + " '" + updatedPerson.getName() + "', " +
-                    "surname =" + " '" + updatedPerson.getSurname() + "', " +
-                    "age =" + " " + updatedPerson.getAge() + ", " +
-                    "email =" + " '" + updatedPerson.getEmail() + "'" +
-                    "WHERE id = " + personToBeUpdated.getId();
-            statement.execute(SQL);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement("UPDATE Person SET " +
+                            "name = ?, " +
+                            "surname = ?, " +
+                            "age = ?, " +
+                            "email = ? " +
+                            "WHERE id = ?");
+            preparedStatement.setString(1, updatedPerson.getName());
+            preparedStatement.setString(2, updatedPerson.getSurname());
+            preparedStatement.setInt(3, updatedPerson.getAge());
+            preparedStatement.setString(4, updatedPerson.getEmail());
+            preparedStatement.setInt(5, updatedPerson.getId());
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -102,9 +127,10 @@ public class PeopleDAO {
     }
     public void deletePerson(int id) {
         try {
-            Statement statement = connection.createStatement();
-            String SQL = "DELETE FROM Person WHERE id = " + id;
-            statement.execute(SQL);
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement("DELETE FROM Person WHERE id = ?");
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
             peopleList.removeIf(p -> p.getId() == id);
         } catch (SQLException e) {
             e.printStackTrace();
