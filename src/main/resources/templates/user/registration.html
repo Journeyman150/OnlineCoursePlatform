@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/registration}" th:object="${user}">
+    <label for="name">Имя:</label>
+    <input type="text" th:field="*{name}" id="name">
+    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
+    <br>
+    <label for="surname">Фамилия:</label>
+    <input type="text" th:field="*{surname}" id="surname">
+    <div style="color:red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</div>
+    <br>
+    <label for="email">Адрес электронной почты:</label>
+    <input type="text" th:field="*{email}" id="email">
+    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>
+    <div style="color:red" th:text="${userAlreadyExistMessage}">Error</div>
+    <br>
+    <label for="password">Пароль:</label>
+    <input type="text" th:field="*{password}" id="password">
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</div>
+    <br>
+    <label for="confirmPassword">Подтвердите пароль:</label>
+    <input type="text" th:field="*{confirmPassword}" id="confirmPassword">
+    <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
+    <br>
+    <input type="submit" value="Создать аккаунт">
+</form>
+
+</body>
+</html>
