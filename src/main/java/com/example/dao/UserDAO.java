@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -21,11 +24,12 @@ public class UserDAO {
         this.jdbcTemplate = jdbcTemplate;
         userMapper = new UserMapper();
     }
-    public boolean userAlreadyExist(User user) {
-        if (jdbcTemplate.query("SELECT * FROM Usr WHERE email = ?", userMapper, user.getEmail())
-                .stream().findAny().orElse(null) != null) {
+    public boolean userAlreadyExist(String email) {
+        if (this.getUserByEmail(email) != null) {
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     public List<User> getUserList() {
@@ -34,7 +38,13 @@ public class UserDAO {
 
     @Nullable
     public User getUserById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM Usr WHERE email = ?", userMapper).stream().findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM Usr WHERE id = ?", userMapper).stream().findAny().orElse(null);
+    }
+
+    @Nullable
+    public User getUserByEmail(String email) {
+        return jdbcTemplate.query("SELECT * FROM Usr WHERE email = ?", userMapper, email)
+                .stream().findAny().orElse(null);
     }
 
     public void addUser(User user) {

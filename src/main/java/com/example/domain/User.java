@@ -1,8 +1,14 @@
 package com.example.domain;
 
-import javax.validation.constraints.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-public class User {
+import javax.validation.constraints.*;
+import java.util.Collection;
+import java.util.Set;
+
+public class User implements UserDetails {
     private long id;
 
     @NotEmpty(message = "Name should not be empty.")
@@ -21,16 +27,50 @@ public class User {
     @Size(message = "Password should be between 8 and 30 characters.")
     private String password;
 
+    //only for registration and password change
     private String confirmPassword;
+
+    private Set<Role> authorities;
 
     public User() {
     }
 
-    public User(String name, String surname, String email, String password) {
+    public User(String name, String surname, String email, String password, Set<Role> authorities) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
+        this.authorities = authorities;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public long getId() {
@@ -79,5 +119,9 @@ public class User {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public void setAuthorities(Set<Role> authorities) {
+        this.authorities = authorities;
     }
 }
