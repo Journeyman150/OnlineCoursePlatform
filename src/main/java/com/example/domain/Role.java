@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public enum Role implements GrantedAuthority {
-    USER, ADMIN;
+    USER, AUTHOR, ADMIN;
 
     @Override
     public String getAuthority() {

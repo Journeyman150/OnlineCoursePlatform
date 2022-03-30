@@ -1,7 +1,9 @@
 package com.example.controllers;
 
+import com.example.configs.WebSecurityConfig;
 import com.example.dao.UserDAO;
 import com.example.domain.User;
+import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,12 +19,12 @@ import javax.validation.Valid;
 @Controller
 public class RegistrationController {
     private final UserDAO userDAO;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Autowired
-    public RegistrationController(UserDAO userDAO, PasswordEncoder passwordEncoder) {
+    public RegistrationController(UserDAO userDAO, UserService userService) {
         this.userDAO = userDAO;
-        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @GetMapping("/registration")
@@ -32,10 +34,11 @@ public class RegistrationController {
     }
     @PostMapping("/registration")
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
+        user.setEmail(user.getEmail().toLowerCase());
         if (bindingResult.hasErrors()) {
             return "/user/registration";
         }
-        if (userDAO.userAlreadyExist(user.getEmail())) {
+        if (userService.userAlreadyExist(user.getEmail())) {
             model.addAttribute("userAlreadyExistMessage",
                     "Пользователь с таким адресом электронной почты уже существует.");
             return "/user/registration";
@@ -44,7 +47,7 @@ public class RegistrationController {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
             return "/user/registration";
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(userService.getEncodedPassword(user.getPassword()));
         userDAO.addUser(user);
         return "/user/login";
     }

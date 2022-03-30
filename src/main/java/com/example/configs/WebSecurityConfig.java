@@ -1,4 +1,4 @@
-package com.example.securingweb;
+package com.example.configs;
 
 import com.example.domain.Role;
 import com.example.service.UserService;
@@ -10,18 +10,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserService userService;
+    private final UserService userService;
+    private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     @Autowired
     public WebSecurityConfig(UserService userService) {
@@ -33,7 +28,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/", "/home", "/registration").permitAll()
-                    .antMatchers("/account", "/courses").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                    .antMatchers("/account", "/courses").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
+                    .antMatchers("teachers_room", "/grade_book").hasRole(Role.AUTHOR.name())
                     .antMatchers("/statistics").hasRole(Role.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
@@ -46,8 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    protected BCryptPasswordEncoder getBCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder(12);
+    public static BCryptPasswordEncoder getBCryptPasswordEncoder() {
+        return bCryptPasswordEncoder;
     }
 
     @Override

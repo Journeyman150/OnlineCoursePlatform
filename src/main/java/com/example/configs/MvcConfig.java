@@ -1,4 +1,4 @@
-package com.example.securingweb;
+package com.example.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

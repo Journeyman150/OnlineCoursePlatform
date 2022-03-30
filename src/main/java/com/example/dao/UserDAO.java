@@ -24,13 +24,6 @@ public class UserDAO {
         this.jdbcTemplate = jdbcTemplate;
         userMapper = new UserMapper();
     }
-    public boolean userAlreadyExist(String email) {
-        if (this.getUserByEmail(email) != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public List<User> getUserList() {
         return jdbcTemplate.query("SELECT * FROM Usr", new UserMapper());

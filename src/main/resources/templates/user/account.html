@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+    <style>
+        #passwordForm {
+            width: 330px;
+            height: 80px;
+            text-align: center;
+            padding: 15px;
+            border: 3px solid #0000cc;
+            border-radius: 10px;
+            color: #0000cc;
+            display: none;
+        }
+        #passwordForm:target {display: block;}
+    </style>
+</head>
+<body>
+    <div th:text="${user.getEmail()}">Ваша почта:</div>
+    <div th:text="${user.getName()}">Имя:</div>
+    <div th:text="${user.getSurname()}">Фамилия:</div>
+    <br>
+    <a href="#passwordForm">Сменить пароль</a>
+    <div id="passwordForm">
+        <form th:method="POST" th:action="@{/account/change_password}">
+            <label for="currentPassword">Текущий пароль:</label>
+            <input type="password" name="currentPassword" id="currentPassword"> <br>
+            <div style="color:red" th:text="${currentPasswordError}">Error</div>
+
+            <label for="newPassword">Новый пароль:</label>
+            <input type="password" name="newPassword" id="newPassword"> <br>
+
+            <label for="confirmPassword">Подтвердите пароль:</label>
+            <input type="password" name="confirmPassword" id="confirmPassword"> <br>
+
+            <input type="submit" value="Подтвердить">
+        </form>
+    </div>
+
+</body>
+</html>

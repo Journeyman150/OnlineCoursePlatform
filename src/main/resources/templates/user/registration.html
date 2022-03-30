@@ -3,6 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>Регистрация</title>
+    <style>
+        form {
+            /* Расположим форму по центру страницы */
+            margin: 0 auto;
+            width: 600px;
+            /* Определим контур формы */
+            padding: 1em;
+            border: 1px solid #CCC;
+            border-radius: 1em;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        form li + li {
+            margin-top: 1em;
+        }
+
+        label {
+            /* Определим размер и выравнивание */
+            display: inline-block;
+            width: 200px;
+            text-align: right;
+        }
+
+        input,
+        textarea {
+            /* Убедимся, что все поля имеют одинаковые настройки шрифта
+               По умолчанию в textarea используется моноширинный шрифт */
+            font: 1em sans-serif;
+
+            /* Определим размер полей */
+            width: 200px;
+            box-sizing: border-box;
+
+            /* Стилизуем границы полей */
+            border: 1px solid #999;
+        }
+
+        input:focus,
+        textarea:focus {
+            /* Дополнительная подсветка для элементов в фокусе */
+            border-color: #000;
+        }
+
+        textarea {
+            /* Выравним многострочные текстовые поля с их текстами-подсказками */
+            vertical-align: top;
+
+            /* Предоставим пространство для ввода текста */
+            height: 5em;
+        }
+
+        .button {
+            /* Выравним кнопки с их текстами-подсказками */
+            padding-left: 90px; /* same size as the label elements */
+        }
+
+        button {
+            /* Этот дополнительный внешний отступ примерно равен расстоянию
+               между текстами-подсказками и текстовыми полями */
+            /*margin-top: 1em;*/
+            position: relative;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+    </style>
 </head>
 <body>
 <form th:method="POST" th:action="@{/registration}" th:object="${user}">
@@ -20,14 +90,14 @@
     <div style="color:red" th:text="${userAlreadyExistMessage}">Error</div>
     <br>
     <label for="password">Пароль:</label>
-    <input type="text" th:field="*{password}" id="password">
+    <input type="password" th:field="*{password}" id="password">
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</div>
     <br>
     <label for="confirmPassword">Подтвердите пароль:</label>
-    <input type="text" th:field="*{confirmPassword}" id="confirmPassword">
+    <input type="password" th:field="*{confirmPassword}" id="confirmPassword">
     <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
     <br>
-    <input type="submit" value="Создать аккаунт">
+    <button type="submit">Создать аккаунт</button>
 </form>
 
 </body>
