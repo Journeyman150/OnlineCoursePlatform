@@ -24,16 +24,18 @@
     <br>
     <a href="#passwordForm">Сменить пароль</a>
     <div id="passwordForm">
-        <form th:method="POST" th:action="@{/account/change_password}">
+        <form th:method="PATCH" th:action="@{/account/change_password}">
             <label for="currentPassword">Текущий пароль:</label>
             <input type="password" name="currentPassword" id="currentPassword"> <br>
-            <div style="color:red" th:text="${currentPasswordError}">Error</div>
+            <div style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
 
             <label for="newPassword">Новый пароль:</label>
             <input type="password" name="newPassword" id="newPassword"> <br>
+            <div style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
 
             <label for="confirmPassword">Подтвердите пароль:</label>
             <input type="password" name="confirmPassword" id="confirmPassword"> <br>
+            <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
 
             <input type="submit" value="Подтвердить">
         </form>

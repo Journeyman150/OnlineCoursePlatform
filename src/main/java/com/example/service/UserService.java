@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.dao.UserDAO;
 import com.example.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,20 +11,50 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserService implements UserDetailsService {
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
+    private List<User> usersList;
+    private List<User> filteredUsersList;
 
     @Autowired
     public UserService(UserDAO userDAO, PasswordEncoder passwordEncoder) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
+        usersList = userDAO.getUsersList();
+        filteredUsersList = new ArrayList<>();
+    }
+
+    public List<User> getUsersList() {
+        return usersList;
+    }
+
+    public void refreshUsersList() {
+        usersList = userDAO.getUsersList();
+    }
+    @Nullable
+    public User getUserFromListById(long id) {
+        return usersList.stream().filter(n -> n.getId() == id).findAny().orElse(null);
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userDAO.getUserByEmail(email);
+    }
+
+    public List<User> getFilteredUsersList(String keyword) {
+        filteredUsersList.clear();
+        for (User user: usersList) {
+            if (user.getEmail().lastIndexOf(keyword) != -1 ||
+                (user.getName() + user.getSurname()).lastIndexOf(keyword) != -1) {
+                filteredUsersList.add(user);
+            }
+        }
+        return filteredUsersList;
     }
 
     public boolean userAlreadyExist(String email) {

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users list</title>
+</head>
+<body>
+    <form th:action="@{/admin/users_list}" th:method="GET">
+        <div>
+            <label for="search">Search user:</label>
+            <input name="keyword" type="text" id="search">
+            <input type="submit" value="Search">
+        </div>
+    </form>
+    <form th:action="@{/admin/users_list}" th:method="GET">
+        <div>
+            <input type="submit" value="Reset search">
+        </div>
+    </form>
+    <div th:each="user : ${usersList}">
+        <a th:href="@{/admin/user/{id}(id=${user.getId()})}"
+           th:text="${user.getEmail() + ', ' + user.getName() + ' ' + user.getSurname()}"></a>
+    </div>
+    <form th:action="@{/admin/users_list}" th:method="POST">
+        <div>
+            <input type="submit" value="Refresh list">
+        </div>
+    </form>
+    <hr>
+    <a href="/admin/user/new">Add user</a>
+</body>
+</html>

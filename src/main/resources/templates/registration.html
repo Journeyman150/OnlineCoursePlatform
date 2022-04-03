@@ -94,7 +94,7 @@
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</div>
     <br>
     <label for="confirmPassword">Подтвердите пароль:</label>
-    <input type="password" th:field="*{confirmPassword}" id="confirmPassword">
+    <input type="password" name="confirmPassword" id="confirmPassword">
     <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
     <br>
     <button type="submit">Создать аккаунт</button>

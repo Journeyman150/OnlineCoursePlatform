@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+</head>
+<body>
+    <form th:method="PATCH" th:action="@{/admin/user/{id}/edit(id=${user.getId()})}" th:object="${user}">
+        <label for="name">Имя:</label>
+        <input type="text" th:field="*{name}" id="name">
+        <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
+        <br>
+        <label for="surname">Фамилия:</label>
+        <input type="text" th:field="*{surname}" id="surname">
+        <div style="color:red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</div>
+        <br>
+        <label for="email">Адрес электронной почты:</label>
+        <input type="text" th:field="*{email}" id="email">
+        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>
+        <br>
+        <input type="submit" value="Изменить">
+    </form>
+
+    <form th:method="PATCH" th:action="@{/admin/user/{id}/change_password(id=${user.getId()})}" th:object="${user}">
+        <label for="newPassword">Новый пароль:</label>
+        <input type="password" name="newPassword" id="newPassword"> <br>
+        <div style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
+
+        <label for="confirmPassword">Подтвердите пароль:</label>
+        <input type="password" name="confirmPassword" id="confirmPassword"> <br>
+        <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
+
+        <input type="submit" value="Сменить пароль">
+    </form>
+
+    <form th:method="PATCH" th:action="@{/admin/user/{id}/change_role(id=${user.getId()})}" th:object="${user}">
+        <p><select name="role" required="required">
+            <option value="">Выберите роль</option>
+            <option value="USER">User</option>
+            <option value="AUTHOR">Author</option>
+        </select></p>
+        <p><input type="submit" value="Сменить роль"></p>
+    </form>
+</body>
+</html>

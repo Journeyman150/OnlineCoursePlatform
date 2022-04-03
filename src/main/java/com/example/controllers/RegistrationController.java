@@ -1,18 +1,16 @@
 package com.example.controllers;
 
-import com.example.configs.WebSecurityConfig;
 import com.example.dao.UserDAO;
 import com.example.domain.User;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -30,25 +28,28 @@ public class RegistrationController {
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("user", new User());
-        return "/user/registration";
+        return "/registration";
     }
     @PostMapping("/registration")
-    public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
+    public String addUser(@ModelAttribute("user") @Valid User user,
+                          BindingResult bindingResult,
+                          @RequestParam(name = "confirmPassword") String confirmPassword,
+                          Model model) {
         user.setEmail(user.getEmail().toLowerCase());
         if (bindingResult.hasErrors()) {
-            return "/user/registration";
+            return "/registration";
         }
         if (userService.userAlreadyExist(user.getEmail())) {
             model.addAttribute("userAlreadyExistMessage",
                     "Пользователь с таким адресом электронной почты уже существует.");
-            return "/user/registration";
+            return "/registration";
         }
-        if (!user.getConfirmPassword().equals(user.getPassword())) {
+        if (!user.getPassword().equals(confirmPassword)) {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
-            return "/user/registration";
+            return "/registration";
         }
         user.setPassword(userService.getEncodedPassword(user.getPassword()));
         userDAO.addUser(user);
-        return "/user/login";
+        return "/login";
     }
 }

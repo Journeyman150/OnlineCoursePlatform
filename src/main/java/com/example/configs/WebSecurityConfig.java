@@ -5,7 +5,6 @@ import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,16 +28,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/", "/home", "/registration").permitAll()
                     .antMatchers("/account", "/courses").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
-                    .antMatchers("teachers_room", "/grade_book").hasRole(Role.AUTHOR.name())
-                    .antMatchers("/statistics").hasRole(Role.ADMIN.name())
+                    .antMatchers("/author").hasRole(Role.AUTHOR.name())
+                    .antMatchers("/admin").hasRole(Role.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
+                    .formLogin().loginPage("/login").permitAll()
                 .and()
-                    .logout()
-                    .permitAll();
+                    .logout().permitAll();
     }
 
     @Bean

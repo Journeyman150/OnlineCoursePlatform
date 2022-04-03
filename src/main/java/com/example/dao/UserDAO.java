@@ -2,17 +2,11 @@ package com.example.dao;
 
 import com.example.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class UserDAO {
@@ -25,13 +19,14 @@ public class UserDAO {
         userMapper = new UserMapper();
     }
 
-    public List<User> getUserList() {
-        return jdbcTemplate.query("SELECT * FROM Usr", new UserMapper());
+    public List<User> getUsersList() {
+        return jdbcTemplate.query("SELECT * FROM Usr ORDER BY email", userMapper);
     }
 
     @Nullable
     public User getUserById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM Usr WHERE id = ?", userMapper).stream().findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM Usr WHERE usr_id = ?", userMapper, id)
+                .stream().findAny().orElse(null);
     }
 
     @Nullable
@@ -45,16 +40,20 @@ public class UserDAO {
                 user.getName(), user.getSurname(), user.getEmail(), user.getPassword());
     }
 
-    public void updateUser(long id, User updatedUser) {
-        jdbcTemplate.update("UPDATE Usr SET name=?, surname=?, email=? WHERE id=?",
-                updatedUser.getName(), updatedUser.getSurname(), updatedUser.getEmail(), id);
+    public void updateUser(long usr_id, User updatedUser) {
+        jdbcTemplate.update("UPDATE Usr SET name=?, surname=?, email=?, password=? WHERE usr_id=?",
+                updatedUser.getName(), updatedUser.getSurname(), updatedUser.getEmail(), updatedUser.getPassword(), usr_id);
     }
 
-    public void deleteUser(long id) {
-        jdbcTemplate.update("DELETE FROM Usr WHERE id=?", id);
+    public void deleteUser(long usr_id) {
+        jdbcTemplate.update("DELETE FROM Usr WHERE usr_id=?", usr_id);
     }
 
-    public void changePassword(long id, String password) {
-        jdbcTemplate.update("UPDATE Usr SET password=? WHERE id=?", password, id);
+    public void changeUserPassword(long usr_id, String password) {
+        jdbcTemplate.update("UPDATE Usr SET password=? WHERE usr_id=?", password, usr_id);
+    }
+
+    public void changeUserRole(long usr_id, String role) {
+        jdbcTemplate.update("UPDATE Usr SET role=? WHERE usr_id=?", role, usr_id);
     }
 }

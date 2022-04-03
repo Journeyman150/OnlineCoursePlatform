@@ -1,19 +1,12 @@
 package com.example.controllers;
 
-import com.example.configs.WebSecurityConfig;
 import com.example.dao.UserDAO;
 import com.example.domain.User;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class AccountController {
@@ -32,18 +25,26 @@ public class AccountController {
         return "/user/account";
     }
 
-    @PostMapping("/account/change_password")
-    public String changePassword(@ModelAttribute("user") User user,
-                                 @RequestParam(name = "currentPassword") String currentPassword,
+    @PatchMapping("/account/change_password")
+    public String changePassword(@RequestParam(name = "currentPassword") String currentPassword,
                                  @RequestParam(name = "newPassword") String newPassword,
                                  @RequestParam(name = "confirmPassword") String confirmPassword,
                                  Model model) {
-        user = userService.getAuthorizedUser();
+        User user = userService.getAuthorizedUser();
         model.addAttribute("user", user);
         if (!userService.passwordMatches(currentPassword)) {
-            model.addAttribute("currentPasswordError", "Вы ввели неверный пароль");
+            model.addAttribute("currentPasswordErrorMessage", "Вы ввели неверный пароль.");
             return "/user/account";
         }
+        if (newPassword.length() <= 6) {
+            model.addAttribute("newPasswordErrorMessage", "Пароль должен быть длиньше 6 смволов.");
+            return "/user/account";
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадат.");
+            return "/user/account";
+        }
+        userDAO.changeUserPassword(user.getId(), userService.getEncodedPassword(newPassword));
         return "redirect:/account";
     }
 }

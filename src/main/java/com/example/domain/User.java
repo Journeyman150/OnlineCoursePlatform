@@ -1,10 +1,12 @@
 package com.example.domain;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -24,11 +26,8 @@ public class User implements UserDetails {
     private String email;
 
     @NotEmpty(message = "Password should not be empty.")
-    @Size(message = "Password should be between 8 and 30 characters.")
+    @Min(value = 6, message = "Password should be longer than 6 characters.")
     private String password;
-
-    //only for registration and password change
-    private String confirmPassword;
 
     private Set<Role> authorities;
 
@@ -111,14 +110,6 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
     }
 
     public void setAuthorities(Set<Role> authorities) {
