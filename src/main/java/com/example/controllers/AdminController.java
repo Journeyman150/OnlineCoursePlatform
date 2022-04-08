@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.dao.UserDAO;
+import com.example.domain.Role;
 import com.example.domain.User;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -61,7 +63,7 @@ public class AdminController {
         if (bindingResult.hasFieldErrors("name") | bindingResult.hasFieldErrors("surname") | bindingResult.hasFieldErrors("email")) {
             return "/admin/user_edit";
         }
-        userDAO.updateUser(id, user);
+        userService.updateUser(id, user);
         return "redirect:/admin/user/" + id;
     }
 
@@ -79,7 +81,10 @@ public class AdminController {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
             return "/admin/user_edit";
         }
-        userDAO.changeUserPassword(id, userService.getEncodedPassword(newPassword));
+//        userDAO.changeUserPassword(id, userService.getEncodedPassword(newPassword));
+        User updatedUser = userDAO.getUserById(id);
+        updatedUser.setPassword(userService.getEncodedPassword(newPassword));
+        userService.updateUser(id, updatedUser);
         return "redirect:/admin/user/" + id;
     }
 
@@ -87,7 +92,10 @@ public class AdminController {
     public String changeUserRole(@PathVariable("id") long id,
                                  @RequestParam(name = "role", required = true) String role,
                                  @ModelAttribute("user") User user) {
-        userDAO.changeUserRole(id, role);
+//        userDAO.changeUserRole(id, role);
+        User updatedUser = userDAO.getUserById(id);
+        updatedUser.setAuthorities(Set.of(Role.valueOf(role)));
+        userService.updateUser(id, updatedUser);
         return "redirect:/admin/user/" + id;
     }
 }

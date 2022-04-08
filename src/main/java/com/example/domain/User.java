@@ -1,13 +1,11 @@
 package com.example.domain;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.Collection;
 import java.util.Set;
 
 public class User implements UserDetails {
@@ -43,7 +41,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Set<Role> getAuthorities() {
         return authorities;
     }
 
@@ -104,6 +102,7 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -114,5 +113,13 @@ public class User implements UserDetails {
 
     public void setAuthorities(Set<Role> authorities) {
         this.authorities = authorities;
+    }
+
+    public void setAll(User updatedUser) {
+        this.setName(updatedUser.getName());
+        this.setSurname(updatedUser.getSurname());
+        this.setEmail(updatedUser.getEmail());
+        this.setPassword(updatedUser.getPassword());
+        this.setAuthorities(updatedUser.getAuthorities());
     }
 }

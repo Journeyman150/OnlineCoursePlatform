@@ -29,6 +29,23 @@ public class UserService implements UserDetailsService {
         filteredUsersList = new ArrayList<>();
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userDAO.getUserByEmail(email);
+    }
+
+    public User getAuthorizedUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    public boolean userAlreadyExist(String email) {
+        if (userDAO.getUserByEmail(email) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public List<User> getUsersList() {
         return usersList;
     }
@@ -36,14 +53,10 @@ public class UserService implements UserDetailsService {
     public void refreshUsersList() {
         usersList = userDAO.getUsersList();
     }
+
     @Nullable
     public User getUserFromListById(long id) {
         return usersList.stream().filter(n -> n.getId() == id).findAny().orElse(null);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userDAO.getUserByEmail(email);
     }
 
     public List<User> getFilteredUsersList(String keyword) {
@@ -57,16 +70,17 @@ public class UserService implements UserDetailsService {
         return filteredUsersList;
     }
 
-    public boolean userAlreadyExist(String email) {
-        if (userDAO.getUserByEmail(email) != null) {
-            return true;
-        } else {
-            return false;
+    public void updateUser(long id, User updatedUser) {
+        for (User user: usersList) {
+            if (user.getId() == id) {
+                user.setAll(updatedUser);
+            }
         }
+        userDAO.updateUser(id, updatedUser);
     }
 
-    public String getEncodedPassword(String uncodedPassword) {
-        return passwordEncoder.encode(uncodedPassword);
+    public String getEncodedPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 
     public boolean passwordMatches(String password) {
@@ -76,7 +90,5 @@ public class UserService implements UserDetailsService {
         } else return false;
     }
 
-    public User getAuthorizedUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
+
 }

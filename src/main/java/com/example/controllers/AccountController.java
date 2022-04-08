@@ -44,7 +44,9 @@ public class AccountController {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадат.");
             return "/user/account";
         }
-        userDAO.changeUserPassword(user.getId(), userService.getEncodedPassword(newPassword));
+
+        user.setPassword(userService.getEncodedPassword(newPassword));
+        userService.updateUser(user.getId(), user);
         return "redirect:/account";
     }
 }

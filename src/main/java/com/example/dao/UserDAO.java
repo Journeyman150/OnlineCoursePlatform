@@ -41,19 +41,24 @@ public class UserDAO {
     }
 
     public void updateUser(long usr_id, User updatedUser) {
-        jdbcTemplate.update("UPDATE Usr SET name=?, surname=?, email=?, password=? WHERE usr_id=?",
-                updatedUser.getName(), updatedUser.getSurname(), updatedUser.getEmail(), updatedUser.getPassword(), usr_id);
+        jdbcTemplate.update("UPDATE Usr SET name=?, surname=?, email=?, password=?, role=? WHERE usr_id=?",
+                updatedUser.getName(),
+                updatedUser.getSurname(),
+                updatedUser.getEmail(),
+                updatedUser.getPassword(),
+                updatedUser.getAuthorities().stream().findAny().orElse(null).toString(),
+                usr_id);
     }
 
     public void deleteUser(long usr_id) {
         jdbcTemplate.update("DELETE FROM Usr WHERE usr_id=?", usr_id);
     }
 
-    public void changeUserPassword(long usr_id, String password) {
-        jdbcTemplate.update("UPDATE Usr SET password=? WHERE usr_id=?", password, usr_id);
-    }
-
-    public void changeUserRole(long usr_id, String role) {
-        jdbcTemplate.update("UPDATE Usr SET role=? WHERE usr_id=?", role, usr_id);
-    }
+//    public void changeUserPassword(long usr_id, String password) {
+//        jdbcTemplate.update("UPDATE Usr SET password=? WHERE usr_id=?", password, usr_id);
+//    }
+//
+//    public void changeUserRole(long usr_id, String role) {
+//        jdbcTemplate.update("UPDATE Usr SET role=? WHERE usr_id=?", role, usr_id);
+//    }
 }
