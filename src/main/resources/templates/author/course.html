@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course</title>
+</head>
+<body>
+    <div th:text="${course.getTitle()}"></div>
+    <div th:text="${course.getDescription()}"></div>
+    <div th:text="${course.getPrice()}"></div>
+    <div th:if="${course.isNonPublic() == true}">Non public</div>
+    <div th:if="${course.isNonPublic() == false}">Public</div>
+    <div th:each="lesson: ${course.getLessonsList()}">
+        <a th:href="@{/author/lesson/{id}(id=${lesson.getId()})}"></a>
+    </div>
+    <form action="/author/lessons/new">
+        <input type="submit" value="New lesson">
+    </form>
+</body>
+</html>

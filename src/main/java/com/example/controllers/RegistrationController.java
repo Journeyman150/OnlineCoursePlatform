@@ -16,12 +16,10 @@ import javax.validation.Valid;
 
 @Controller
 public class RegistrationController {
-    private final UserDAO userDAO;
     private final UserService userService;
 
     @Autowired
-    public RegistrationController(UserDAO userDAO, UserService userService) {
-        this.userDAO = userDAO;
+    public RegistrationController(UserService userService) {
         this.userService = userService;
     }
 
@@ -31,7 +29,7 @@ public class RegistrationController {
         return "/registration";
     }
     @PostMapping("/registration")
-    public String addUser(@ModelAttribute("user") @Valid User user,
+    public String createUser(@ModelAttribute("user") @Valid User user,
                           BindingResult bindingResult,
                           @RequestParam(name = "confirmPassword") String confirmPassword,
                           Model model) {
@@ -39,7 +37,7 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             return "/registration";
         }
-        if (userService.userAlreadyExist(user.getEmail())) {
+        if (userService.isUserAlreadyExist(user.getEmail())) {
             model.addAttribute("userAlreadyExistMessage",
                     "Пользователь с таким адресом электронной почты уже существует.");
             return "/registration";
@@ -48,8 +46,7 @@ public class RegistrationController {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
             return "/registration";
         }
-        user.setPassword(userService.getEncodedPassword(user.getPassword()));
-        userDAO.addUser(user);
+        userService.addUser(user);
         return "/login";
     }
 }

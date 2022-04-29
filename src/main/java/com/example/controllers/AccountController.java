@@ -1,21 +1,20 @@
 package com.example.controllers;
 
-import com.example.dao.UserDAO;
 import com.example.domain.User;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AccountController {
-    private final UserDAO userDAO;
     private final UserService userService;
 
     @Autowired
-    public AccountController(UserDAO userDAO, UserService userService) {
-        this.userDAO = userDAO;
+    public AccountController(UserService userService) {
         this.userService = userService;
     }
 
@@ -32,7 +31,7 @@ public class AccountController {
                                  Model model) {
         User user = userService.getAuthorizedUser();
         model.addAttribute("user", user);
-        if (!userService.passwordMatches(currentPassword)) {
+        if (!userService.passwordMatches(currentPassword, user)) {
             model.addAttribute("currentPasswordErrorMessage", "Вы ввели неверный пароль.");
             return "/user/account";
         }
@@ -44,9 +43,7 @@ public class AccountController {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадат.");
             return "/user/account";
         }
-
-        user.setPassword(userService.getEncodedPassword(newPassword));
-        userService.updateUser(user.getId(), user);
+        userService.changePassword(user.getId(), newPassword);
         return "redirect:/account";
     }
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New course</title>
+</head>
+<body>
+    <form th:method="POST" th:action="@{/author/courses/new}" th:object="${course}">
+        <label for="title"> </label>
+        <input type="text" th:field="*{title}" id="title" placeholder="Title">
+        <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</div>
+        <br>
+        <label for="description"></label>
+        <textarea th:field="*{description}" id="description" placeholder="Description"></textarea>
+        <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</div>
+        <br>
+        <label for="price">Price:</label>
+        <input type="text" th:field="*{price}" id="price" placeholder="Price (0 if free)">
+        <div style="color:red" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Error</div>
+
+        <br>
+        <label for="public">Public</label>
+        <input type="radio" th:field="*{nonPublic}" id="public" value="false">
+        <br>
+        <label for="nonPublic">Non public</label>
+        <input type="radio" th:field="*{nonPublic}" id="nonPublic" value="true">
+        <br>
+
+        <input type="submit" value="Create course">
+    </form>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dao.UserDAO;
+import com.example.domain.Role;
 import com.example.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -34,16 +36,21 @@ public class UserService implements UserDetailsService {
         return userDAO.getUserByEmail(email);
     }
 
+    public User getUserById(long userId) {
+        return userDAO.getUserById(userId);
+    }
+
+    @Nullable
+    public User getUserFromListById(long userId) {
+        return usersList.stream().filter(n -> n.getId() == userId).findAny().orElse(null);
+    }
+
     public User getAuthorizedUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public boolean userAlreadyExist(String email) {
-        if (userDAO.getUserByEmail(email) != null) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isUserAlreadyExist(String email) {
+        return userDAO.getUserByEmail(email) != null;
     }
 
     public List<User> getUsersList() {
@@ -54,41 +61,45 @@ public class UserService implements UserDetailsService {
         usersList = userDAO.getUsersList();
     }
 
-    @Nullable
-    public User getUserFromListById(long id) {
-        return usersList.stream().filter(n -> n.getId() == id).findAny().orElse(null);
-    }
-
     public List<User> getFilteredUsersList(String keyword) {
         filteredUsersList.clear();
         for (User user: usersList) {
-            if (user.getEmail().lastIndexOf(keyword) != -1 ||
-                (user.getName() + user.getSurname()).lastIndexOf(keyword) != -1) {
+            if (user.getEmail().contains(keyword) ||
+                (user.getName() + user.getSurname()).contains(keyword)) {
                 filteredUsersList.add(user);
             }
         }
         return filteredUsersList;
     }
+    public void addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDAO.addUser(user);
+    }
 
-    public void updateUser(long id, User updatedUser) {
-        for (User user: usersList) {
-            if (user.getId() == id) {
-                user.setAll(updatedUser);
+    public void update(long userId, User updatedUser) {
+        for (int i = 0; i < usersList.size(); i++) {
+            if (usersList.get(i).getId() == userId) {
+                usersList.set(i, updatedUser);
             }
         }
-        userDAO.updateUser(id, updatedUser);
+        userDAO.updateUser(userId, updatedUser);
     }
 
-    public String getEncodedPassword(String password) {
-        return passwordEncoder.encode(password);
+    public void changePassword(long userId, String newPassword) {
+        userDAO.changeUserPassword(userId, passwordEncoder.encode(newPassword));
     }
 
-    public boolean passwordMatches(String password) {
-        User user = getAuthorizedUser();
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            return true;
-        } else return false;
+    public boolean passwordMatches(String password, User user) {
+        return passwordEncoder.matches(password, user.getPassword());
     }
 
+    public void changeRole(long userId, String role) {
+        for (User user : usersList) {
+            if (user.getId() == userId) {
+                user.setAuthorities(Set.of(Role.valueOf(role)));
+            }
+        }
+        userDAO.changeUserRole(userId, role);
+    }
 
 }

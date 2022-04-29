@@ -3,8 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
+    <style>
+        .description {
+            width: 250px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+        }
+    </style>
 </head>
 <body>
-
+    <div>Public courses:</div>
+    <div th:each="course : ${publicCoursesList}">
+        <br>
+    <a th:href="@{/author/course/{id}(id=${course.getId()})}"
+       th:text="${course.getTitle()}"></a>
+        <br>
+      <div class="description" th:text="${course.getDescription()}"></div>
+    </div>
+    <hr>
+    <div>Non public courses:</div>
+    <div th:each="course : ${nonPublicCoursesList}">
+        <a th:href="@{/author/course/{id}(id=${course.getId()})}"
+           th:text="${course.getTitle()}"></a>
+        <br>
+        <div class="description" th:text="${course.getDescription()}"></div>
+    </div>
+    <hr>
+    <form action="/author/courses/new">
+        <input type="submit" value="New course">
+    </form>
 </body>
 </html>

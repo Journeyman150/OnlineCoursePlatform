@@ -24,7 +24,7 @@ public class User implements UserDetails {
     private String email;
 
     @NotEmpty(message = "Password should not be empty.")
-    @Min(value = 6, message = "Password should be longer than 6 characters.")
+    //@Min(value = 6, message = "Password should be longer than 6 characters.")
     private String password;
 
     private Set<Role> authorities;

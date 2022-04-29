@@ -7,7 +7,7 @@
         form {
             /* Расположим форму по центру страницы */
             margin: 0 auto;
-            width: 600px;
+            width: 400px;
             /* Определим контур формы */
             padding: 1em;
             border: 1px solid #CCC;
@@ -27,7 +27,7 @@
         label {
             /* Определим размер и выравнивание */
             display: inline-block;
-            width: 200px;
+            width: 100px;
             text-align: right;
         }
 
@@ -76,28 +76,28 @@
 </head>
 <body>
 <form th:method="POST" th:action="@{/registration}" th:object="${user}">
-    <label for="name">Имя:</label>
-    <input type="text" th:field="*{name}" id="name">
+    <label for="name"> </label>
+    <input type="text" th:field="*{name}" id="name" placeholder="Name">
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
     <br>
-    <label for="surname">Фамилия:</label>
-    <input type="text" th:field="*{surname}" id="surname">
+    <label for="surname"></label>
+    <input type="text" th:field="*{surname}" id="surname" placeholder="Surname">
     <div style="color:red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</div>
     <br>
-    <label for="email">Адрес электронной почты:</label>
-    <input type="text" th:field="*{email}" id="email">
+    <label for="email"></label>
+    <input type="text" th:field="*{email}" id="email" placeholder="Email">
     <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>
     <div style="color:red" th:text="${userAlreadyExistMessage}">Error</div>
     <br>
-    <label for="password">Пароль:</label>
-    <input type="password" th:field="*{password}" id="password">
+    <label for="password"></label>
+    <input type="password" th:field="*{password}" id="password" placeholder="Password">
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</div>
     <br>
-    <label for="confirmPassword">Подтвердите пароль:</label>
-    <input type="password" name="confirmPassword" id="confirmPassword">
+    <label for="confirmPassword"></label>
+    <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm password">
     <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
     <br>
-    <button type="submit">Создать аккаунт</button>
+    <button type="submit">Create account</button>
 </form>
 
 </body>

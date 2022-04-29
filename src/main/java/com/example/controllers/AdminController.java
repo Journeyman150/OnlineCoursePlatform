@@ -63,7 +63,7 @@ public class AdminController {
         if (bindingResult.hasFieldErrors("name") | bindingResult.hasFieldErrors("surname") | bindingResult.hasFieldErrors("email")) {
             return "/admin/user_edit";
         }
-        userService.updateUser(id, user);
+        userService.update(id, user);
         return "redirect:/admin/user/" + id;
     }
 
@@ -75,16 +75,15 @@ public class AdminController {
                                      Model model) {
         if (newPassword == null || newPassword.length() <= 6) {
             model.addAttribute("newPasswordErrorMessage", "Пароль должен быть длиньше 6 символов.");
+            model.addAttribute("user", userService.getUserById(id));
             return "/admin/user_edit";
         }
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
+            model.addAttribute("user", userService.getUserById(id));
             return "/admin/user_edit";
         }
-//        userDAO.changeUserPassword(id, userService.getEncodedPassword(newPassword));
-        User updatedUser = userDAO.getUserById(id);
-        updatedUser.setPassword(userService.getEncodedPassword(newPassword));
-        userService.updateUser(id, updatedUser);
+        userService.changePassword(id, newPassword);
         return "redirect:/admin/user/" + id;
     }
 
@@ -92,10 +91,7 @@ public class AdminController {
     public String changeUserRole(@PathVariable("id") long id,
                                  @RequestParam(name = "role", required = true) String role,
                                  @ModelAttribute("user") User user) {
-//        userDAO.changeUserRole(id, role);
-        User updatedUser = userDAO.getUserById(id);
-        updatedUser.setAuthorities(Set.of(Role.valueOf(role)));
-        userService.updateUser(id, updatedUser);
+        userService.changeRole(id, role);
         return "redirect:/admin/user/" + id;
     }
 }

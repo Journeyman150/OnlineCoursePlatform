@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
@@ -26,10 +25,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/home", "/registration").permitAll()
-                    .antMatchers("/account", "/courses").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
-                    .antMatchers("/author").hasRole(Role.AUTHOR.name())
-                    .antMatchers("/admin").hasRole(Role.ADMIN.name())
+                    .mvcMatchers("/", "/home", "/registration").permitAll()
+                    .mvcMatchers("/account", "/courses").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
+                    .mvcMatchers("/author/**").hasRole(Role.AUTHOR.name())
+                    .mvcMatchers("/admin/**").hasRole(Role.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()

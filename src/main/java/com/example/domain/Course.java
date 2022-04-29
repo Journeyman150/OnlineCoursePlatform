@@ -1,25 +1,26 @@
 package com.example.domain;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Map;
 
 public class Course {
     private long id;
     private long authorId;
 
-    @NotEmpty(message = "Surname should not be empty.")
-    @Size(min = 2, max = 30, message = "Surname should be between 2 and 30 characters.")
+    @NotBlank(message = "Title should not be empty.")
+    @Size(min = 2, max = 30, message = "Title should be between 2 and 30 characters.")
     private String title;
 
-    @NotEmpty(message = "Surname should not be empty.")
+    @NotBlank(message = "Description should not be empty.")
     private String description;
 
     private List<Lesson> lessonsList;
 
     private boolean nonPublic;
 
+    @NotNull(message = "Enter the price (enter 0 if it free)")
     private int price;
 
     public Course() {
