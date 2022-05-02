@@ -7,21 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CourseService {
     private final CourseDAO courseDAO;
-    private Map<Long, Course> publicCoursesMap;
-    private Map<Long, Course> nonPublicCoursesMap;
 
     @Autowired
     public CourseService(CourseDAO courseDAO) {
         this.courseDAO = courseDAO;
-        publicCoursesMap = new HashMap<>();
-        nonPublicCoursesMap = new HashMap<>();
     }
 
     public List<Course> getPublicListByAuthorId(long authorId) {
@@ -39,11 +33,6 @@ public class CourseService {
     public void save(Course course, User author) {
         course.setAuthorId(author.getId());
         courseDAO.saveCourse(course);
-        if (course.isNonPublic()) {
-            nonPublicCoursesMap.put(course.getId(), course);
-        } else {
-            publicCoursesMap.put(course.getId(), course);
-        }
     }
 
 }

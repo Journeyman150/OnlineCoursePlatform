@@ -5,6 +5,7 @@
     <title>New course</title>
 </head>
 <body>
+<p>Create new course</p>
     <form th:method="POST" th:action="@{/author/courses/new}" th:object="${course}">
         <label for="title"> </label>
         <input type="text" th:field="*{title}" id="title" placeholder="Title">

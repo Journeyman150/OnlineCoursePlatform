@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New lesson</title>
+
+</head>
+<body>
+<p>Edit lesson</p>
+<form th:method="PATCH"
+      th:action="@{/author/course/{courseId}/lesson/{num}(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"
+      th:object="${lesson}"
+      enctype="multipart/form-data">
+    <label for="title"> </label>
+    <input type="text" th:field="*{title}" id="title" placeholder="Title">
+    <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</div>
+    <br>
+    <label for="description"></label>
+    <textarea th:field="*{description}" id="description" placeholder="Description"></textarea>
+    <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</div>
+    <br>
+    <label for="number"></label>
+    <textarea th:field="*{num}" id="number" placeholder="Number of lesson"></textarea>
+    <div style="color:red" th:text="${lessonNumError}">Error</div>
+    <br>
+    <label for="file">Upload video:</label>
+    <input type="file" name="videoFile" id="file" accept="video/*">
+    <br>
+    <input type="submit" value="Update lesson">
+</form>
+</body>
+</html>

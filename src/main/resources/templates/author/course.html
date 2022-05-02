@@ -11,9 +11,10 @@
     <div th:if="${course.isNonPublic() == true}">Non public</div>
     <div th:if="${course.isNonPublic() == false}">Public</div>
     <div th:each="lesson: ${course.getLessonsList()}">
-        <a th:href="@{/author/lesson/{id}(id=${lesson.getId()})}"></a>
+        <a th:href="@{/author/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
+        th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
     </div>
-    <form action="/author/lessons/new">
+    <form th:action="@{/author/course/{courseId}/lessons/new(courseId=${course.getId()})}" th:method="GET">
         <input type="submit" value="New lesson">
     </form>
 </body>

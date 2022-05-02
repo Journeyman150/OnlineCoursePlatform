@@ -1,29 +1,34 @@
-package com.example.service;
+package com.example.search_engine;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-//Not thread-safe
 public class SearchData {
-    private Struct struct;
     private final Struct mainStruct;
 
     public SearchData() {
         mainStruct = new Struct();
-        struct = mainStruct;
     }
 
     public void writeData(long idx, String textField) {
         char[] textCharSeq = textField.toCharArray();
+        Struct struct = mainStruct;
         for (int i = 0; i < textCharSeq.length; i++) {
-            char ch = textCharSeq[i];
+            char ch = Character.toLowerCase(textCharSeq[i]);
             if (writeAndDeleteRule(ch)) {
-                this.addElementAndMovePointer(idx, Character.toLowerCase(ch));
+                if (struct.charMapNode.containsKey(ch)) {
+                    struct = struct.charMapNode.get(ch);
+                    struct.charIndexes.add(idx);
+                } else {
+                    Struct newStruct = new Struct();
+                    struct.charMapNode.put(ch, newStruct);
+                    struct = newStruct;
+                    struct.charIndexes.add(idx);
+                }
             } else {
                 struct = mainStruct;
             }
         }
-        struct = mainStruct;
     }
 
     public void writeData(long idx, String ... textFields) {
@@ -32,29 +37,20 @@ public class SearchData {
         }
     }
 
-    private void addElementAndMovePointer(Long idx, Character ch) {
-        if (struct.charMapNode.containsKey(ch)) {
-            struct = struct.charMapNode.get(ch);
-            struct.charIndexes.add(idx);
-        } else {
-            Struct newStruct = new Struct();
-            struct.charMapNode.put(ch, newStruct);
-            struct = newStruct;
-            struct.charIndexes.add(idx);
-        }
-    }
-
     public void deleteData(long idx, String textField) {
+        Struct struct = mainStruct;
         char[] textCharSeq = textField.toCharArray();
         for (int i = 0; i < textCharSeq.length; i++) {
-            char ch = textCharSeq[i];
+            char ch = Character.toLowerCase(textCharSeq[i]);
             if (writeAndDeleteRule(ch)) {
-                deleteElementAndMovePointer(idx, ch);
+                if (struct.charMapNode.containsKey(ch)) {
+                    struct = struct.charMapNode.get(ch);
+                    struct.charIndexes.remove(idx);
+                }
             } else {
                 struct = mainStruct;
             }
         }
-        struct = mainStruct;
     }
 
     public void deleteData(long idx, String ... textFields) {
@@ -63,15 +59,8 @@ public class SearchData {
         }
     }
 
-    private void deleteElementAndMovePointer(Long idx, Character ch) {
-        if (struct.charMapNode.containsKey(ch)) {
-            struct = struct.charMapNode.get(ch);
-            struct.charIndexes.remove(idx);
-        }
-    }
-
     public Set<Long> findIndexes(String keyword) {
-        struct = mainStruct;
+        Struct struct = mainStruct;
         char[] keyCharSeq = getProcessedLowerCaseCharSeq(keyword);
 
         if (struct.charMapNode.get(keyCharSeq[0]) == null) {
@@ -83,7 +72,7 @@ public class SearchData {
             if (struct.charMapNode.containsKey(ch)) {
                 struct = struct.charMapNode.get(ch);
                 idxSet.retainAll(struct.charIndexes);
-            } else break;
+            } else return new HashSet<>(Set.of(-1L));
         }
         if (idxSet.size() == 0) {
             idxSet.add(-1L);

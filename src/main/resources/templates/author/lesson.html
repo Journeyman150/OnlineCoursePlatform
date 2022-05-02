@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lesson</title>
+</head>
+<body>
+    <h2><div th:text="${'Lesson ' + lesson.getNum()}"></div></h2>
+    <div th:text="${lesson.getTitle()}"></div>
+    <div th:text="${lesson.getDescription()}">Description:</div>
+    <div>Watch lesson:</div>
+    <video width="640" height="480" controls th:src="@{/author/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
+
+    <form th:action="@{/author/course/{courseId}/lesson/{num}/edit(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"
+          th:method="GET">
+        <input type="submit" value="Edit lesson">
+    </form>
+</body>
+</html>
