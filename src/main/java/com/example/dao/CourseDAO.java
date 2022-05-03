@@ -43,8 +43,15 @@ public class CourseDAO {
         return jdbcTemplate.query("SELECT * FROM courses WHERE course_id=?", courseMapper, courseId)
                 .stream().findAny().orElse(null);
     }
+    @Nullable
+    public long getAuthorIdByCourseId(long courseId) {
+        return jdbcTemplate.query("SELECT author_id FROM courses WHERE course_id = ?",
+                (rs, rowNum) -> rs.getLong("author_id"),
+                courseId)
+                .stream().findAny().orElse(null);
+    }
 
-    public void saveCourse(Course course) {
+    public void save(Course course) {
         jdbcTemplate.update("INSERT INTO courses(title, description, author_id, price, non_public) VALUES(?, ?, ?, ?, ?)",
                 course.getTitle(),
                 course.getDescription(),
@@ -53,11 +60,10 @@ public class CourseDAO {
                 course.isNonPublic());
     }
 
-    public void updateCourse(Course updatedCourse, long courseId) {
-        jdbcTemplate.update("UPDATE courses SET title=?, description=?, author_id=?, price=?, non_public=? WHERE course_id=?",
+    public void update(Course updatedCourse, long courseId) {
+        jdbcTemplate.update("UPDATE courses SET title=?, description=?, price=?, non_public=? WHERE course_id=?",
                 updatedCourse.getTitle(),
                 updatedCourse.getDescription(),
-                updatedCourse.getAuthorId(),
                 updatedCourse.getPrice(),
                 updatedCourse.isNonPublic(),
                 courseId);

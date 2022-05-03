@@ -56,4 +56,11 @@ public class LessonDAO {
                 courseId,
                 prevNum);
     }
+    @Nullable
+    public long getCourseIdByLessonId(long lessonId) {
+        return jdbcTemplate.query("SELECT course_id FROM lessons WHERE lesson_id = ?",
+                (rs, rowNum) -> rs.getLong("course_id"),
+                lessonId)
+                .stream().findAny().orElse(null);
+    }
 }

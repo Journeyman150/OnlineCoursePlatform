@@ -5,11 +5,16 @@
     <title>Course</title>
 </head>
 <body>
-    <div th:text="${course.getTitle()}"></div>
-    <div th:text="${course.getDescription()}"></div>
-    <div th:text="${course.getPrice()}"></div>
+    <div th:text="'Title: ' + ${course.getTitle()}"></div>
+    <div th:text="'Description: ' + ${course.getDescription()}"></div>
+    <div th:text="'Price: ' + ${course.getPrice()}"></div>
     <div th:if="${course.isNonPublic() == true}">Non public</div>
     <div th:if="${course.isNonPublic() == false}">Public</div>
+    <form th:action="@{/author/course/{courseId}/edit(courseId=${course.getId()})}" th:method="GET">
+        <input type="submit" value="Edit course">
+    </form>
+    <hr>
+    <div>Lessons list: </div>
     <div th:each="lesson: ${course.getLessonsList()}">
         <a th:href="@{/author/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
         th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>

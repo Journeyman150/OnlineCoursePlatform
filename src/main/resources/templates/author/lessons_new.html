@@ -19,8 +19,8 @@
     <textarea th:field="*{description}" id="description" placeholder="Description"></textarea>
     <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</div>
     <br>
-    <label for="number"></label>
-    <textarea th:field="*{num}" id="number" placeholder="Number of lesson"></textarea>
+    <label for="number">Lesson number: </label>
+    <input type="text" th:field="*{num}" id="number" placeholder="Lesson number">
     <div style="color:red" th:text="${lessonNumError}">Error</div>
     <br>
     <label for="file">Upload video:</label>

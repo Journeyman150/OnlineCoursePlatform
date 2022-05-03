@@ -32,7 +32,10 @@ public class CourseService {
 
     public void save(Course course, User author) {
         course.setAuthorId(author.getId());
-        courseDAO.saveCourse(course);
+        courseDAO.save(course);
     }
 
+    public void update(Course course, long courseId) {
+        courseDAO.update(course, courseId);
+    }
 }

@@ -21,7 +21,7 @@ public class AccountController {
     @GetMapping("/account")
     public String getAccountPage(Model model) {
         model.addAttribute("user", userService.getAuthorizedUser());
-        return "/user/account";
+        return "/account";
     }
 
     @PatchMapping("/account/change_password")
@@ -33,15 +33,15 @@ public class AccountController {
         model.addAttribute("user", user);
         if (!userService.passwordMatches(currentPassword, user)) {
             model.addAttribute("currentPasswordErrorMessage", "Вы ввели неверный пароль.");
-            return "/user/account";
+            return "/account";
         }
         if (newPassword.length() <= 6) {
             model.addAttribute("newPasswordErrorMessage", "Пароль должен быть длиньше 6 смволов.");
-            return "/user/account";
+            return "/account";
         }
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадат.");
-            return "/user/account";
+            return "/account";
         }
         userService.changePassword(user.getId(), newPassword);
         return "redirect:/account";

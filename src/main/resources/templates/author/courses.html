@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <div>Public courses:</div>
+    <h2><div>Public courses:</div></h2>
     <div th:each="course : ${publicCoursesList}">
         <br>
     <a th:href="@{/author/course/{id}(id=${course.getId()})}"
@@ -22,11 +22,11 @@
       <div class="description" th:text="${course.getDescription()}"></div>
     </div>
     <hr>
-    <div>Non public courses:</div>
+    <h2><div>Non public courses:</div></h2>
     <div th:each="course : ${nonPublicCoursesList}">
+        <br>
         <a th:href="@{/author/course/{id}(id=${course.getId()})}"
            th:text="${course.getTitle()}"></a>
-        <br>
         <div class="description" th:text="${course.getDescription()}"></div>
     </div>
     <hr>

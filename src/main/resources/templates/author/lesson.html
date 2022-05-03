@@ -6,8 +6,8 @@
 </head>
 <body>
     <h2><div th:text="${'Lesson ' + lesson.getNum()}"></div></h2>
-    <div th:text="${lesson.getTitle()}"></div>
-    <div th:text="${lesson.getDescription()}">Description:</div>
+    <div th:text="'Title: ' + ${lesson.getTitle()}"></div>
+    <div th:text="'Description: ' + ${lesson.getDescription()}">Description:</div>
     <div>Watch lesson:</div>
     <video width="640" height="480" controls th:src="@{/author/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
 
