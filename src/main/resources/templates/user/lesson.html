@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lesson</title>
+</head>
+<body>
+    <h2><div th:text="${'Lesson ' + lesson.getNum()}"></div></h2>
+    <div th:text="'Title: ' + ${lesson.getTitle()}"></div>
+    <div th:text="'Description: ' + ${lesson.getDescription()}">Description:</div>
+    <div>Watch lesson:</div>
+    <video width="640" height="480" controls th:src="@{/user/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
+
+</body>
+</html>

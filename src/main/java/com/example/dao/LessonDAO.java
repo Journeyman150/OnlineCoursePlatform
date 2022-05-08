@@ -1,6 +1,7 @@
 package com.example.dao;
 
 import com.example.domain.Lesson;
+import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.Nullable;
@@ -57,10 +58,16 @@ public class LessonDAO {
                 prevNum);
     }
     @Nullable
-    public long getCourseIdByLessonId(long lessonId) {
+    public Long getCourseIdByLessonId(long lessonId) {
         return jdbcTemplate.query("SELECT course_id FROM lessons WHERE lesson_id = ?",
                 (rs, rowNum) -> rs.getLong("course_id"),
                 lessonId)
                 .stream().findAny().orElse(null);
+    }
+
+    public List<IndexedData> getSearchDataList() {
+        return jdbcTemplate.query("SELECT lesson_id, title, description FROM lessons",
+                (rs, rowNum) -> new IndexedData(rs.getLong("lesson_id"),
+                        rs.getString("title"), rs.getString("description")));
     }
 }

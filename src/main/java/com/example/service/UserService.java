@@ -1,8 +1,10 @@
 package com.example.service;
 
 import com.example.dao.UserDAO;
+import com.example.domain.Course;
 import com.example.domain.Role;
 import com.example.domain.User;
+import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,5 +104,7 @@ public class UserService implements UserDetailsService {
         }
         userDAO.changeUserRole(userId, role);
     }
-
+    public List<IndexedData> getSearchDataList() {
+        return userDAO.getSearchDataList();
+    }
 }

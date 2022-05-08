@@ -1,12 +1,15 @@
 package com.example.dao;
 
 import com.example.domain.User;
+import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class UserDAO {
@@ -25,13 +28,13 @@ public class UserDAO {
 
     @Nullable
     public User getUserById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM Usr WHERE usr_id = ?", userMapper, id)
+        return jdbcTemplate.query("SELECT * FROM usr WHERE usr_id = ?", userMapper, id)
                 .stream().findAny().orElse(null);
     }
 
     @Nullable
     public User getUserByEmail(String email) {
-        return jdbcTemplate.query("SELECT * FROM Usr WHERE email = ?", userMapper, email)
+        return jdbcTemplate.query("SELECT * FROM usr WHERE email = ?", userMapper, email)
                 .stream().findAny().orElse(null);
     }
 
@@ -40,24 +43,33 @@ public class UserDAO {
                 user.getName(), user.getSurname(), user.getEmail(), user.getPassword());
     }
 
-    public void updateUser(long usr_id, User updatedUser) {
-        jdbcTemplate.update("UPDATE Usr SET name=?, surname=?, email=? WHERE usr_id=?",
+    public void updateUser(long userId, User updatedUser) {
+        jdbcTemplate.update("UPDATE Usr SET name=?, surname=?, email=? WHERE userId=?",
                 updatedUser.getName(),
                 updatedUser.getSurname(),
                 updatedUser.getEmail(),
-                usr_id);
+                userId);
     }
 
-    public void changeUserPassword(long usr_id, String password) {
-        jdbcTemplate.update("UPDATE Usr SET password=? WHERE usr_id=?", password, usr_id);
+    public void changeUserPassword(long userId, String password) {
+        jdbcTemplate.update("UPDATE usr SET password=? WHERE usr_id=?", password, userId);
     }
 
-    public void changeUserRole(long usr_id, String role) {
-        jdbcTemplate.update("UPDATE Usr SET role=? WHERE usr_id=?", role, usr_id);
+    public void changeUserRole(long userId, String role) {
+        jdbcTemplate.update("UPDATE usr SET role=? WHERE usr_id=?", role, userId);
     }
 
-    public void deleteUser(long usr_id) {
-        jdbcTemplate.update("DELETE FROM Usr WHERE usr_id=?", usr_id);
+    public void updateUserBalance(long userId, int balance) {
+        jdbcTemplate.update("UPDATE usr SET balance=? WHERE usr_id=?", balance, userId);
     }
 
+    public void deleteUser(long userId) {
+        jdbcTemplate.update("DELETE FROM Usr WHERE usr_id=?", userId);
+    }
+
+    public List<IndexedData> getSearchDataList() {
+        return jdbcTemplate.query("SELECT usr_id, name, surname FROM usr",
+                (rs, rowNum) -> new IndexedData(rs.getLong("usr_id"),
+                        rs.getString("name"), rs.getString("surname")));
+    }
 }

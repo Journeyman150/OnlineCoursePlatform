@@ -1,6 +1,7 @@
 package com.example.dao;
 
 import com.example.domain.Course;
+import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.Nullable;
@@ -44,7 +45,17 @@ public class CourseDAO {
                 .stream().findAny().orElse(null);
     }
     @Nullable
-    public long getAuthorIdByCourseId(long courseId) {
+    public Course getPublicCourseById(long courseId) {
+        return jdbcTemplate.query("SELECT * FROM courses WHERE course_id=? AND non_public=false", courseMapper, courseId)
+                .stream().findAny().orElse(null);
+    }
+    @Nullable
+    public Course getNonPublicCourseById(long courseId) {
+        return jdbcTemplate.query("SELECT * FROM courses WHERE course_id=? AND non_public=true", courseMapper, courseId)
+                .stream().findAny().orElse(null);
+    }
+    @Nullable
+    public Long getAuthorIdByCourseId(long courseId) {
         return jdbcTemplate.query("SELECT author_id FROM courses WHERE course_id = ?",
                 (rs, rowNum) -> rs.getLong("author_id"),
                 courseId)
@@ -67,5 +78,11 @@ public class CourseDAO {
                 updatedCourse.getPrice(),
                 updatedCourse.isNonPublic(),
                 courseId);
+    }
+
+    public List<IndexedData> getPublicCoursesSearchDataList() {
+        return jdbcTemplate.query("SELECT course_id, title, description FROM courses WHERE non_public = false",
+                (rs, rowNum) -> new IndexedData(rs.getLong("course_id"),
+                        rs.getString("title"), rs.getString("description")));
     }
 }

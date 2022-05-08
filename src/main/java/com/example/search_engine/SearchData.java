@@ -3,13 +3,14 @@ package com.example.search_engine;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SearchData {
+public class SearchData implements Searcher {
     private final Struct mainStruct;
 
     public SearchData() {
         mainStruct = new Struct();
     }
 
+    @Override
     public void writeData(long idx, String textField) {
         char[] textCharSeq = textField.toCharArray();
         Struct struct = mainStruct;
@@ -31,12 +32,14 @@ public class SearchData {
         }
     }
 
+    @Override
     public void writeData(long idx, String ... textFields) {
         for (int i = 0; i < textFields.length; i++) {
             writeData(idx, textFields[i]);
         }
     }
 
+    @Override
     public void deleteData(long idx, String textField) {
         Struct struct = mainStruct;
         char[] textCharSeq = textField.toCharArray();
@@ -53,34 +56,55 @@ public class SearchData {
         }
     }
 
+    @Override
     public void deleteData(long idx, String ... textFields) {
         for (int i = 0; i < textFields.length; i++) {
             deleteData(idx, textFields[i]);
         }
     }
 
+    @Override
     public Set<Long> findIndexes(String keyword) {
-        Struct struct = mainStruct;
-        char[] keyCharSeq = getProcessedLowerCaseCharSeq(keyword);
-
-        if (struct.charMapNode.get(keyCharSeq[0]) == null) {
+        if (keyword == null || keyword.equals("")) {
+                System.out.println("findIndexes if 1");
             return new HashSet<>(Set.of(-1L));
         }
-        Set<Long> idxSet = struct.charMapNode.get(keyCharSeq[0]).charIndexes;
 
+        char[] keyCharSeq = getProcessedLowerCaseCharSeq(keyword);
+        if (keyCharSeq.length == 0) {
+                System.out.println("findIndexes if 2");
+            return new HashSet<>(Set.of(-1L));
+        }
+
+        Struct struct = mainStruct;
+        if (struct.charMapNode.get(keyCharSeq[0]) == null) {
+                System.out.println("findIndexes if 3");
+            return new HashSet<>(Set.of(-1L));
+        }
+
+        Set<Long> idxSet = new HashSet<>(struct.charMapNode.get(keyCharSeq[0]).charIndexes);
         for (Character ch: keyCharSeq) {
             if (struct.charMapNode.containsKey(ch)) {
+                    System.out.println("findIndexes if 4");
                 struct = struct.charMapNode.get(ch);
+                    System.out.println("Indexes of " + ch + ": " + Arrays.toString(struct.charIndexes.toArray()));
                 idxSet.retainAll(struct.charIndexes);
-            } else return new HashSet<>(Set.of(-1L));
+                    System.out.println("Indexes after retain: " + Arrays.toString(idxSet.toArray()));
+                    System.out.println();
+            } else {
+                    System.out.println("findIndexes else 5");
+                return new HashSet<>(Set.of(-1L));
+            }
         }
         if (idxSet.size() == 0) {
+                System.out.println("findIndexes if 6");
             idxSet.add(-1L);
         }
         return idxSet;
     }
-
-    public Set<Long> findMatchingIndexes(String ... keywords) {
+    //looks for matching indexes for each word in keyword[]
+    @Override
+    public Set<Long> findIndexes(String ... keywords) {
         List<Set<Long>> setList = new ArrayList<>();
         for (int i = 0; i < keywords.length; i++) {
             Set<Long> idxSet = findIndexes(keywords[i]);
@@ -90,7 +114,7 @@ public class SearchData {
             setList.add(idxSet);
         }
         Set<Long> resIdxSet = setList.get(0);
-        for (int i = 1; i < setList.size(); i++) {
+        for (int i = 0; i < setList.size(); i++) {
             resIdxSet.retainAll(setList.get(i));
         }
         if (resIdxSet.size() == 0) {
@@ -99,7 +123,30 @@ public class SearchData {
         return resIdxSet;
     }
 
+    public static String[] getSeparateKeywords(String str) {
+        if (str == null || str.equals("")) {
+            return new String[0];
+        }
+        List<String> keywordsList = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            if (writeAndDeleteRule(str.charAt(i))) {
+                stringBuilder.append(Character.toLowerCase(str.charAt(i)));
+            } else if (!writeAndDeleteRule(str.charAt(i)) && !stringBuilder.isEmpty()) {
+                keywordsList.add(stringBuilder.toString());
+                stringBuilder = new StringBuilder();
+            }
+        }
+        if (!stringBuilder.isEmpty()) {
+            keywordsList.add(stringBuilder.toString());
+        }
+        return keywordsList.toArray(new String[0]);
+    }
+
     public static char[] getProcessedLowerCaseCharSeq(String str) {
+        if (str == null || str.equals("")) {
+            return new char[0];
+        }
         char[] preparedCharSeq = new char[str.length()];
         int j = 0;
         for (int i = 0; i < str.length(); i++) {

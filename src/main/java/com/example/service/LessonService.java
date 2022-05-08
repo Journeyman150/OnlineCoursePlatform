@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dao.LessonDAO;
 import com.example.domain.Lesson;
+import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -63,5 +64,9 @@ public class LessonService {
 
     public File getFile(Long courseId, int lessonNum) {
         return storageService.load(lessonDAO.getLessonByCourseIdAndLessonNum(courseId, lessonNum).getVideoSource());
+    }
+
+    public List<IndexedData> getSearchDataList() {
+        return lessonDAO.getSearchDataList();
     }
 }

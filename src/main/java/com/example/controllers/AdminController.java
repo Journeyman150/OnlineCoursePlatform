@@ -26,7 +26,8 @@ public class AdminController {
     }
 
     @GetMapping("/users_list")
-    public String getUsersList(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
+    public String getUsersList(@RequestParam(name = "keyword", required = false) String keyword,
+                               Model model) {
         if (keyword != null && !keyword.equals("")) {
             model.addAttribute("usersList", userService.getFilteredUsersList(keyword));
             return "/admin/users_list";

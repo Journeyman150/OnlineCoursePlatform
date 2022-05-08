@@ -2,12 +2,16 @@
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Author</title>
+    <title>Main page</title>
 </head>
 <body>
-    <a href="author/courses">Courses</a>
-    <a href="author/statistic">Statistics</a>
-    <a href="../account">Account</a>
+    <h2>Teaching</h2>
+    <a href="author/courses">My courses</a>&emsp;
+    <a href="author/statistic">Statistics</a>&emsp;
+    <a href="../account">Account</a>&emsp;
+    <a href="../notifications">Notifications</a>&emsp;
+    <a href="../user">Learning</a>
+    <hr>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>

@@ -1,10 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>User</title>
+    <title>Main page</title>
+    <style>
+        .coursePlate {
+            padding: 0.5em;
+            border: 1px solid #CCC;
+            border-radius: 1em;
+            width: 200px;
+            max-height: 100px;
+        }
+        .courseDescription {
+            text-overflow:ellipsis;
+            overflow:hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+        }
+    </style>
 </head>
 <body>
-
+    <h2>Learning</h2>
+    <a href="user/courses">My learning</a>&emsp;
+    <a href="user/statistic">Statistics</a>&emsp;
+    <a href="../account">Account</a>&emsp;
+    <a href="../notifications">Notifications</a>&emsp;
+    <a sec:authorize="hasRole('ROLE_AUTHOR')" href="../author">Teaching</a>
+    <hr>
+    <form th:action="@{/user}" th:method="GET">
+        <div>
+            <label for="search">Find courses:</label>
+            <input name="keyword" type="text" id="search">
+            <input type="submit" value="Search">
+        </div>
+    </form>
+    <div th:text="${noResults}"></div>
+    <th:block th:each="course : ${coursesList}">
+        <br>
+        <div class="coursePlate">
+            <a th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
+            <br>
+            <div class="courseDescription" th:text="${course.getDescription()}"></div>
+            <i th:text="'Author: '"></i>
+        </div>
+    </th:block>
+    <hr>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
 </body>
 </html>

@@ -20,6 +20,7 @@ public class UserMapper implements RowMapper<User> {
         user.setEmail(rs.getString("email"));
         user.setPassword(rs.getString("password"));
         user.setAuthorities(Set.of(Role.valueOf(rs.getString("role"))));
+        user.setBalance(rs.getInt("balance"));
         return user;
     }
 }

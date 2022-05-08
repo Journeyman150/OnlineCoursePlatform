@@ -23,6 +23,9 @@ public class SearchDataTest {
 
     @Test
     public void testFindIndexes() {
+        assertArrayEquals(new Long[]{-1L}, searchData.findIndexes((String) null).toArray(new Long[0]));
+        assertArrayEquals(new Long[]{-1L}, searchData.findIndexes("").toArray(new Long[0]));
+        assertArrayEquals(new Long[]{-1L}, searchData.findIndexes(" . ").toArray(new Long[0]));
         assertArrayEquals(new Long[]{1L}, searchData.findIndexes("1woRD").toArray(new Long[0]));
         assertArrayEquals(new Long[]{1L}, searchData.findIndexes("1wo").toArray(new Long[0]));
         assertArrayEquals(new Long[]{1L, 5L, 6L}, searchData.findIndexes(" иНдекс ").toArray(new Long[0]));
@@ -33,22 +36,23 @@ public class SearchDataTest {
 
     @Test
     public void testFindMatchingIndexes() {
-        assertArrayEquals(new Long[]{5L, 6L}, searchData.findMatchingIndexes("одинаковый", "5", "6", "индекс").toArray(new Long[0]));
-        assertArrayEquals(new Long[]{-1L}, searchData.findMatchingIndexes("одинаковый", "7", "6", "индекс").toArray(new Long[0]));
-        assertArrayEquals(new Long[]{-1L}, searchData.findMatchingIndexes("одинаковый", "eqwfjnewkfl", "6", "индекс").toArray(new Long[0]));
+        assertArrayEquals(new Long[]{5L, 6L}, searchData.findIndexes("одинаковый", "5", "6", "индекс").toArray(new Long[0]));
+        assertArrayEquals(new Long[]{5L, 6L}, searchData.findIndexes(SearchData.getSeparateKeywords("Одинаковый*/ 5 6 ИНДЕКС ")).toArray(new Long[0]));
+        assertArrayEquals(new Long[]{-1L}, searchData.findIndexes("одинаковый", "7", "6", "индекс").toArray(new Long[0]));
+        assertArrayEquals(new Long[]{-1L}, searchData.findIndexes("одинаковый", "eqwfjnewkfl", "6", "индекс").toArray(new Long[0]));
     }
 
     @Test
     public void deleteData() {
         searchData.writeData(8, "8QwErty", "йцу");
-        assertArrayEquals(new Long[]{8L}, searchData.findMatchingIndexes("8qwerty", "йцУ").toArray(new Long[0]));
+        assertArrayEquals(new Long[]{8L}, searchData.findIndexes("8qwerty", "йцУ").toArray(new Long[0]));
         searchData.deleteData(8, "8QwErty", "Йцу");
-        assertArrayEquals(new Long[]{-1L}, searchData.findMatchingIndexes("8qwerty", "йЦу").toArray(new Long[0]));
+        assertArrayEquals(new Long[]{-1L}, searchData.findIndexes("8qwerty", "йЦу").toArray(new Long[0]));
 
         searchData.writeData(44, "Some asdfg");
         searchData.writeData(44, "Another asdfg");
         searchData.deleteData(44, "Another asdfg");
-        assertArrayEquals(new Long[]{-1L}, searchData.findMatchingIndexes("asdfg").toArray(new Long[0]));
+        assertArrayEquals(new Long[]{-1L}, searchData.findIndexes("asdfg").toArray(new Long[0]));
 
     }
 
@@ -61,6 +65,16 @@ public class SearchDataTest {
         assertArrayEquals(new char[]{'w','o','r','d'}, SearchData.getProcessedLowerCaseCharSeq("w/ oRD"));
         assertArrayEquals(new char[]{'1','w','o','r','d','9'}, SearchData.getProcessedLowerCaseCharSeq("1Word9"));
         assertArrayEquals(new char[]{'3','2','9','0'}, SearchData.getProcessedLowerCaseCharSeq("3290"));
+    }
+
+    @Test
+    public void testGetSeparateKeywords() {
+        assertArrayEquals(new String[0], SearchData.getSeparateKeywords(null));
+        assertArrayEquals(new String[0], SearchData.getSeparateKeywords(""));
+        assertArrayEquals(new String[0], SearchData.getSeparateKeywords("  . "));
+        assertArrayEquals(new String[]{"sad"}, SearchData.getSeparateKeywords("SAd"));
+        assertArrayEquals(new String[]{"sad"}, SearchData.getSeparateKeywords(" SAd "));
+        assertArrayEquals(new String[]{"sad", "asas", "opera"}, SearchData.getSeparateKeywords("  SAd   asas./oPEra"));
     }
 
 }

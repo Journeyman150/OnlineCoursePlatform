@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Course</title>
+</head>
+<body>
+    <h2><div th:text="${course.getTitle()}"></div></h2>
+    <div th:text="${course.getDescription()}"></div>
+    <div th:if="${course.getPrice() > 0}">
+        <div th:text="'Price: ' + ${course.getPrice()}"></div>
+    </div>
+    <div th:if="${course.getPrice() == 0}">
+        <div>Free course</div>
+    </div>
+    <div th:if="${course.isNonPublic() == true}">Non public course</div>
+    <p></p>
+    <div>Lessons list: </div>
+    <div th:each="lesson: ${course.getLessonsList()}">
+        <a th:href="@{/user/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
+        th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
+    </div>
+    <hr>
+    <form th:action="@{/user/course/subscribe}" method="POST">
+        <input name="courseId" type="hidden" th:value="${course.getId()}">
+        <input type="submit" value="Subscribe"/>
+    </form>
+    <div th:text="${transactionResults}"></div>
+</body>
+</html>

@@ -24,10 +24,12 @@ public class User implements UserDetails {
     private String email;
 
     @NotEmpty(message = "Password should not be empty.")
-    //@Min(value = 6, message = "Password should be longer than 6 characters.")
+    @Size(min = 7, max = 15, message = "Password length should be between 7 and 15.")
     private String password;
 
     private Set<Role> authorities;
+
+    private int balance;
 
     public User() {
     }
@@ -113,6 +115,14 @@ public class User implements UserDetails {
 
     public void setAuthorities(Set<Role> authorities) {
         this.authorities = authorities;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
     }
 
     public void setAll(User updatedUser) {
