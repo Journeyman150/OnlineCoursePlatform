@@ -20,6 +20,9 @@
             -webkit-box-orient: vertical;
             white-space: normal;
         }
+        .pagination {
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -38,15 +41,50 @@
         </div>
     </form>
     <div th:text="${noResults}"></div>
-    <th:block th:each="course : ${coursesList}">
+<!--    <th:block th:each="course : ${coursesList}">-->
+<!--        <br>-->
+<!--        <div class="coursePlate">-->
+<!--            <a th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>-->
+<!--            <br>-->
+<!--            <div class="courseDescription" th:text="${course.getDescription()}"></div>-->
+<!--            <i th:text="'Author: '"></i>-->
+<!--        </div>-->
+<!--    </th:block>-->
+
+<!--        <table border="1">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th th:text="Title"></th>-->
+<!--                <th th:text="Description"></th>-->
+<!--                <th th:text="Author"></th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="course, iStat : ${coursesPage.getContent()}"-->
+<!--                th:style="${iStat.odd}? 'font-weight: bold;'"-->
+<!--                th:alt-title="${iStat.even}? 'even' : 'odd'">-->
+<!--                <td th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></td>-->
+<!--                <td th:text="${course.getDescription()}"></td>-->
+<!--                <td th:text="'Author: '"></td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+    <th:block th:each="course : ${coursesPage}" th:if="${coursesPage.totalPages > 0}">
         <br>
         <div class="coursePlate">
-            <a th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
+            <a th:if="${coursesPage.totalPages > 0}" th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
             <br>
-            <div class="courseDescription" th:text="${course.getDescription()}"></div>
-            <i th:text="'Author: '"></i>
+            <div class="courseDescription" th:if="${coursesPage.totalPages > 0}" th:text="${course.getDescription()}"></div>
+            <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
         </div>
     </th:block>
+    <br>
+    <div th:if="${coursesPage.totalPages > 0}" class="pagination"
+         th:each="pageNumber : ${pageNumbers}">
+        <a th:href="@{/user(keyword=${keyword}, size=${coursesPage.size}, page=${pageNumber})}"
+           th:text="${pageNumber}"
+           th:class="${pageNumber==coursesPage.number + 1} ? active"></a>
+    </div>
     <hr>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>

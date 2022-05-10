@@ -12,15 +12,18 @@ import java.util.List;
 public class AccessControlService {
     private IdCheckService idCheckService;
     private CourseUserSubscribedDAO courseUserSubscribedDAO;
+
     @Autowired
     public AccessControlService(IdCheckService idCheckService,
                                 CourseUserSubscribedDAO courseUserSubscribedDAO) {
         this.idCheckService = idCheckService;
         this.courseUserSubscribedDAO = courseUserSubscribedDAO;
     }
+
     public boolean authorHasAccessToCourse(User author, long courseId) {
         return idCheckService.getAuthorIdByCourseId(courseId) == author.getId();
     }
+    //Check user access to course lessons
     public boolean userHasAccessToCourse(long userId, long courseId) {
         List<Long> coursesIdList = courseUserSubscribedDAO.getCoursesIdListByUserId(userId);
         return coursesIdList.contains(courseId);
