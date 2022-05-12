@@ -3,9 +3,8 @@ package com.example.controllers;
 import com.example.domain.Course;
 import com.example.domain.Lesson;
 import com.example.domain.User;
-import com.example.search_engine.CoursesSearchData;
 import com.example.service.CourseService;
-import com.example.service.CourseSubscribingUserService;
+import com.example.service.CourseSubscribeService;
 import com.example.service.LessonService;
 import com.example.service.UserService;
 import com.example.service.access.AccessControlService;
@@ -32,19 +31,19 @@ public class UserController {
     private UserService userService;
     private CourseService courseService;
     private LessonService lessonService;
-    private CourseSubscribingUserService courseSubscribingUserService;
+    private CourseSubscribeService courseSubscribeService;
     private AccessControlService accessControlService;
 
     @Autowired
     public UserController(UserService userService,
                           CourseService courseService,
                           LessonService lessonService,
-                          CourseSubscribingUserService courseSubscribingUserService,
+                          CourseSubscribeService courseSubscribeService,
                           AccessControlService accessControlService) {
         this.userService = userService;
         this.courseService = courseService;
         this.lessonService = lessonService;
-        this.courseSubscribingUserService = courseSubscribingUserService;
+        this.courseSubscribeService = courseSubscribeService;
         this.accessControlService = accessControlService;
     }
 
@@ -82,25 +81,48 @@ public class UserController {
         Map<Long, String> authorMap = new HashMap<>();
         for (int i = 0; i < coursesPage.getContent().size(); i++) {
             long authorId = coursesPage.getContent().get(i).getAuthorId();
-            String authorName = userService.getUserById(authorId).getName() + " " + userService.getUserById(authorId).getSurname();
+            User author = userService.getUserById(authorId);
+            String authorName = author.getName() + " " + author.getSurname();
             authorMap.put(authorId, authorName);
         }
         model.addAttribute("keyword", keyword);
         model.addAttribute("coursesPage", coursesPage);
         model.addAttribute("authorMap", authorMap);
-        if (coursesPage.isEmpty() && keyword != null && !keyword.equals("")&& !keyword.matches("\s+")) {
+        if (coursesPage.isEmpty() && keyword != null && !keyword.matches("\s*")) {
             model.addAttribute("noResults", "The search has not given any results.");
         }
         return "/user/main_page";
     }
+
+    @GetMapping("/courses")
+    public String getCoursesPage(Model model) {
+        User user = userService.getAuthorizedUser();
+        List<Course> coursesList = courseSubscribeService.getCoursesListBySubscribedUserId(user.getId());
+        if (coursesList.isEmpty()) {
+            model.addAttribute("message", "You have not subscribed to any course yet.");
+            return "/user/courses";
+        }
+        Map<Long, String> authorMap = new HashMap<>();
+        for (int i = 0; i < coursesList.size(); i++) {
+            long authorId = coursesList.get(i).getAuthorId();
+            User author = userService.getUserById(authorId);
+            String authorName = author.getName() + " " + author.getSurname();
+            authorMap.put(authorId, authorName);
+        }
+        model.addAttribute("coursesList", coursesList);
+        model.addAttribute("authorMap", authorMap);
+        return "/user/courses";
+    }
+
     @GetMapping("/course/{id}")
     public String getCourse(@PathVariable("id") long courseId,
                             Model model) {
         User user = userService.getAuthorizedUser();
         Course course = courseService.getCourseById(courseId);
         boolean userHasAccessToCourse = accessControlService.userHasAccessToCourse(user.getId(), courseId);
-        if (course == null || (course.isNonPublic() & userHasAccessToCourse)) {
-            return "/error_page";
+        if (course == null || (course.isNonPublic() & !userHasAccessToCourse)) {
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
         model.addAttribute("course", course);
@@ -113,13 +135,13 @@ public class UserController {
         Course course = courseService.getPublicCourseById(courseId);
         User user = userService.getAuthorizedUser();
         if (course == null || accessControlService.userHasAccessToCourse(user.getId(), course.getId())) {
-            return "/error_page";
+            return "/error/error_page";
         }
         User author = userService.getUserById(course.getAuthorId());
         if (user.getBalance() < course.getPrice()) {
             model.addAttribute("transactionResults", "Not enough funds on your balance.");
         } else {
-            courseSubscribingUserService.subscribeUserAndMakePayment(user, author, course);
+            courseSubscribeService.subscribeUserAndMakePayment(user, author, course);
         }
         boolean userHasAccessToCourse = accessControlService.userHasAccessToCourse(user.getId(), courseId);
         model.addAttribute("course", course);
@@ -133,8 +155,8 @@ public class UserController {
         User user = userService.getAuthorizedUser();
         if (!accessControlService.userHasAccessToCourse(user.getId(), courseId)) {
             model.addAttribute("errorMessage",
-                    "You need subscribe to the course before watching the lessons");
-            return "error_page";
+                    "You need subscribe to the course before watching the lessons.");
+            return "/error/error_page";
         }
         Lesson lesson = lessonService.getLessonByCourseIdAndLessonNum(courseId, num);
         model.addAttribute("lesson", lesson);

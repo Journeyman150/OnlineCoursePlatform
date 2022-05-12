@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public class CourseService {
     }
 
     public Page<Course> findPaginated(String keyword, Pageable pageable) {
-        if (keyword == null || keyword.equals("") || keyword.matches("\s+")) {
+        if (keyword == null || keyword.matches("\s*")) {
             return new PageImpl<Course>(Collections.emptyList(), PageRequest.of(1, 1), 0);
         }
         int pageSize = pageable.getPageSize();
@@ -66,26 +67,33 @@ public class CourseService {
     public List<Course> getNonPublicListByAuthorId(long authorId) {
         return courseDAO.getNonPublicCoursesByAuthorId(authorId);
     }
+
     @Nullable
     public Course getCourseById(long courseId) {
         return courseDAO.getCourseById(courseId);
     }
+
     @Nullable
     public Course getNonPublicCourseById(long courseId) {
         return courseDAO.getNonPublicCourseById(courseId);
     }
+
     @Nullable
     public Course getPublicCourseById(long courseId) {
         return courseDAO.getPublicCourseById(courseId);
     }
 
+    @Transactional
     public void save(Course course, User author) {
         course.setAuthorId(author.getId());
-        courseDAO.save(course);
+        long courseId = courseDAO.save(course);
+        coursesSearchData.writeData(courseId, course.getTitle(), course.getDescription());
     }
 
+    @Transactional
     public void update(Course course, long courseId) {
         courseDAO.update(course, courseId);
+        coursesSearchData.writeData(courseId, course.getTitle(), course.getDescription());
     }
 
     public List<IndexedData> getPublicCoursesSearchDataList() {

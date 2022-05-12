@@ -40,7 +40,7 @@ public class SearchConfig {
 
     @PostConstruct
     protected void init() {
-        //loadUsersSearchData();
+        loadUsersSearchData();
         loadPublicCoursesSearchData();
         loadLessonsSearchData();
     }

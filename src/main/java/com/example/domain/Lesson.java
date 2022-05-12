@@ -6,8 +6,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class Lesson {
-    private Long id;
-    private Long courseId;
+    private long id;
+    private long courseId;
     @NotBlank(message = "Title should not be empty.")
     @Size(min = 2, max = 30, message = "Title should be between 2 and 30 characters.")
     private String title;
@@ -25,19 +25,19 @@ public class Lesson {
         this.description = description;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Long getCourseId() {
+    public long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(Long courseId) {
+    public void setCourseId(long courseId) {
         this.courseId = courseId;
     }
 

@@ -56,7 +56,8 @@ public class AuthorController {
     public String getCourse(@PathVariable("id") long courseId, Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         Course course = courseService.getCourseById(courseId);
         course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
@@ -85,7 +86,8 @@ public class AuthorController {
                                     Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         model.addAttribute("course", courseService.getCourseById(courseId));
         return "/author/course_edit";
@@ -93,10 +95,12 @@ public class AuthorController {
 
     @PatchMapping("/course/{id}")
     public String updateCourse(@PathVariable("id") long courseId,
-                               @ModelAttribute("course") @Valid Course course, BindingResult bindingResult) {
+                               @ModelAttribute("course") @Valid Course course, BindingResult bindingResult,
+                               Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         if (bindingResult.hasErrors()) {
             return "/author/course_edit";
@@ -111,12 +115,14 @@ public class AuthorController {
                             Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         Lesson lesson = lessonService.getLessonByCourseIdAndLessonNum(courseId, num);
         model.addAttribute("lesson", lesson);
         return "/author/lesson";
     }
+
     @GetMapping("/course/{courseId}/lesson/{num}/video")
     public ResponseEntity<Resource> getLessonVideo(@PathVariable long courseId,
                                                    @PathVariable int num) throws IOException {
@@ -135,7 +141,8 @@ public class AuthorController {
     public String getNewLesson(@PathVariable long courseId, Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         Lesson lesson = new Lesson();
         lesson.setCourseId(courseId);
@@ -150,7 +157,8 @@ public class AuthorController {
                                Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         if (bindingResult.hasErrors()) {
             return "/author/lessons_new";
@@ -169,7 +177,8 @@ public class AuthorController {
                                 Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         Lesson lesson = lessonService.getLessonByCourseIdAndLessonNum(courseId, num);
         model.addAttribute("lesson", lesson);
@@ -184,7 +193,8 @@ public class AuthorController {
                                Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
-            return "/error_page";
+            model.addAttribute("errorMessage", "Access denied.");
+            return "/error/error_page";
         }
         if (bindingResult.hasErrors()) {
             return "/author/lesson_edit";

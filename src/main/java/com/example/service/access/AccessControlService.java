@@ -1,8 +1,7 @@
 package com.example.service.access;
 
-import com.example.dao.CourseUserSubscribedDAO;
+import com.example.dao.CourseSubscribeDAO;
 import com.example.domain.User;
-import com.example.service.CourseSubscribingUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +10,13 @@ import java.util.List;
 @Service
 public class AccessControlService {
     private IdCheckService idCheckService;
-    private CourseUserSubscribedDAO courseUserSubscribedDAO;
+    private CourseSubscribeDAO courseSubscribeDAO;
 
     @Autowired
     public AccessControlService(IdCheckService idCheckService,
-                                CourseUserSubscribedDAO courseUserSubscribedDAO) {
+                                CourseSubscribeDAO courseSubscribeDAO) {
         this.idCheckService = idCheckService;
-        this.courseUserSubscribedDAO = courseUserSubscribedDAO;
+        this.courseSubscribeDAO = courseSubscribeDAO;
     }
 
     public boolean authorHasAccessToCourse(User author, long courseId) {
@@ -25,7 +24,7 @@ public class AccessControlService {
     }
     //Check user access to course lessons
     public boolean userHasAccessToCourse(long userId, long courseId) {
-        List<Long> coursesIdList = courseUserSubscribedDAO.getCoursesIdListByUserId(userId);
+        List<Long> coursesIdList = courseSubscribeDAO.getCoursesIdListByUserId(userId);
         return coursesIdList.contains(courseId);
     }
 }

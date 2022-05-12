@@ -4,6 +4,7 @@ import com.example.domain.Course;
 import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -62,13 +63,16 @@ public class CourseDAO {
                 .stream().findAny().orElse(null);
     }
 
-    public void save(Course course) {
-        jdbcTemplate.update("INSERT INTO courses(title, description, author_id, price, non_public) VALUES(?, ?, ?, ?, ?)",
-                course.getTitle(),
-                course.getDescription(),
-                course.getAuthorId(),
-                course.getPrice(),
-                course.isNonPublic());
+    public long save(Course course) {
+        return jdbcTemplate.queryForObject("INSERT INTO courses(title, description, author_id, price, non_public) " +
+                                            "VALUES(?, ?, ?, ?, ?) " +
+                                            "RETURNING course_id",
+                                        Long.class,
+                                        course.getTitle(),
+                                        course.getDescription(),
+                                        course.getAuthorId(),
+                                        course.getPrice(),
+                                        course.isNonPublic());
     }
 
     public void update(Course updatedCourse, long courseId) {

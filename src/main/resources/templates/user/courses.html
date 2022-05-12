@@ -4,31 +4,35 @@
     <meta charset="UTF-8">
     <title>Courses</title>
     <style>
-        .description {
-            width: 400px;
-            overflow: hidden;
-            white-space: nowrap;
+        .coursePlate {
+            padding: 0.5em;
+            border: 1px solid #CCC;
+            border-radius: 1em;
+            width: 300px;
+            max-height: 150px;
+        }
+        .courseDescription {
             text-overflow:ellipsis;
+            overflow:hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+            white-space: normal;
         }
     </style>
 </head>
 <body>
-    <h2><div>Public courses:</div></h2>
-    <div th:each="course : ${publicCoursesList}">
+    <h2>Courses</h2>
+    <a href="../user">Go back</a>
+    <th:block th:each="course : ${coursesList}" th:if="${coursesList.size() > 0}">
         <br>
-    <a th:href="@{/user/course/{id}(id=${course.getId()})}"
-       th:text="${course.getTitle()}"></a>
-        <br>
-      <div class="description" th:text="${course.getDescription()}"></div>
-    </div>
-    <hr>
-    <h2><div>Non public courses:</div></h2>
-    <div th:each="course : ${nonPublicCoursesList}">
-        <br>
-        <a th:href="@{/user/course/{id}(id=${course.getId()})}"
-           th:text="${course.getTitle()}"></a>
-        <div class="description" th:text="${course.getDescription()}"></div>
-    </div>
-    <hr>
+        <div class="coursePlate">
+            <a th:if="${coursesList.size() > 0}" th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
+            <br>
+            <div class="courseDescription" th:if="${coursesList.size() > 0}" th:text="${course.getDescription()}"></div>
+            <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
+        </div>
+    </th:block>
+    <div th:text="${message}"></div>
 </body>
 </html>

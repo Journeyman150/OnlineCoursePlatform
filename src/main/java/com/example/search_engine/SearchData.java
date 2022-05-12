@@ -12,6 +12,9 @@ public class SearchData implements Searcher {
 
     @Override
     public void writeData(long idx, String textField) {
+        if(textField == null) {
+            return;
+        }
         char[] textCharSeq = textField.toCharArray();
         Struct struct = mainStruct;
         for (int i = 0; i < textCharSeq.length; i++) {
