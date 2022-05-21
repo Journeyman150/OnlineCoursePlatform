@@ -26,7 +26,7 @@ public class RegistrationController {
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("user", new User());
-        return "/registration";
+        return "registration";
     }
     @PostMapping("/registration")
     public String createUser(@ModelAttribute("user") @Valid User user,
@@ -35,18 +35,18 @@ public class RegistrationController {
                           Model model) {
         user.setEmail(user.getEmail().toLowerCase());
         if (bindingResult.hasErrors()) {
-            return "/registration";
+            return "registration";
         }
         if (userService.isUserAlreadyExist(user.getEmail())) {
             model.addAttribute("userAlreadyExistMessage",
                     "Пользователь с таким адресом электронной почты уже существует.");
-            return "/registration";
+            return "registration";
         }
         if (!user.getPassword().equals(confirmPassword)) {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
-            return "/registration";
+            return "registration";
         }
         userService.addUser(user);
-        return "/login";
+        return "login";
     }
 }

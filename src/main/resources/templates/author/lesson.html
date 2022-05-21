@@ -5,9 +5,12 @@
     <title>lesson</title>
 </head>
 <body>
-    <h2><div th:text="${'Lesson ' + lesson.getNum()}"></div></h2>
+    <h2><div th:text="${'Lesson ' + lesson.getNum() + ' of ' + course.getTitle() + ' course'}"></div></h2>
+    <a th:href="@{/author/course/{courseId}(courseId=${lesson.getCourseId()})}">Go back</a>
+    <br><br>
     <div th:text="'Title: ' + ${lesson.getTitle()}"></div>
     <div th:text="'Description: ' + ${lesson.getDescription()}">Description:</div>
+    <br>
     <div>Watch lesson:</div>
     <video width="640" height="480" controls th:src="@{/author/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
 

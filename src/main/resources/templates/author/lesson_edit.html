@@ -23,7 +23,7 @@
     <input type="text" th:field="*{num}" id="number" placeholder="Lesson number">
     <div style="color:red" th:text="${lessonNumError}">Error</div>
     <br>
-    <label for="file">Upload video:</label>
+    <label for="file">Upload video (Max size 200MB, .h264):</label>
     <input type="file" name="videoFile" id="file" accept="video/*">
     <br>
     <input type="submit" value="Update lesson">

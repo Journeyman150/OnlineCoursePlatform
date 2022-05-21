@@ -24,44 +24,24 @@
             margin-top: 1em;
         }
 
-        label {
-            /* Определим размер и выравнивание */
-            display: inline-block;
-            width: 100px;
-            text-align: right;
-        }
-
-        input,
-        textarea {
-            /* Убедимся, что все поля имеют одинаковые настройки шрифта
-               По умолчанию в textarea используется моноширинный шрифт */
-            font: 1em sans-serif;
-
+        input {
             /* Определим размер полей */
             width: 200px;
             box-sizing: border-box;
 
             /* Стилизуем границы полей */
             border: 1px solid #999;
+            margin-inline: 25%;
+        }
+
+        h4, div {
+            margin-inline: 25%;
         }
 
         input:focus,
         textarea:focus {
             /* Дополнительная подсветка для элементов в фокусе */
             border-color: #000;
-        }
-
-        textarea {
-            /* Выравним многострочные текстовые поля с их текстами-подсказками */
-            vertical-align: top;
-
-            /* Предоставим пространство для ввода текста */
-            height: 5em;
-        }
-
-        .button {
-            /* Выравним кнопки с их текстами-подсказками */
-            padding-left: 90px; /* same size as the label elements */
         }
 
         button {
@@ -76,6 +56,7 @@
 </head>
 <body>
 <form th:method="POST" th:action="@{/registration}" th:object="${user}">
+    <h4>Enter your details:</h4>
     <label for="name"> </label>
     <input type="text" th:field="*{name}" id="name" placeholder="Name">
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>

@@ -60,6 +60,10 @@ public class CourseService {
         return coursesPage;
     }
 
+    public List<Course> getAllCourses() {
+        return courseDAO.getAllCourses();
+    }
+
     public List<Course> getPublicListByAuthorId(long authorId) {
         return courseDAO.getPublicCoursesByAuthorId(authorId);
     }
@@ -84,16 +88,20 @@ public class CourseService {
     }
 
     @Transactional
-    public void save(Course course, User author) {
-        course.setAuthorId(author.getId());
+    public long save(Course course) {
         long courseId = courseDAO.save(course);
         coursesSearchData.writeData(courseId, course.getTitle(), course.getDescription());
+        return courseId;
     }
 
     @Transactional
     public void update(Course course, long courseId) {
         courseDAO.update(course, courseId);
         coursesSearchData.writeData(courseId, course.getTitle(), course.getDescription());
+    }
+
+    public void delete(long courseId) {
+        courseDAO.delete(courseId);
     }
 
     public List<IndexedData> getPublicCoursesSearchDataList() {

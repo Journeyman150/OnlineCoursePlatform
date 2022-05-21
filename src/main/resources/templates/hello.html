@@ -13,15 +13,18 @@
 
     <div sec:authorize="isAuthenticated()">
         This content is only shown to authenticated users.
+        <a href="/user">Let's learn!</a>
     </div>
     <div sec:authorize="hasRole('ROLE_USER')">
         This content is only shown to users.
     </div>
     <div sec:authorize="hasRole('ROLE_AUTHOR')">
         This content is only shown to authors.
+        <a href="/author">Let's Teach!</a>
     </div>
     <div sec:authorize="hasRole('ROLE_ADMIN')">
         This content is only shown to administrators.
+        <a href="/admin">Let's Administer!</a>
     </div>
 </body>
 </html>

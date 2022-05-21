@@ -30,10 +30,10 @@ public class AdminController {
                                Model model) {
         if (keyword != null && !keyword.equals("")) {
             model.addAttribute("usersList", userService.getFilteredUsersList(keyword));
-            return "/admin/users_list";
+            return "admin/users_list";
         } else {
             model.addAttribute("usersList", userService.getUsersList());
-            return "/admin/users_list";
+            return "admin/users_list";
         }
     }
 
@@ -47,14 +47,14 @@ public class AdminController {
     public String getUserById(@PathVariable("id") long id,
                               Model model) {
         model.addAttribute("user", userDAO.getUserById(id));
-        return "/admin/user";
+        return "admin/user";
     }
 
     @GetMapping("/user/{id}/edit")
     public String getUserEditEditForm(@PathVariable("id") long id,
                            Model model) {
         model.addAttribute("user", userDAO.getUserById(id));
-        return "/admin/user_edit";
+        return "admin/user_edit";
     }
 
     @PatchMapping("/user/{id}/edit")
@@ -62,7 +62,7 @@ public class AdminController {
                            @ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         user.setPassword(userDAO.getUserById(id).getPassword());
         if (bindingResult.hasFieldErrors("name") | bindingResult.hasFieldErrors("surname") | bindingResult.hasFieldErrors("email")) {
-            return "/admin/user_edit";
+            return "admin/user_edit";
         }
         userService.update(id, user);
         return "redirect:/admin/user/" + id;
@@ -77,12 +77,12 @@ public class AdminController {
         if (newPassword == null || newPassword.length() <= 6) {
             model.addAttribute("newPasswordErrorMessage", "Пароль должен быть длиньше 6 символов.");
             model.addAttribute("user", userService.getUserById(id));
-            return "/admin/user_edit";
+            return "admin/user_edit";
         }
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
             model.addAttribute("user", userService.getUserById(id));
-            return "/admin/user_edit";
+            return "admin/user_edit";
         }
         userService.changePassword(id, newPassword);
         return "redirect:/admin/user/" + id;

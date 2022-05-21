@@ -19,6 +19,9 @@ public class CourseDAO {
         this.jdbcTemplate = jdbcTemplate;
         this.courseMapper = courseMapper;
     }
+    public List<Course> getAllCourses() {
+        return jdbcTemplate.query("SELECT * FROM courses", courseMapper);
+    }
 
     public List<Course> getAllPublicCourses() {
         return jdbcTemplate.query("SELECT * FROM courses WHERE non_public=false", courseMapper);
@@ -82,6 +85,10 @@ public class CourseDAO {
                 updatedCourse.getPrice(),
                 updatedCourse.isNonPublic(),
                 courseId);
+    }
+
+    public void delete(long courseId) {
+        jdbcTemplate.update("DELETE FROM courses WHERE course_id=?", courseId);
     }
 
     public List<IndexedData> getPublicCoursesSearchDataList() {

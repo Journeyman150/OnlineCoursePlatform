@@ -5,7 +5,9 @@
     <title>Course</title>
 </head>
 <body>
-    <div th:text="'Title: ' + ${course.getTitle()}"></div>
+    <h2><div th:text="${course.getTitle()}"></div></h2>
+    <a href="/author/courses">Go back</a>
+    <br><br>
     <div th:text="'Description: ' + ${course.getDescription()}"></div>
     <div th:text="'Price: ' + ${course.getPrice()}"></div>
     <div th:if="${course.isNonPublic() == true}">Non public</div>
@@ -21,6 +23,13 @@
     </div>
     <form th:action="@{/author/course/{courseId}/lessons/new(courseId=${course.getId()})}" th:method="GET">
         <input type="submit" value="New lesson">
+    </form>
+    <hr>
+    <form th:method="POST" th:action="@{/author/course/{courseId}/invite(courseId=${course.getId()})}">
+        <div>Invite user to a course:</div>
+        <input type="text" name="userEmail" placeholder="User email">
+        <input type="submit" value="Invite user">
+        <div th:text="${message}"></div>
     </form>
 </body>
 </html>

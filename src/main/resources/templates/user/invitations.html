@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Invitations</title>
+    <style>
+        .coursePlate {
+            padding: 0.5em;
+            border: 1px solid #CCC;
+            border-radius: 1em;
+            width: 200px;
+            max-height: 100px;
+        }
+        .courseDescription {
+            text-overflow:ellipsis;
+            overflow:hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+<h2>Invitations</h2>
+<br>
+<a href="/user">Go back</a>
+<div th:text="${message}"></div>
+<br>
+<th:block th:each="course : ${coursesList}">
+    <br>
+    <div class="coursePlate">
+        <a th:if="${subscribedCoursesIdSet.contains(course.getId())}"
+           th:text="${course.getTitle()}" th:href="@{/user/course/{id}(id=${course.getId()})}"></a>
+        <a th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
+           th:text="${course.getTitle()}"></a>
+        <br>
+        <div class="courseDescription" th:text="${course.getDescription()}"></div>
+        <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
+        <form th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
+              th:method="POST" th:action="@{/user/accept_invitation}">
+            <input type="hidden" name="courseId" th:value="${course.getId()}">
+            <input type="submit" value="Accept invitation">
+        </form>
+    </div>
+</th:block>
+</body>
+</html>

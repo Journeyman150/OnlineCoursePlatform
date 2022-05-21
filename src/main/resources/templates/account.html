@@ -18,26 +18,28 @@
     </style>
 </head>
 <body>
-    <div th:text="${user.getEmail()}">Ваша почта:</div>
-    <div th:text="${user.getName()}">Имя:</div>
-    <div th:text="${user.getSurname()}">Фамилия:</div>
+    <h2>My account</h2>
+    <div th:text="'Email: ' + ${user.getEmail()}"></div>
+    <div th:text="'Name: ' + ${user.getName()}"></div>
+    <div th:text="'Surname: ' + ${user.getSurname()}"></div>
+    <div th:text="'Balance: ' + ${user.getBalance()}"></div>
     <br>
-    <a href="#passwordForm">Сменить пароль</a>
+    <a href="#passwordForm">Change password</a>
     <div id="passwordForm">
         <form th:method="PATCH" th:action="@{/account/change_password}">
-            <label for="currentPassword">Текущий пароль:</label>
+            <label for="currentPassword">Current password:</label>
             <input type="password" name="currentPassword" id="currentPassword"> <br>
             <div style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
 
-            <label for="newPassword">Новый пароль:</label>
+            <label for="newPassword">New password:</label>
             <input type="password" name="newPassword" id="newPassword"> <br>
             <div style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
 
-            <label for="confirmPassword">Подтвердите пароль:</label>
+            <label for="confirmPassword">Confirm password:</label>
             <input type="password" name="confirmPassword" id="confirmPassword"> <br>
             <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
 
-            <input type="submit" value="Подтвердить">
+            <input type="submit" value="Submit">
         </form>
     </div>
 

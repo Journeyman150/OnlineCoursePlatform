@@ -39,12 +39,12 @@ public class UserDAO {
     }
 
     public void addUser(User user) {
-        jdbcTemplate.update("INSERT INTO Usr(name, surname, email, password) VALUES(?, ?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO usr(name, surname, email, password) VALUES(?, ?, ?, ?)",
                 user.getName(), user.getSurname(), user.getEmail(), user.getPassword());
     }
 
     public void updateUser(long userId, User updatedUser) {
-        jdbcTemplate.update("UPDATE Usr SET name=?, surname=?, email=? WHERE userId=?",
+        jdbcTemplate.update("UPDATE usr SET name=?, surname=?, email=? WHERE usr_id=?",
                 updatedUser.getName(),
                 updatedUser.getSurname(),
                 updatedUser.getEmail(),
@@ -68,8 +68,8 @@ public class UserDAO {
     }
 
     public List<IndexedData> getSearchDataList() {
-        return jdbcTemplate.query("SELECT usr_id, name, surname FROM usr",
+        return jdbcTemplate.query("SELECT usr_id, name, surname, email FROM usr",
                 (rs, rowNum) -> new IndexedData(rs.getLong("usr_id"),
-                        rs.getString("name"), rs.getString("surname")));
+                        rs.getString("name"), rs.getString("surname"), rs.getString("email")));
     }
 }

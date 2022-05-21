@@ -20,7 +20,7 @@
         <br>
         <input type="submit" value="Изменить">
     </form>
-
+    <br>
     <form th:method="PATCH" th:action="@{/admin/user/{id}/change_password(id=${user.getId()})}" th:object="${user}">
         <label for="newPassword">Новый пароль:</label>
         <input type="password" name="newPassword" id="newPassword"> <br>
@@ -32,7 +32,7 @@
 
         <input type="submit" value="Сменить пароль">
     </form>
-
+    <br>
     <form th:method="PATCH" th:action="@{/admin/user/{id}/change_role(id=${user.getId()})}" th:object="${user}">
         <p><select name="role" required="required">
             <option value="">Выберите роль</option>

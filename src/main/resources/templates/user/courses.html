@@ -22,8 +22,8 @@
     </style>
 </head>
 <body>
-    <h2>Courses</h2>
-    <a href="../user">Go back</a>
+    <h2>Courses you are subscribed to</h2>
+    <br><a href="../user">Go back</a><br>
     <th:block th:each="course : ${coursesList}" th:if="${coursesList.size() > 0}">
         <br>
         <div class="coursePlate">

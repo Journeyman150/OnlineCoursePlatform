@@ -43,14 +43,14 @@
             transform: translate(-50%, 0);
         }
         .text {
-            text-align:  center;
+            text-align: center;
         }
 
     </style>
 </head>
 <body>
 <form th:action="@{/login}" method="post">
-    <div class="text">Welcome! Please log in.</div>
+    <div class="text"><h4>Welcome! Please log in:</h4></div>
     <div class="text" style="color: red" th:if="${param.logout}">
         You have been logged out.
     </div>

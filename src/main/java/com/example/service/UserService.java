@@ -5,6 +5,7 @@ import com.example.domain.Course;
 import com.example.domain.Role;
 import com.example.domain.User;
 import com.example.search_engine.IndexedData;
+import com.example.search_engine.UsersSearchData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,11 +26,15 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private List<User> usersList;
     private List<User> filteredUsersList;
+    private UsersSearchData usersSearchData;
 
     @Autowired
-    public UserService(UserDAO userDAO, PasswordEncoder passwordEncoder) {
+    public UserService(UserDAO userDAO,
+                       PasswordEncoder passwordEncoder,
+                       UsersSearchData usersSearchData) {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
+        this.usersSearchData = usersSearchData;
         usersList = userDAO.getUsersList();
         filteredUsersList = new ArrayList<>();
     }
@@ -37,6 +42,13 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userDAO.getUserByEmail(email);
+    }
+    @Nullable
+    public Long findUserId(String email) {
+        User user = userDAO.getUserByEmail(email);
+        if (user == null) {
+            return null;
+        } else return user.getId();
     }
 
     public User getUserById(long userId) {
@@ -106,5 +118,9 @@ public class UserService implements UserDetailsService {
     }
     public List<IndexedData> getSearchDataList() {
         return userDAO.getSearchDataList();
+    }
+
+    public void updateUserBalance(long userId, int balance) {
+        userDAO.updateUserBalance(userId, balance);
     }
 }

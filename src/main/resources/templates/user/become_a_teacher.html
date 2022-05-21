@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teach</title>
+</head>
+<body>
+    <h2>Become a teacher for price: 1000</h2>
+    <div>*After this operation, you will be logged out to re-login.</div>
+  <form th:method="POST" th:action="@{/user/become_a_teacher}">
+      <input type="submit" value="Become a teacher"/>
+  </form>
+    <div style="color:red" th:text="${transactionResults}"></div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.example.controllers;
 
+import com.example.dao.CourseInvitationDAO;
 import com.example.domain.Course;
 import com.example.domain.Lesson;
 import com.example.domain.User;
@@ -7,6 +8,7 @@ import com.example.service.CourseService;
 import com.example.service.LessonService;
 import com.example.service.UserService;
 import com.example.service.access.AccessControlService;
+import com.example.service.access.CourseInvitationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/author")
@@ -29,19 +32,24 @@ public class AuthorController {
     private final CourseService courseService;
     private final LessonService lessonService;
     private final AccessControlService accessControlService;
+    private final CourseInvitationService courseInvitationService;
 
     @Autowired
-    public AuthorController(UserService userService, CourseService courseService,
-                            LessonService lessonService, AccessControlService accessControlService) {
+    public AuthorController(UserService userService,
+                            CourseService courseService,
+                            LessonService lessonService,
+                            AccessControlService accessControlService,
+                            CourseInvitationService courseInvitationService) {
         this.userService = userService;
         this.courseService = courseService;
         this.lessonService = lessonService;
         this.accessControlService = accessControlService;
+        this.courseInvitationService = courseInvitationService;
     }
 
     @GetMapping()
     public String getAuthorMainPage() {
-        return "/author/main_page";
+        return "author/main_page";
     }
 
     @GetMapping("/courses")
@@ -49,35 +57,55 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         model.addAttribute("publicCoursesList", courseService.getPublicListByAuthorId(author.getId()));
         model.addAttribute("nonPublicCoursesList", courseService.getNonPublicListByAuthorId(author.getId()));
-        return "/author/courses";
+        return "author/courses";
     }
 
-    @GetMapping("/course/{id}")
-    public String getCourse(@PathVariable("id") long courseId, Model model) {
+    @GetMapping("/course/{courseId}")
+    public String getCourse(@PathVariable("courseId") long courseId, Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         Course course = courseService.getCourseById(courseId);
         course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
         model.addAttribute("course", course);
-        return "/author/course";
+        return "author/course";
+    }
+
+    @PostMapping("/course/{courseId}/invite")
+    public String inviteUser(@PathVariable("courseId") long courseId,
+                             @RequestParam("userEmail") String userEmail,
+                             Model model) {
+        User author = userService.getAuthorizedUser();
+        if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
+            model.addAttribute("errorMessage", "Access denied.");
+            return "error/error_page";
+        }
+        Long userId = userService.findUserId(userEmail);
+        if (userId == null) {
+            model.addAttribute("message", "User with entered email not found.");
+            return getCourse(courseId, model);
+        }
+        courseInvitationService.addInvitation(courseId, userId);
+        model.addAttribute("message", "User with email " + userEmail + " invited for this course.");
+        return getCourse(courseId, model);
     }
 
     @GetMapping("/courses/new")
     public String getCreatingCoursePage(Model model) {
         model.addAttribute("course", new Course());
-        return "/author/courses_new";
+        return "author/courses_new";
     }
 
     @PostMapping("/courses/new")
     public String createCourse(@ModelAttribute("course") @Valid Course course, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "/author/courses_new";
+            return "author/courses_new";
         }
         User author = userService.getAuthorizedUser();
-        courseService.save(course, author);
+        course.setAuthorId(author.getId());
+        courseService.save(course);
         return "redirect:/author/courses";
     }
 
@@ -87,10 +115,10 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         model.addAttribute("course", courseService.getCourseById(courseId));
-        return "/author/course_edit";
+        return "author/course_edit";
     }
 
     @PatchMapping("/course/{id}")
@@ -100,10 +128,10 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         if (bindingResult.hasErrors()) {
-            return "/author/course_edit";
+            return "author/course_edit";
         }
         courseService.update(course, courseId);
         return "redirect:/author/courses";
@@ -116,11 +144,13 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         Lesson lesson = lessonService.getLessonByCourseIdAndLessonNum(courseId, num);
+        Course course = courseService.getCourseById(courseId);
         model.addAttribute("lesson", lesson);
-        return "/author/lesson";
+        model.addAttribute("course", course);
+        return "author/lesson";
     }
 
     @GetMapping("/course/{courseId}/lesson/{num}/video")
@@ -142,12 +172,12 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         Lesson lesson = new Lesson();
         lesson.setCourseId(courseId);
         model.addAttribute("lesson", lesson);
-        return "/author/lessons_new";
+        return "author/lessons_new";
     }
 
     @PostMapping("/course/{courseId}/lessons/new")
@@ -158,14 +188,14 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         if (bindingResult.hasErrors()) {
-            return "/author/lessons_new";
+            return "author/lessons_new";
         } else if (lessonService.isLessonNumExistInCourse(lesson.getNum(), courseId)) {
             model.addAttribute("lessonNumError",
                     "Lesson with the given number already exists in this course.");
-            return "/author/lessons_new";
+            return "author/lessons_new";
         }
         lessonService.save(lesson, courseId, videoFile);
         return "redirect:/author/course/" + courseId;
@@ -178,11 +208,11 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         Lesson lesson = lessonService.getLessonByCourseIdAndLessonNum(courseId, num);
         model.addAttribute("lesson", lesson);
-        return "/author/lesson_edit";
+        return "author/lesson_edit";
     }
 
     @PatchMapping("/course/{courseId}/lesson/{num}")
@@ -194,14 +224,14 @@ public class AuthorController {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
             model.addAttribute("errorMessage", "Access denied.");
-            return "/error/error_page";
+            return "error/error_page";
         }
         if (bindingResult.hasErrors()) {
-            return "/author/lesson_edit";
+            return "author/lesson_edit";
         } else if (lesson.getNum() != num && lessonService.isLessonNumExistInCourse(lesson.getNum(), courseId)) {
             model.addAttribute("lessonNumError",
                     "Lesson with the given number already exists in this course.");
-            return "/author/lesson_edit";
+            return "author/lesson_edit";
         }
         lessonService.update(lesson, courseId, num, videoFile);
         return "redirect:/author/course/" + courseId;

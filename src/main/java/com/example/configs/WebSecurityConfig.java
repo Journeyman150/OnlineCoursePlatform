@@ -1,15 +1,19 @@
 package com.example.configs;
 
 import com.example.domain.Role;
+import com.example.security.HeaderUsernamePasswordAuthenticationFilter;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,13 +27,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeRequests()
                     .mvcMatchers("/", "/home", "/registration").permitAll()
                     .mvcMatchers("/account", "/notifications").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
                     .mvcMatchers("/user/**").hasAnyRole(Role.USER.name(), Role.AUTHOR.name())
                     .mvcMatchers("/author/**").hasRole(Role.AUTHOR.name())
-                    .mvcMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                    .mvcMatchers("/admin/**", "/api/**").hasRole(Role.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()

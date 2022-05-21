@@ -6,6 +6,8 @@
 </head>
 <body>
     <h2><div th:text="${course.getTitle()}"></div></h2>
+    <a href="/user/courses">Go back</a>
+    <br><br>
     <div th:text="${course.getDescription()}"></div>
     <div th:if="${course.getPrice() > 0 && !userHasAccessToCourse}">
         <div th:text="'Price: ' + ${course.getPrice()}"></div>
@@ -20,6 +22,7 @@
         <a th:href="@{/user/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
         th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
     </div>
+    <div style="color:red" th:text="${errorMessage}"></div>
     <hr>
     <form th:if="${!userHasAccessToCourse}" th:action="@{/user/course/subscribe}" method="POST">
         <input name="courseId" type="hidden" th:value="${course.getId()}">

@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <title>Main page</title>
     <style>
+        .rows {
+            width: 40%;
+            display: flex;
+            flex-wrap: wrap;
+            row-gap: 10px;
+            column-gap: 10px;
+        }
         .coursePlate {
             padding: 0.5em;
             border: 1px solid #CCC;
@@ -28,11 +35,13 @@
 <body>
     <h2>Learning</h2>
     <a href="user/courses">My learning</a>&emsp;
-    <a href="user/statistic">Statistics</a>&emsp;
-    <a href="../account">Account</a>&emsp;
-    <a href="../notifications">Notifications</a>&emsp;
+<!--    <a href="user/statistic">Statistics</a>&emsp;-->
+    <a href="../account">My Account</a>&emsp;
+    <a href="user/invitations">Invitations</a>&emsp;
+    <a sec:authorize="hasRole('ROLE_USER')" href="user/become_a_teacher">Become a teacher</a>
     <a sec:authorize="hasRole('ROLE_AUTHOR')" href="../author">Teaching</a>
     <hr>
+    <div style="color:rgba(1,49,169,0.6)">Enter "course" to find most of them:</div>
     <form th:action="@{/user}" th:method="GET">
         <div>
             <label for="search">Find courses:</label>
@@ -69,6 +78,8 @@
 <!--            </tr>-->
 <!--            </tbody>-->
 <!--        </table>-->
+    <br>
+    <div class="rows">
     <th:block th:each="course : ${coursesPage}" th:if="${coursesPage.totalPages > 0}">
         <br>
         <div class="coursePlate">
@@ -78,6 +89,7 @@
             <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
         </div>
     </th:block>
+    </div>
     <br>
     <div th:if="${coursesPage.totalPages > 0}" class="pagination"
          th:each="pageNumber : ${pageNumbers}">
