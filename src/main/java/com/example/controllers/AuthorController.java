@@ -5,6 +5,7 @@ import com.example.domain.Course;
 import com.example.domain.Lesson;
 import com.example.domain.User;
 import com.example.service.CourseService;
+import com.example.service.CourseSubscribeService;
 import com.example.service.LessonService;
 import com.example.service.UserService;
 import com.example.service.access.AccessControlService;
@@ -33,22 +34,27 @@ public class AuthorController {
     private final LessonService lessonService;
     private final AccessControlService accessControlService;
     private final CourseInvitationService courseInvitationService;
+    private final CourseSubscribeService courseSubscribeService;
 
     @Autowired
     public AuthorController(UserService userService,
                             CourseService courseService,
                             LessonService lessonService,
                             AccessControlService accessControlService,
-                            CourseInvitationService courseInvitationService) {
+                            CourseInvitationService courseInvitationService,
+                            CourseSubscribeService courseSubscribeService) {
         this.userService = userService;
         this.courseService = courseService;
         this.lessonService = lessonService;
         this.accessControlService = accessControlService;
         this.courseInvitationService = courseInvitationService;
+        this.courseSubscribeService = courseSubscribeService;
     }
 
     @GetMapping()
-    public String getAuthorMainPage() {
+    public String getAuthorMainPage(Model model) {
+        int balance = userService.getUserById(userService.getAuthorizedUser().getId()).getBalance();
+        model.addAttribute("balance", balance);
         return "author/main_page";
     }
 
@@ -70,6 +76,7 @@ public class AuthorController {
         Course course = courseService.getCourseById(courseId);
         course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
         model.addAttribute("course", course);
+        model.addAttribute("subscribersNum", courseSubscribeService.getSubscribedUsersNumberByCourseId(courseId));
         return "author/course";
     }
 
@@ -147,6 +154,10 @@ public class AuthorController {
             return "error/error_page";
         }
         Lesson lesson = lessonService.getLessonByCourseIdAndLessonNum(courseId, num);
+        if (lesson == null) {
+            model.addAttribute("errorMessage", "Lesson doesn't exist.");
+            return "error/error_page";
+        }
         Course course = courseService.getCourseById(courseId);
         model.addAttribute("lesson", lesson);
         model.addAttribute("course", course);
@@ -183,7 +194,7 @@ public class AuthorController {
     @PostMapping("/course/{courseId}/lessons/new")
     public String createLesson(@PathVariable long courseId,
                                @ModelAttribute("lesson") @Valid Lesson lesson, BindingResult bindingResult,
-                               @RequestParam(value = "videoFile", required = true) MultipartFile videoFile,
+                               @RequestParam(value = "videoFile") MultipartFile videoFile,
                                Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
@@ -234,6 +245,19 @@ public class AuthorController {
             return "author/lesson_edit";
         }
         lessonService.update(lesson, courseId, num, videoFile);
+        return "redirect:/author/course/" + courseId;
+    }
+
+    @DeleteMapping("/course/{courseId}/lesson/{num}")
+    public String deleteLesson(@PathVariable("courseId") long courseId,
+                               @PathVariable("num") int num,
+                               Model model) {
+        User author = userService.getAuthorizedUser();
+        if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
+            model.addAttribute("errorMessage", "Access denied.");
+            return "error/error_page";
+        }
+        lessonService.delete(courseId, num);
         return "redirect:/author/course/" + courseId;
     }
 }

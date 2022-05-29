@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -28,19 +29,17 @@ public class AdminController {
     @GetMapping("/users_list")
     public String getUsersList(@RequestParam(name = "keyword", required = false) String keyword,
                                Model model) {
-        if (keyword != null && !keyword.equals("")) {
-            model.addAttribute("usersList", userService.getFilteredUsersList(keyword));
-            return "admin/users_list";
+        if (keyword != null && !keyword.matches("\s*")) {
+            List<User> usersList = userService.getFilteredUsersList(keyword);
+            if (usersList.isEmpty()) {
+                model.addAttribute("message", "Users not found");
+                return "admin/users_list";
+            }
+            model.addAttribute("usersList", usersList);
         } else {
             model.addAttribute("usersList", userService.getUsersList());
-            return "admin/users_list";
         }
-    }
-
-    @PostMapping("/users_list")
-    public String getRefreshedUsersList() {
-        userService.refreshUsersList();
-        return "redirect:/admin/users_list";
+        return "admin/users_list";
     }
 
     @GetMapping("/user/{id}")
@@ -94,5 +93,11 @@ public class AdminController {
                                  @ModelAttribute("user") User user) {
         userService.changeRole(id, role);
         return "redirect:/admin/user/" + id;
+    }
+
+    @DeleteMapping("/user/{id}")
+    public String deleteUser(@PathVariable("id") long id) {
+        userService.delete(id);
+        return "redirect:/admin/users_list";
     }
 }

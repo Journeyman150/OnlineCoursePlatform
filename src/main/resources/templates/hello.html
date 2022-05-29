@@ -4,27 +4,36 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>Hello World!</title>
+    <style>
+        .container {
+            text-align: center;
+            font-family: Arial;
+            font-size: large;
+        }
+        input {
+            font-size: large;
+        }
+    </style>
 </head>
 <body>
-    <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Sign Out"/>
-    </form>
-
-    <div sec:authorize="isAuthenticated()">
-        This content is only shown to authenticated users.
-        <a href="/user">Let's learn!</a>
-    </div>
-    <div sec:authorize="hasRole('ROLE_USER')">
-        This content is only shown to users.
-    </div>
-    <div sec:authorize="hasRole('ROLE_AUTHOR')">
-        This content is only shown to authors.
-        <a href="/author">Let's Teach!</a>
-    </div>
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-        This content is only shown to administrators.
-        <a href="/admin">Let's Administer!</a>
+    <div class="container">
+        <h2 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h2>
+        <br>
+        <div sec:authorize="isAuthenticated()">
+            <a href="/user">Let's Learn!</a>
+            <br><br>
+        </div>
+        <div sec:authorize="hasRole('ROLE_AUTHOR')">
+            <a href="/author">Let's Teach!</a>
+            <br><br>
+        </div>
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+            <a href="/admin">Let's Administer!</a>
+        </div>
+        <br>
+        <form th:action="@{/logout}" method="POST">
+            <input type="submit" value="Sign Out"/>
+        </form>
     </div>
 </body>
 </html>

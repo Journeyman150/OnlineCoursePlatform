@@ -4,11 +4,22 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>Spring Security Example</title>
+    <style>
+        p {
+            font-size: xx-large;
+        }
+        div {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 10%;
+        }
+    </style>
 </head>
 <body>
-<h1>Welcome!</h1>
+    <div>
+        <h1>Welcome to the course web platform!</h1>
 
-<p>Click <a th:href="@{/hello}">here</a> to continue.</p>
-
+        <p>Click <a th:href="@{/hello}">here</a> to continue.</p>
+    </div>
 </body>
 </html>

@@ -1,19 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Main page</title>
+    <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+        }
+        input {
+            margin-top: 0.5em;
+            font-size: large;
+            font-family: Times New Roman;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h2>Teaching</h2>
     <a href="author/courses">My courses</a>&emsp;
 <!--    <a href="author/statistic">Statistics</a>&emsp;-->
     <a href="../account">Account</a>&emsp;
 <!--    <a href="../notifications">Notifications</a>&emsp;-->
-    <a href="../user">Learning</a>
+    <a href="../user">Learning</a>&emsp;
+    <a sec:authorize="isAuthenticated()"><b style="font-size: medium" th:text="'Your balance: ' + ${balance}"></b></a>
     <hr>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
+</div>
 </body>
 </html>

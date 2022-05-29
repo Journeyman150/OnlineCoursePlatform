@@ -1,47 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Account</title>
     <style>
-        #passwordForm {
-            width: 330px;
-            height: 80px;
-            text-align: center;
-            padding: 15px;
-            border: 3px solid #0000cc;
-            border-radius: 10px;
-            color: #0000cc;
-            display: none;
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+            font-family: Arial;
         }
-        #passwordForm:target {display: block;}
+        input {
+            font-size: large;
+            margin-top: 0.5em;
+        }
     </style>
 </head>
 <body>
+<div class="container">
     <h2>My account</h2>
+    <br>
+    <div sec:authorize="isAuthenticated()">
+        <a href="/user">Back to Learn</a>
+        <br><br>
+    </div>
+    <div sec:authorize="hasRole('ROLE_AUTHOR')">
+        <a href="/author">Back to Teach</a>
+        <br><br>
+    </div>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <a href="/admin">Back to Administer</a>
+        <br><br>
+    </div>
+    <br>
     <div th:text="'Email: ' + ${user.getEmail()}"></div>
     <div th:text="'Name: ' + ${user.getName()}"></div>
     <div th:text="'Surname: ' + ${user.getSurname()}"></div>
     <div th:text="'Balance: ' + ${user.getBalance()}"></div>
-    <br>
-    <a href="#passwordForm">Change password</a>
-    <div id="passwordForm">
-        <form th:method="PATCH" th:action="@{/account/change_password}">
-            <label for="currentPassword">Current password:</label>
-            <input type="password" name="currentPassword" id="currentPassword"> <br>
-            <div style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
-
-            <label for="newPassword">New password:</label>
-            <input type="password" name="newPassword" id="newPassword"> <br>
-            <div style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
-
-            <label for="confirmPassword">Confirm password:</label>
-            <input type="password" name="confirmPassword" id="confirmPassword"> <br>
-            <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
-
-            <input type="submit" value="Submit">
-        </form>
-    </div>
-
+    <hr><br>
+    Update data:
+    <form th:method="PATCH" th:action="@{/account/update}">
+        <input type="text" name="email" th:value="${user.getEmail()}">
+        <div style="color:red" th:text="${emailErrorMessage}">Error</div>
+        <input type="text" name="name" th:value="${user.getName()}">
+        <div style="color:red" th:text="${nameErrorMessage}">Error</div>
+        <input type="text" name="surname" th:value="${user.getSurname()}">
+        <div style="color:red" th:text="${surnameErrorMessage}">Error</div>
+        <input type="submit" value="Update">
+<!--        <input type="text" th:field="*{email}">-->
+<!--        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>-->
+<!--        <br>-->
+<!--        <input type="text" th:field="*{name}">-->
+<!--        <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>-->
+<!--        <br>-->
+<!--        <input type="text" th:field="*{surname}">-->
+<!--        <div style="color:red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</div>-->
+<!--        <br>-->
+<!--        <input type="submit" value="Update">-->
+    </form>
+    <hr><br>
+    Change password:
+    <form th:method="PATCH" th:action="@{/account/change_password}">
+        <input type="password" name="currentPassword" placeholder="Current password">
+        <div style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
+        <input type="password" name="newPassword" placeholder="New password">
+        <div style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
+        <input type="password" name="confirmPassword" placeholder="Confirm password">
+        <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
+        <input type="submit" value="Change password">
+    </form>
+    <div style="color: darkgreen; margin-top: 0.5em" th:text="${successMessage}"></div>
+    <hr><br>
+    <form th:action="@{/account}" th:method="DELETE" onsubmit="return confirm('Are you sure you want to delete account?')">
+        <input type="submit" value="Delete account.">
+    </form>
+    <div style="color:red; margin-top: 0.5em" th:text="${message}"></div>
+</div>
 </body>
 </html>

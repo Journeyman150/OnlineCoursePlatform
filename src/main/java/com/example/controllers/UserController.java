@@ -98,9 +98,11 @@ public class UserController {
             String authorName = author.getName() + " " + author.getSurname();
             authorMap.put(authorId, authorName);
         }
+        int balance = userService.getUserById(userService.getAuthorizedUser().getId()).getBalance();
         model.addAttribute("keyword", keyword);
         model.addAttribute("coursesPage", coursesPage);
         model.addAttribute("authorMap", authorMap);
+        model.addAttribute("balance", balance);
         if (coursesPage.isEmpty() && keyword != null && !keyword.matches("\s*")) {
             model.addAttribute("noResults", "The search has not given any results.");
         }
@@ -140,6 +142,8 @@ public class UserController {
         course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
         model.addAttribute("course", course);
         model.addAttribute("userHasAccessToCourse", userHasAccessToCourse);
+        model.addAttribute("subscribersNum", courseSubscribeService.getSubscribedUsersNumberByCourseId(courseId));
+        model.addAttribute("balance", userService.getUserById(user.getId()).getBalance());
         return "user/course";
     }
     @PostMapping("/course/subscribe")
@@ -174,6 +178,10 @@ public class UserController {
             return getCourse(courseId, model);
         }
         Lesson lesson = lessonService.getLessonByCourseIdAndLessonNum(courseId, num);
+        if (lesson == null) {
+            model.addAttribute("errorMessage", "Lesson doesn't exist.");
+            return "error/error_page";
+        }
         model.addAttribute("lesson", lesson);
         return "user/lesson";
     }

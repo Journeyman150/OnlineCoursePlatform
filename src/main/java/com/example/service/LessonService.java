@@ -6,6 +6,7 @@ import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -42,28 +43,48 @@ public class LessonService {
         } else return true;
     }
 
-    public void save(Lesson lesson, long courseId, MultipartFile videoFile) {
-        String storagePath = storagePathPrefix + "/" + courseId;
-        String videoSource = storagePath + "/" + lesson.getNum() + "_" + videoFile.getOriginalFilename();
-        lesson.setVideoSource(videoSource);
-        storageService.store(videoFile, storagePath, videoSource);
-        lesson.setCourseId(courseId);
-        lessonDAO.save(lesson);
+    public File getFile(Long courseId, int lessonNum) {
+        return storageService.load(lessonDAO.getLessonByCourseIdAndLessonNum(courseId, lessonNum).getVideoSource());
     }
 
+    @Transactional
+    public void save(Lesson lesson, long courseId, MultipartFile videoFile) {
+        lesson.setCourseId(courseId);
+        long lessonId = lessonDAO.save(lesson);
+
+        String storagePath = storagePathPrefix + "/" + courseId;
+        String videoSource = storagePath + "/" + lesson.getNum() + "_" + videoFile.getOriginalFilename();
+        //lesson.setVideoSource(videoSource);
+
+        storageService.store(videoFile, storagePath, videoSource);
+        lessonDAO.updateContent(videoSource, courseId, lesson.getNum());
+    }
+
+    @Transactional
     public void update(Lesson lesson, long courseId, int prevNum, MultipartFile videoFile) {
         if (!videoFile.isEmpty()) {
             String storagePath = storagePathPrefix + "/" + courseId;
             String videoSource = storagePath + "/" + lesson.getNum() + "_" + videoFile.getOriginalFilename();
-            lesson.setVideoSource(videoSource);
+
+            String previousSource = lessonDAO.getLessonByCourseIdAndLessonNum(courseId, prevNum).getVideoSource();
+            storageService.delete(previousSource);
+            //lesson.setVideoSource(videoSource);
             storageService.store(videoFile, storagePath, videoSource);
-            lessonDAO.updateContent(lesson, courseId, prevNum);
+            lessonDAO.updateContent(videoSource, courseId, prevNum);
         }
         lessonDAO.updateInfo(lesson, courseId, prevNum);
     }
-
-    public File getFile(Long courseId, int lessonNum) {
-        return storageService.load(lessonDAO.getLessonByCourseIdAndLessonNum(courseId, lessonNum).getVideoSource());
+    @Transactional
+    public void delete(long lessonId) {
+        String videoSource = lessonDAO.getLessonById(lessonId).getVideoSource();
+        storageService.delete(videoSource);
+        lessonDAO.delete(lessonId);
+    }
+    @Transactional
+    public void delete(long courseId, int lessonNum) {
+        String videoSource = lessonDAO.getLessonByCourseIdAndLessonNum(courseId, lessonNum).getVideoSource();
+        storageService.delete(videoSource);
+        lessonDAO.delete(courseId, lessonNum);
     }
 
     public List<IndexedData> getSearchDataList() {

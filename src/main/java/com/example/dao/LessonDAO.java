@@ -30,18 +30,27 @@ public class LessonDAO {
                         lessonMapper, courseId, lessonNum)
                 .stream().findAny().orElse(null);
     }
-
     public List<Lesson> getLessonsListByCourseId(long courseId) {
         return jdbcTemplate.query("SELECT * FROM lessons WHERE course_id = ? ORDER BY num", lessonMapper, courseId);
     }
 
-    public void save(Lesson lesson) {
-        jdbcTemplate.update("INSERT INTO lessons(title, description, course_id, video_source, num) VALUES(?, ?, ?, ?, ?)",
-                lesson.getTitle(),
-                lesson.getDescription(),
-                lesson.getCourseId(),
-                lesson.getVideoSource(),
-                lesson.getNum());
+    public Long getCourseIdByLessonId(long lessonId) {
+        return jdbcTemplate.query("SELECT course_id FROM lessons WHERE lesson_id = ?",
+                        (rs, rowNum) -> rs.getLong("course_id"),
+                        lessonId)
+                .stream().findAny().orElse(null);
+    }
+
+    public long save(Lesson lesson) {
+        return jdbcTemplate.queryForObject("INSERT INTO lessons(title, description, course_id, video_source, num) " +
+                        "VALUES(?, ?, ?, ?, ?) " +
+                        "RETURNING lesson_id",
+                    Long.class,
+                    lesson.getTitle(),
+                    lesson.getDescription(),
+                    lesson.getCourseId(),
+                    lesson.getVideoSource(),
+                    lesson.getNum());
     }
     public void updateInfo(Lesson lesson, long courseId, int prevNum) {
         jdbcTemplate.update("UPDATE lessons SET title=?, description=?, num=? WHERE course_id=? AND num=?",
@@ -51,18 +60,19 @@ public class LessonDAO {
                 courseId,
                 prevNum);
     }
-    public void updateContent(Lesson lesson, long courseId, int prevNum) {
+    public void updateContent(String videoSource, long courseId, int num) {
         jdbcTemplate.update("UPDATE lessons SET video_source=? WHERE course_id=? AND num=?",
-                lesson.getVideoSource(),
+                videoSource,
                 courseId,
-                prevNum);
+                num);
     }
-    @Nullable
-    public Long getCourseIdByLessonId(long lessonId) {
-        return jdbcTemplate.query("SELECT course_id FROM lessons WHERE lesson_id = ?",
-                (rs, rowNum) -> rs.getLong("course_id"),
-                lessonId)
-                .stream().findAny().orElse(null);
+
+    public void delete(long lessonId) {
+        jdbcTemplate.update("DELETE FROM lessons WHERE lesson_id = ?", lessonId);
+    }
+
+    public void delete(long courseId, int lessonNum) {
+        jdbcTemplate.update("DELETE FROM lessons WHERE course_id = ? AND num = ?", courseId, lessonNum);
     }
 
     public List<IndexedData> getSearchDataList() {

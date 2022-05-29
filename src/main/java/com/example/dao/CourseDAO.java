@@ -48,6 +48,11 @@ public class CourseDAO {
         return jdbcTemplate.query("SELECT * FROM courses WHERE course_id=?", courseMapper, courseId)
                 .stream().findAny().orElse(null);
     }
+
+    public List<Course> getCoursesListByIndexes(String indexes) {
+        return jdbcTemplate.query("SELECT * FROM courses WHERE course_id IN("+ indexes +") ORDER BY title", courseMapper);
+    }
+
     @Nullable
     public Course getPublicCourseById(long courseId) {
         return jdbcTemplate.query("SELECT * FROM courses WHERE course_id=? AND non_public=false", courseMapper, courseId)

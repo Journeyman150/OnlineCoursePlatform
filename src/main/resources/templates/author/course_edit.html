@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>New course</title>
+    <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+        }
+        input, textarea {
+            margin-top: 0.5em;
+            font-size: large;
+            font-family: Times New Roman;
+        }
+    </style>
 </head>
 <body>
-<h2><p>Update course</p></h2>
+<div class="container">
+    <h2>Update course</h2>
+    <a href="./">Go back</a>
+    <br><br>
     <form th:method="PATCH" th:action="@{/author/course/{id}(id=${course.getId()})}" th:object="${course}">
         <label for="title"> </label>
         <input type="text" th:field="*{title}" id="title" placeholder="Title">
@@ -29,5 +45,6 @@
 
         <input type="submit" value="Update course">
     </form>
+</div>
 </body>
 </html>

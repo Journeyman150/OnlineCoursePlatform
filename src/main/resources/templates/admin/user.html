@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Пользователь</title>
+    <title>User</title>
 </head>
 <body>
     <a th:text="${user.getName() + ' ' + user.getSurname()}"></a>
     <br>
     <a th:text="${user.getEmail()}"></a>
     <br>
-    <a th:text="'Роль: ' + ${user.getAuthorities().stream().findAny().orElse(null)}"></a>
+    <a th:text="'Role: ' + ${user.getAuthorities().stream().findAny().orElse(null)}"></a>
     <br>
     <a th:text="'Id: ' + ${user.getId()}"></a>
     <br>
     <a th:href="@{/admin/user/{id}/edit(id=${user.getId()})}">Edit</a>
     <hr>
-    <form th:method="DELETE" th:action="@{/admin/user/{id}(id=${user.getId()})}">
+    <form th:method="DELETE" th:action="@{/admin/user/{id}(id=${user.getId()})}"
+        onsubmit="return confirm('Are you sure you want to delete this user?')">
         <input type="submit" value="Delete.">
     </form>
 </body>

@@ -24,8 +24,12 @@ public class CourseSubscribeService {
     public void subscribeUserAndMakePayment(User user, User author, Course course) {
         this.makePayment(user, author, course.getPrice());
         this.subscribe(course.getId(), user.getId());
-
     }
+
+    public long getSubscribedUsersNumberByCourseId(long courseId) {
+        return courseSubscribeDAO.getSubscribedUsersNumberByCourseId(courseId);
+    }
+
     public List<Long> getCoursesIdListByUserId(long userId) {
         return courseSubscribeDAO.getCoursesIdListByUserId(userId);
     }

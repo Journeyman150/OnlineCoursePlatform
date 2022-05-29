@@ -3,8 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Course</title>
+    <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+        }
+        input {
+            margin-top: 0.5em;
+            font-size: large;
+            font-family: Times New Roman;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h2><div th:text="${course.getTitle()}"></div></h2>
     <a href="/author/courses">Go back</a>
     <br><br>
@@ -12,18 +26,23 @@
     <div th:text="'Price: ' + ${course.getPrice()}"></div>
     <div th:if="${course.isNonPublic() == true}">Non public</div>
     <div th:if="${course.isNonPublic() == false}">Public</div>
+    <br>
     <form th:action="@{/author/course/{courseId}/edit(courseId=${course.getId()})}" th:method="GET">
         <input type="submit" value="Edit course">
     </form>
     <hr>
-    <div>Lessons list: </div>
+    <b>Lessons list: </b>
     <div th:each="lesson: ${course.getLessonsList()}">
         <a th:href="@{/author/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
         th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
     </div>
+    <br>
     <form th:action="@{/author/course/{courseId}/lessons/new(courseId=${course.getId()})}" th:method="GET">
         <input type="submit" value="New lesson">
     </form>
+    <hr>
+    <div th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a> subscriber.</div>
+    <div th:if="${subscribersNum != 1}"><a th:text="${subscribersNum}"></a> subscribers.</div>
     <hr>
     <form th:method="POST" th:action="@{/author/course/{courseId}/invite(courseId=${course.getId()})}">
         <div>Invite user to a course:</div>
@@ -31,5 +50,6 @@
         <input type="submit" value="Invite user">
         <div th:text="${message}"></div>
     </form>
+</div>
 </body>
 </html>

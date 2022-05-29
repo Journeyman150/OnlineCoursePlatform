@@ -3,30 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>New lesson</title>
-
+    <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+        }
+        input, textarea {
+            margin-top: 0.5em;
+            font-size: large;
+            font-family: Times New Roman;
+        }
+    </style>
 </head>
 <body>
-<p>Create new lesson</p>
-<form th:method="POST"
-      th:action="@{/author/course/{courseId}/lessons/new(courseId=${lesson.getCourseId()})}"
-      th:object="${lesson}"
-      enctype="multipart/form-data">
-    <label for="title"> </label>
-    <input type="text" th:field="*{title}" id="title" placeholder="Title">
-    <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</div>
-    <br>
-    <label for="description"></label>
-    <textarea th:field="*{description}" id="description" placeholder="Description"></textarea>
-    <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</div>
-    <br>
-    <label for="number">Lesson number: </label>
-    <input type="text" th:field="*{num}" id="number" placeholder="Lesson number">
-    <div style="color:red" th:text="${lessonNumError}">Error</div>
-    <br>
-    <label for="file">Upload video (Max size 200MB, .h264):</label>
-    <input type="file" name="videoFile" id="file" accept="video/*">
-    <br>
-    <input type="submit" value="Create lesson">
-</form>
+<div class="container">
+    <h2>Create new lesson</h2>
+    <a href="../">Go back</a>
+    <br><br>
+    <form th:method="POST"
+          th:action="@{/author/course/{courseId}/lessons/new(courseId=${lesson.getCourseId()})}"
+          th:object="${lesson}"
+          enctype="multipart/form-data">
+        <label for="title"> </label>
+        <input type="text" th:field="*{title}" id="title" placeholder="Title">
+        <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</div>
+        <br>
+        <label for="description"></label>
+        <textarea th:field="*{description}" id="description" placeholder="Description"></textarea>
+        <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</div>
+        <br>
+        <label for="number">Lesson number: </label>
+        <input type="text" th:field="*{num}" id="number" placeholder="Lesson number">
+        <div style="color:red" th:text="${lessonNumError}">Error</div>
+        <br>
+        <label for="file">Upload video (Max size 200MB, .h264):</label>
+        <input type="file" name="videoFile" id="file" accept="video/*">
+        <br>
+        <input type="submit" value="Create lesson">
+    </form>
+</div>
 </body>
 </html>

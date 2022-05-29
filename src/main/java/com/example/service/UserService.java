@@ -24,7 +24,6 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
-    private List<User> usersList;
     private List<User> filteredUsersList;
     private UsersSearchData usersSearchData;
 
@@ -35,7 +34,6 @@ public class UserService implements UserDetailsService {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
         this.usersSearchData = usersSearchData;
-        usersList = userDAO.getUsersList();
         filteredUsersList = new ArrayList<>();
     }
 
@@ -43,6 +41,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userDAO.getUserByEmail(email);
     }
+
     @Nullable
     public Long findUserId(String email) {
         User user = userDAO.getUserByEmail(email);
@@ -55,11 +54,6 @@ public class UserService implements UserDetailsService {
         return userDAO.getUserById(userId);
     }
 
-    @Nullable
-    public User getUserFromListById(long userId) {
-        return usersList.stream().filter(n -> n.getId() == userId).findAny().orElse(null);
-    }
-
     public User getAuthorizedUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
@@ -69,34 +63,30 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getUsersList() {
-        return usersList;
-    }
-
-    public void refreshUsersList() {
-        usersList = userDAO.getUsersList();
+        return userDAO.getUsersList();
     }
 
     public List<User> getFilteredUsersList(String keyword) {
         filteredUsersList.clear();
-        for (User user: usersList) {
-            if (user.getEmail().contains(keyword) ||
-                (user.getName() + user.getSurname()).contains(keyword)) {
-                filteredUsersList.add(user);
-            }
-        }
+        Set<Long> idxes = usersSearchData.findIndexes(keyword);
+        System.out.println(idxes);
+        if (!idxes.contains(-1L))
+            idxes.forEach(n -> filteredUsersList.add(userDAO.getUserById(n)));
         return filteredUsersList;
     }
-    public void addUser(User user) {
+
+    @Transactional
+    public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDAO.addUser(user);
+        long userId = userDAO.save(user);
+        usersSearchData.writeData(userId, user.getEmail(), user.getName(), user.getSurname());
     }
 
+    @Transactional
     public void update(long userId, User updatedUser) {
-        for (int i = 0; i < usersList.size(); i++) {
-            if (usersList.get(i).getId() == userId) {
-                usersList.set(i, updatedUser);
-            }
-        }
+        User oldUser = userDAO.getUserById(userId);
+        usersSearchData.deleteData(userId, oldUser.getEmail(), oldUser.getName(), oldUser.getSurname());
+        usersSearchData.writeData(userId, updatedUser.getEmail(), updatedUser.getName(), updatedUser.getSurname());
         userDAO.updateUser(userId, updatedUser);
     }
 
@@ -104,23 +94,28 @@ public class UserService implements UserDetailsService {
         userDAO.changeUserPassword(userId, passwordEncoder.encode(newPassword));
     }
 
-    public boolean passwordMatches(String password, User user) {
-        return passwordEncoder.matches(password, user.getPassword());
-    }
-
     public void changeRole(long userId, String role) {
-        for (User user : usersList) {
-            if (user.getId() == userId) {
-                user.setAuthorities(Set.of(Role.valueOf(role)));
-            }
-        }
         userDAO.changeUserRole(userId, role);
-    }
-    public List<IndexedData> getSearchDataList() {
-        return userDAO.getSearchDataList();
     }
 
     public void updateUserBalance(long userId, int balance) {
         userDAO.updateUserBalance(userId, balance);
     }
+
+    @Transactional
+    public void delete(long userId) {
+        User user = userDAO.getUserById(userId);
+        usersSearchData.deleteData(userId, user.getEmail(), user.getName(), user.getSurname());
+        userDAO.deleteUser(userId);
+    }
+
+    public boolean passwordMatches(String password, User user) {
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public List<IndexedData> getSearchDataList() {
+        return userDAO.getSearchDataList();
+    }
+
+
 }

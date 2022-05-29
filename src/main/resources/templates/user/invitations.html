@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <title>Invitations</title>
     <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+            font-family: Arial;
+        }
         .coursePlate {
             padding: 0.5em;
             border: 1px solid #CCC;
             border-radius: 1em;
-            width: 200px;
+            width: 25%;
             max-height: 100px;
         }
         .courseDescription {
@@ -22,27 +29,29 @@
     </style>
 </head>
 <body>
-<h2>Invitations</h2>
-<br>
-<a href="/user">Go back</a>
-<div th:text="${message}"></div>
-<br>
-<th:block th:each="course : ${coursesList}">
+<div class="container">
+    <h2>Invitations</h2>
     <br>
-    <div class="coursePlate">
-        <a th:if="${subscribedCoursesIdSet.contains(course.getId())}"
-           th:text="${course.getTitle()}" th:href="@{/user/course/{id}(id=${course.getId()})}"></a>
-        <a th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
-           th:text="${course.getTitle()}"></a>
+    <a href="/user">Go back</a>
+    <div th:text="${message}"></div>
+    <br>
+    <th:block th:each="course : ${coursesList}">
         <br>
-        <div class="courseDescription" th:text="${course.getDescription()}"></div>
-        <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
-        <form th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
-              th:method="POST" th:action="@{/user/accept_invitation}">
-            <input type="hidden" name="courseId" th:value="${course.getId()}">
-            <input type="submit" value="Accept invitation">
-        </form>
-    </div>
-</th:block>
+        <div class="coursePlate">
+            <a th:if="${subscribedCoursesIdSet.contains(course.getId())}"
+               th:text="${course.getTitle()}" th:href="@{/user/course/{id}(id=${course.getId()})}"></a>
+            <a th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
+               th:text="${course.getTitle()}"></a>
+            <br>
+            <div class="courseDescription" th:text="${course.getDescription()}"></div>
+            <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
+            <form th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
+                  th:method="POST" th:action="@{/user/accept_invitation}">
+                <input type="hidden" name="courseId" th:value="${course.getId()}">
+                <input type="submit" value="Accept invitation">
+            </form>
+        </div>
+    </th:block>
+</div>
 </body>
 </html>

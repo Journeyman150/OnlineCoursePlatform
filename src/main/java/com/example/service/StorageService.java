@@ -24,4 +24,9 @@ public class StorageService {
     public File load(String absolutePath) {
         return new File(absolutePath);
     }
+
+    public void delete(String absolutePath) {
+        File file = new File(absolutePath);
+        file.delete();
+    }
 }

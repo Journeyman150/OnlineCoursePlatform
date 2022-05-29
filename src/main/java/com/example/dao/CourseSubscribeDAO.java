@@ -34,4 +34,13 @@ public class CourseSubscribeDAO {
     public void subscribe(long courseId, long userId) {
         jdbcTemplate.update("INSERT INTO course_usr VALUES (?, ?)", courseId, userId);
     }
+
+    public long getSubscribedUsersNumberByCourseId(long courseId) {
+        return jdbcTemplate.query("SELECT course_id, COUNT(*) " +
+                        "FROM course_usr WHERE course_id = ? " +
+                        "GROUP BY course_id",
+                        (rs, n) -> rs.getLong("count"),
+                        courseId)
+                        .stream().findAny().orElse(0L);
+    }
 }

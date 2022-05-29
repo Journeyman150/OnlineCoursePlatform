@@ -1,11 +1,11 @@
 package com.example.configs;
 
 import com.example.domain.Role;
-import com.example.security.HeaderUsernamePasswordAuthenticationFilter;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,11 +29,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                    .mvcMatchers("/", "/home", "/registration").permitAll()
-                    .mvcMatchers("/account", "/notifications").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
-                    .mvcMatchers("/user/**").hasAnyRole(Role.USER.name(), Role.AUTHOR.name())
-                    .mvcMatchers("/author/**").hasRole(Role.AUTHOR.name())
-                    .mvcMatchers("/admin/**", "/api/**").hasRole(Role.ADMIN.name())
+                    .mvcMatchers("/", "/home", "/registration", "/api").permitAll()
+                    .mvcMatchers("/account").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
+                    .mvcMatchers("/user/**", "/api/user/**").hasAnyRole(Role.USER.name(), Role.AUTHOR.name())
+                    .mvcMatchers("/author/**", "/api/author/**").hasRole(Role.AUTHOR.name())
+                    .mvcMatchers("/admin/**", "/api/admin/**").hasRole(Role.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage("/login").permitAll()

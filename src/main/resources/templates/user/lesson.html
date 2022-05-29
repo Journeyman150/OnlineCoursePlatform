@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>lesson</title>
+    <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-family: Arial;
+            font-size: large;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h2><div th:text="${'Lesson ' + lesson.getNum()}"></div></h2>
     <a th:href="@{/user/course/{courseId}(courseId=${lesson.getCourseId()})}">Go back</a>
     <br><br>
@@ -14,5 +24,6 @@
     <div>Watch lesson:</div>
     <video width="640" height="480" controls th:src="@{/user/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
     <br>
+</div>
 </body>
 </html>

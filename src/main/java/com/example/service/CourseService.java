@@ -14,6 +14,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,19 @@ public class CourseService {
         this.coursesSearchData = coursesSearchData;
     }
 
+    public List<Course> findCourses(String keyword) {
+        if (keyword == null || keyword.matches("\s*")) {
+            return new ArrayList<>();
+        }
+        List<Course> coursesList = new ArrayList<>();
+        coursesSearchData.findIndexes(CoursesSearchData.getSeparateKeywords(keyword))
+                .forEach(n -> {
+                    if (n != -1L)
+                        coursesList.add(courseDAO.getPublicCourseById(n));
+                });
+        return coursesList;
+    }
+
     public Page<Course> findPaginated(String keyword, Pageable pageable) {
         if (keyword == null || keyword.matches("\s*")) {
             return new PageImpl<Course>(Collections.emptyList(), PageRequest.of(1, 1), 0);
@@ -38,12 +52,14 @@ public class CourseService {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
-        List<Course> coursesList = new ArrayList<>();
         Set<Long> set = coursesSearchData.findIndexes(CoursesSearchData.getSeparateKeywords(keyword));
         if (set.contains(-1L)) {
             return new PageImpl<Course>(Collections.emptyList(), PageRequest.of(1, 1), 0);
         }
-        set.forEach(n -> coursesList.add(this.getCourseById(n)));
+        //set.forEach(n -> coursesList.add(courseDAO.getPublicCourseById(n)));
+        String indexesStr = set.toString();
+        List<Course> coursesList =
+                new ArrayList<>(courseDAO.getCoursesListByIndexes(indexesStr.substring(1, indexesStr.length() - 1)));
 
         List<Course> list;
 
@@ -96,12 +112,17 @@ public class CourseService {
 
     @Transactional
     public void update(Course course, long courseId) {
+        Course oldCourse = courseDAO.getCourseById(courseId);
         courseDAO.update(course, courseId);
+        coursesSearchData.deleteData(courseId, oldCourse.getTitle(), oldCourse.getDescription());
         coursesSearchData.writeData(courseId, course.getTitle(), course.getDescription());
     }
 
+    @Transactional
     public void delete(long courseId) {
+        Course course = courseDAO.getCourseById(courseId);
         courseDAO.delete(courseId);
+        coursesSearchData.deleteData(courseId, course.getTitle(), course.getDescription());
     }
 
     public List<IndexedData> getPublicCoursesSearchDataList() {

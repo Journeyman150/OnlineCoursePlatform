@@ -132,4 +132,17 @@ public class User implements UserDetails {
         this.setPassword(updatedUser.getPassword());
         this.setAuthorities(updatedUser.getAuthorities());
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", authorities=" + authorities +
+                ", balance=" + balance +
+                '}';
+    }
 }

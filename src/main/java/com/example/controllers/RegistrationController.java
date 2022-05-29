@@ -46,7 +46,7 @@ public class RegistrationController {
             model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
             return "registration";
         }
-        userService.addUser(user);
+        userService.save(user);
         return "login";
     }
 }

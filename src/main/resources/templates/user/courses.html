@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Courses</title>
     <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+            font-family: Arial;
+        }
         .coursePlate {
             padding: 0.5em;
             border: 1px solid #CCC;
@@ -22,6 +29,7 @@
     </style>
 </head>
 <body>
+<div class="container">
     <h2>Courses you are subscribed to</h2>
     <br><a href="../user">Go back</a><br>
     <th:block th:each="course : ${coursesList}" th:if="${coursesList.size() > 0}">
@@ -34,5 +42,6 @@
         </div>
     </th:block>
     <div th:text="${message}"></div>
+</div>
 </body>
 </html>

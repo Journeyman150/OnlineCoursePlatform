@@ -38,8 +38,11 @@ public class UserDAO {
                 .stream().findAny().orElse(null);
     }
 
-    public void addUser(User user) {
-        jdbcTemplate.update("INSERT INTO usr(name, surname, email, password) VALUES(?, ?, ?, ?)",
+    public long save(User user) {
+        return jdbcTemplate.queryForObject("INSERT INTO usr(name, surname, email, password) " +
+                        "VALUES(?, ?, ?, ?) " +
+                        "RETURNING usr_id",
+                Long.class,
                 user.getName(), user.getSurname(), user.getEmail(), user.getPassword());
     }
 

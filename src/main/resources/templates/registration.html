@@ -7,11 +7,12 @@
         form {
             /* Расположим форму по центру страницы */
             margin: 0 auto;
-            width: 400px;
+            width: 30%;
             /* Определим контур формы */
             padding: 1em;
             border: 1px solid #CCC;
             border-radius: 1em;
+            font-family: Arial;
         }
 
         ul {
@@ -25,17 +26,16 @@
         }
 
         input {
-            /* Определим размер полей */
-            width: 200px;
+            margin-top: 1em;
+            width: 60%;
             box-sizing: border-box;
-
-            /* Стилизуем границы полей */
             border: 1px solid #999;
-            margin-inline: 25%;
+            margin-inline: 20%;
+            font-size: large;
         }
 
-        h4, div {
-            margin-inline: 25%;
+        h3, div {
+            margin-inline: 20%;
         }
 
         input:focus,
@@ -51,12 +51,13 @@
             position: relative;
             left: 50%;
             transform: translate(-50%, 0);
+            font-size: large;
         }
     </style>
 </head>
 <body>
 <form th:method="POST" th:action="@{/registration}" th:object="${user}">
-    <h4>Enter your details:</h4>
+    <h3>Enter your details:</h3>
     <label for="name"> </label>
     <input type="text" th:field="*{name}" id="name" placeholder="Name">
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>

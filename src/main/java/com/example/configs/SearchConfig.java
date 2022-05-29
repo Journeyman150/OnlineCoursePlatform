@@ -42,7 +42,7 @@ public class SearchConfig {
     protected void init() {
         loadUsersSearchData();
         loadPublicCoursesSearchData();
-        loadLessonsSearchData();
+        //loadLessonsSearchData();
     }
 
     private void loadUsersSearchData() {

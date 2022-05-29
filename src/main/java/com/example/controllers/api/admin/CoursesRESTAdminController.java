@@ -1,27 +1,22 @@
-package com.example.controllers.api;
+package com.example.controllers.api.admin;
 
 import com.example.domain.Course;
-import com.example.exception_handling.api.IncorrectCourseData;
 import com.example.exception_handling.api.NoSuchCourseException;
 import com.example.service.CourseService;
 import com.example.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/courses")
-public class CoursesRESTController {
+@RequestMapping("/api/admin/courses")
+public class CoursesRESTAdminController {
     private final CourseService courseService;
     private final LessonService lessonService;
 
     @Autowired
-    public CoursesRESTController(CourseService courseService, LessonService lessonService) {
+    public CoursesRESTAdminController(CourseService courseService, LessonService lessonService) {
         this.courseService = courseService;
         this.lessonService = lessonService;
     }

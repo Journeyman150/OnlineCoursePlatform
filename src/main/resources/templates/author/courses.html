@@ -10,28 +10,44 @@
             white-space: nowrap;
             text-overflow:ellipsis;
         }
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+        }
+        input {
+            margin-top: 0.5em;
+            font-size: large;
+            font-family: Times New Roman;
+        }
     </style>
 </head>
 <body>
-    <h2><div>Public courses:</div></h2>
+<div class="container">
+    <h2>My courses</h2>
+    <br>
+    <a href="/author">Go back</a>
+    <br>
+    <h3>Public courses:</h3>
     <div th:each="course : ${publicCoursesList}">
-        <br>
-    <a th:href="@{/author/course/{id}(id=${course.getId()})}"
-       th:text="${course.getTitle()}"></a>
-        <br>
-      <div class="description" th:text="${course.getDescription()}"></div>
-    </div>
-    <hr>
-    <h2><div>Non public courses:</div></h2>
-    <div th:each="course : ${nonPublicCoursesList}">
-        <br>
         <a th:href="@{/author/course/{id}(id=${course.getId()})}"
            th:text="${course.getTitle()}"></a>
         <div class="description" th:text="${course.getDescription()}"></div>
+        <br>
+    </div>
+    <hr>
+    <h3>Non public courses:</h3>
+    <div th:each="course : ${nonPublicCoursesList}">
+        <a th:href="@{/author/course/{id}(id=${course.getId()})}"
+           th:text="${course.getTitle()}"></a>
+        <div class="description" th:text="${course.getDescription()}"></div>
+        <br>
     </div>
     <hr>
     <form action="/author/courses/new">
         <input type="submit" value="New course">
     </form>
+</div>
 </body>
 </html>

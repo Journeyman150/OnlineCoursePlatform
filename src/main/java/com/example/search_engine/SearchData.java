@@ -105,7 +105,8 @@ public class SearchData implements Searcher {
         }
         return idxSet;
     }
-    //looks for matching indexes for each word in keyword[]
+
+    //looks for matching indexes for all words in keyword[]
     @Override
     public Set<Long> findIndexes(String ... keywords) {
         List<Set<Long>> setList = new ArrayList<>();

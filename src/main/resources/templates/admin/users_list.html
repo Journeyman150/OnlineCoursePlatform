@@ -17,15 +17,12 @@
             <input type="submit" value="Reset search">
         </div>
     </form>
-    <div th:each="user : ${usersList}">
-        <a th:href="@{/admin/user/{id}(id=${user.getId()})}"
-           th:text="${user.getEmail() + ', ' + user.getName() + ' ' + user.getSurname()}"></a>
-    </div>
-    <form th:action="@{/admin/users_list}" th:method="POST">
-        <div>
-            <input type="submit" value="Refresh list">
-        </div>
-    </form>
+    <th:block th:each="user : ${usersList}">
+        <a th:text="${user.getEmail() + ', ' + user.getName() + ' ' + user.getSurname()}"
+           th:href="@{/admin/user/{id}(id=${user.getId()})}">
+        </a><br>
+    </th:block>
+    <div th:text="${message}"></div>
     <hr>
     <a href="/admin/user/new"><button>Add user</button></a>
 </body>

@@ -3,32 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Course</title>
+    <style>
+        .container {
+            margin-left: 10%;
+            margin-top: 5%;
+            margin-right: 10%;
+            font-size: large;
+            font-family: Arial;
+        }
+        input {
+            font-size: large;
+            margin-top: 0.5em;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h2><div th:text="${course.getTitle()}"></div></h2>
-    <a href="/user/courses">Go back</a>
+    <a href="/user/courses">To my courses list</a>
     <br><br>
     <div th:text="${course.getDescription()}"></div>
-    <div th:if="${course.getPrice() > 0 && !userHasAccessToCourse}">
-        <div th:text="'Price: ' + ${course.getPrice()}"></div>
-    </div>
-    <div th:if="${course.getPrice() == 0}">
-        <div>Free course</div>
-    </div>
     <div th:if="${course.isNonPublic() == true}">Non public course</div>
-    <p></p>
-    <div>Lessons list: </div>
+    <br>
+    <b>Lessons list: </b>
+    <br><br>
     <div th:each="lesson: ${course.getLessonsList()}">
         <a th:href="@{/user/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
-        th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
+            th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
+        <br><br>
     </div>
     <div style="color:red" th:text="${errorMessage}"></div>
     <hr>
+    <div th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a> subscriber.</div>
+    <div th:if="${subscribersNum != 1}"><a th:text="${subscribersNum}"></a> subscribers.</div>
+    <hr>
     <form th:if="${!userHasAccessToCourse}" th:action="@{/user/course/subscribe}" method="POST">
+        <div th:if="${course.getPrice() > 0 && !userHasAccessToCourse}">
+            <div>Price: <a th:text="${course.getPrice()}"></a> (your balance: <b th:text="${balance}"></b>)</div>
+        </div>
+        <div th:if="${course.getPrice() == 0}">
+            <div>Free course</div>
+        </div>
         <input name="courseId" type="hidden" th:value="${course.getId()}">
         <input type="submit" value="Subscribe"/>
     </form>
     <div th:if="${userHasAccessToCourse}">You are subscribed to the course.</div>
     <div th:text="${transactionResults}"></div>
+</div>
 </body>
 </html>

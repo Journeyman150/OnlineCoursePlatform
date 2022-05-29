@@ -1,15 +1,18 @@
 package com.example.controllers;
 
+import com.example.domain.Role;
 import com.example.domain.User;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class AccountController {
@@ -27,15 +30,44 @@ public class AccountController {
         return "account";
     }
 
+    @PatchMapping("/account/update")
+    public String update(@RequestParam(name = "email") String email,
+                         @RequestParam(name = "name") String name,
+                         @RequestParam(name = "surname") String surname,
+                         Model model) {
+        User user = userService.getUserById(userService.getAuthorizedUser().getId());
+        model.addAttribute("user", user);
+        boolean thereAreError = false;
+        if (!email.matches("(\\S{1,15})@(\\S{1,15})\\.(\\S{1,5})")) {
+            model.addAttribute("emailErrorMessage", "Email should be correct");
+            thereAreError = true;
+        }
+        if (name.length() < 2 || name.length() > 30) {
+            model.addAttribute("nameErrorMessage", "Name should be between 2 and 30 characters.");
+            thereAreError = true;
+        }
+        if (surname.length() < 2 || surname.length() > 30) {
+            model.addAttribute("surnameErrorMessage", "Surname should be between 2 and 30 characters.");
+            thereAreError = true;
+        }
+        if (!thereAreError) {
+            user.setEmail(email);
+            user.setName(name);
+            user.setSurname(surname);
+            userService.update(user.getId(), user);
+            return "redirect:/account";
+        }
+        return "account";
+    }
+
     @PatchMapping("/account/change_password")
     public String changePassword(@RequestParam(name = "currentPassword") String currentPassword,
                                  @RequestParam(name = "newPassword") String newPassword,
                                  @RequestParam(name = "confirmPassword") String confirmPassword,
                                  Model model) {
         User user = userService.getUserById(userService.getAuthorizedUser().getId());
-        model.addAttribute("user", user);
         if (!userService.passwordMatches(currentPassword, user)) {
-            model.addAttribute("currentPasswordErrorMessage", "You entered the wrong password.");
+            model.addAttribute("currentPasswordErrorMessage", "You entered wrong password.");
             return "account";
         }
         if (newPassword.length() < 7) {
@@ -47,6 +79,22 @@ public class AccountController {
             return "account";
         }
         userService.changePassword(user.getId(), newPassword);
-        return "redirect:/account";
+        model.addAttribute("successMessage", "Password changed successfully.");
+        return getAccountPage(model);
+    }
+
+    @DeleteMapping("/account")
+    public String deleteAccount(Model model,
+                                HttpServletRequest request) throws ServletException {
+        User user = userService.getAuthorizedUser();
+        if (!user.getAuthorities().contains(Role.USER)) {
+            model.addAttribute("message",
+                    "You can't delete your account, because your role is " +
+                    user.getAuthorities().stream().findAny().orElse(null));
+            return getAccountPage(model);
+        }
+        userService.delete(user.getId());
+        request.logout();
+        return "home";
     }
 }

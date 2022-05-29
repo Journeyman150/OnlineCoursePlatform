@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice("com.example.controllers.api")
-public class GlobalExceptionHandler {
+public class ApiExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<IncorrectCourseData> handleException(NoSuchCourseException exception) {
@@ -15,8 +15,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<IncorrectCourseData> handleException(AccessToCourseDeniedException exception) {
+        IncorrectCourseData data = new IncorrectCourseData(exception.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<IncorrectCourseData> handleException(Exception exception) {
         IncorrectCourseData data = new IncorrectCourseData(exception.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
+
+
 }

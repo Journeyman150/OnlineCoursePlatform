@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Edit</title>
 </head>
 <body>
-    <form th:method="PATCH" th:action="@{/admin/user/{id}/edit(id=${user.getId()})}" th:object="${user}">
+    <form th:method="PATCH" th:action="@{/admin/user/{id}/edit(id=${user.getId()})}" th:object="${user}"
+          onsubmit="return confirm('Are you sure you want to update this user?')">
         <label for="name">Имя:</label>
         <input type="text" th:field="*{name}" id="name">
         <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
@@ -18,10 +19,11 @@
         <input type="text" th:field="*{email}" id="email">
         <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>
         <br>
-        <input type="submit" value="Изменить">
+        <input type="submit" value="Change data">
     </form>
     <br>
-    <form th:method="PATCH" th:action="@{/admin/user/{id}/change_password(id=${user.getId()})}" th:object="${user}">
+    <form th:method="PATCH" th:action="@{/admin/user/{id}/change_password(id=${user.getId()})}" th:object="${user}"
+          onsubmit="return confirm('Are you sure you want to change password of this user?')">
         <label for="newPassword">Новый пароль:</label>
         <input type="password" name="newPassword" id="newPassword"> <br>
         <div style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
@@ -30,16 +32,17 @@
         <input type="password" name="confirmPassword" id="confirmPassword"> <br>
         <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
 
-        <input type="submit" value="Сменить пароль">
+        <input type="submit" value="Change password">
     </form>
     <br>
-    <form th:method="PATCH" th:action="@{/admin/user/{id}/change_role(id=${user.getId()})}" th:object="${user}">
+    <form th:method="PATCH" th:action="@{/admin/user/{id}/change_role(id=${user.getId()})}" th:object="${user}"
+          onsubmit="return confirm('Are you sure you want to change role of this user?')">
         <p><select name="role" required="required">
             <option value="">Выберите роль</option>
             <option value="USER">User</option>
             <option value="AUTHOR">Author</option>
         </select></p>
-        <p><input type="submit" value="Сменить роль"></p>
+        <p><input type="submit" value="Change role"></p>
     </form>
 </body>
 </html>
