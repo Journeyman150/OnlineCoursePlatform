@@ -23,15 +23,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/user")
@@ -60,22 +57,7 @@ public class UserController {
         this.accessControlService = accessControlService;
         this.courseInvitationService = courseInvitationService;
     }
-//    @GetMapping()
-//    public String getUserMainPage(@RequestParam(name = "keyword", required = false) String keyword,
-//                                  Model model) {
-//        if (keyword != null && !keyword.equals("") && !keyword.matches("\s+")) {
-//            List<Course> coursesList = new ArrayList<>();
-//            Set<Long> set = coursesSearchData.findIndexes(CoursesSearchData.getSeparateKeywords(keyword));
-//                System.out.println("In user controller: " + Arrays.toString(set.toArray()));
-//            if (set.contains(-1L)) {
-//                model.addAttribute("noResults", "The search has not given any results.");
-//                return "/user/main_page";
-//            }
-//            set.forEach(n -> coursesList.add(courseService.getCourseById(n)));
-//            model.addAttribute("coursesList", coursesList);
-//        }
-//        return "user/main_page";
-//    }
+
     @GetMapping()
     public String getUserMainPage(Model model,
                                   @RequestParam(name = "keyword", required = false) String keyword,
@@ -151,10 +133,16 @@ public class UserController {
                                     Model model) {
         Course course = courseService.getPublicCourseById(courseId);
         User user = userService.getUserById(userService.getAuthorizedUser().getId());
-        if (course == null || accessControlService.userHasAccessToCourse(user.getId(), course.getId())) {
+        if (course == null
+            || accessControlService.userHasAccessToCourse(user.getId(), course.getId())
+            || course.isNonPublic()) {
             return "error/error_page";
         }
         User author = userService.getUserById(course.getAuthorId());
+        if (user.getId() == author.getId()) {
+            courseSubscribeService.subscribe(courseId, user.getId());
+            return "redirect:/user/course/" + courseId;
+        }
         if (user.getBalance() < course.getPrice()) {
             model.addAttribute("transactionResults", "Not enough funds on your balance.");
             boolean userHasAccessToCourse = accessControlService.userHasAccessToCourse(user.getId(), courseId);

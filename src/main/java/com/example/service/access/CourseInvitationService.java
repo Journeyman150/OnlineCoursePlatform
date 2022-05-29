@@ -1,6 +1,7 @@
 package com.example.service.access;
 
 import com.example.dao.CourseInvitationDAO;
+import com.example.domain.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,5 +26,9 @@ public class CourseInvitationService {
 
     public List<Long> getCoursesIdListByInvitedUserId(long userId) {
         return courseInvitationDAO.getCoursesIdListByInvitedUserId(userId);
+    }
+
+    public List<Course> getCoursesListByInvitedUserId(long userId) {
+        return courseInvitationDAO.getCoursesListByInvitedUserId(userId);
     }
 }

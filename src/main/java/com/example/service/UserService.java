@@ -76,10 +76,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void save(User user) {
+    public long save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         long userId = userDAO.save(user);
         usersSearchData.writeData(userId, user.getEmail(), user.getName(), user.getSurname());
+        return userId;
     }
 
     @Transactional

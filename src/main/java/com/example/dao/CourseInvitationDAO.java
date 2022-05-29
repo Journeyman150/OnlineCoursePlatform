@@ -1,5 +1,6 @@
 package com.example.dao;
 
+import com.example.domain.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -8,11 +9,14 @@ import java.util.List;
 
 @Component
 public class CourseInvitationDAO {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final CourseMapper courseMapper;
 
     @Autowired
-    public CourseInvitationDAO(JdbcTemplate jdbcTemplate) {
+    public CourseInvitationDAO(JdbcTemplate jdbcTemplate,
+                               CourseMapper courseMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.courseMapper = courseMapper;
     }
 
     public void addInvitation(long courseId, long userId) {
@@ -29,5 +33,13 @@ public class CourseInvitationDAO {
         return jdbcTemplate.query("SELECT course_id FROM invitations WHERE usr_id = ?",
                 (rs, rowNum) -> rs.getLong("course_id"),
                 userId);
+    }
+
+    public List<Course> getCoursesListByInvitedUserId(long userId) {
+        return jdbcTemplate.query("SELECT courses.* FROM courses " +
+                        "INNER JOIN invitations ON courses.course_id = invitations.course_id " +
+                        "WHERE invitations.usr_id = ?",
+                        courseMapper,
+                        userId);
     }
 }

@@ -5,6 +5,7 @@ import com.example.domain.Lesson;
 import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,10 +30,12 @@ public class LessonService {
         return lessonDAO.getLessonsListByCourseId(courseId);
     }
 
+    @Nullable
     public Lesson getLessonById(long lessonId) {
         return lessonDAO.getLessonById(lessonId);
     }
 
+    @Nullable
     public Lesson getLessonByCourseIdAndLessonNum(long courseId, int lessonNum) {
         return lessonDAO.getLessonByCourseIdAndLessonNum(courseId, lessonNum);
     }

@@ -42,6 +42,7 @@ public class CourseSubscribeService {
         courseSubscribeDAO.subscribe(courseId, userId);
     }
 
+    @Transactional
     public boolean makePayment(User payer, User beneficiary, int price) {
         int payerBalance = payer.getBalance() - price;
         int beneficiaryBalance = beneficiary.getBalance() + price;

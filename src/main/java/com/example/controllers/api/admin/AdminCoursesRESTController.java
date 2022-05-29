@@ -11,12 +11,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/courses")
-public class CoursesRESTAdminController {
+public class AdminCoursesRESTController {
     private final CourseService courseService;
     private final LessonService lessonService;
 
     @Autowired
-    public CoursesRESTAdminController(CourseService courseService, LessonService lessonService) {
+    public AdminCoursesRESTController(CourseService courseService, LessonService lessonService) {
         this.courseService = courseService;
         this.lessonService = lessonService;
     }

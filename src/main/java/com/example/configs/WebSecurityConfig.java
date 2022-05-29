@@ -29,8 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                    .mvcMatchers("/", "/home", "/registration", "/api").permitAll()
-                    .mvcMatchers("/account").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
+                    .mvcMatchers("/", "/home", "/registration", "/api", "/api/registration").permitAll()
+                    .mvcMatchers("/account", "/api/account").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
                     .mvcMatchers("/user/**", "/api/user/**").hasAnyRole(Role.USER.name(), Role.AUTHOR.name())
                     .mvcMatchers("/author/**", "/api/author/**").hasRole(Role.AUTHOR.name())
                     .mvcMatchers("/admin/**", "/api/admin/**").hasRole(Role.ADMIN.name())

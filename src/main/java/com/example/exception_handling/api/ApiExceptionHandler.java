@@ -26,5 +26,10 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<IncorrectUserData> handleException(InvalidUserDataException exception) {
+        IncorrectUserData data = new IncorrectUserData(exception.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
 
 }

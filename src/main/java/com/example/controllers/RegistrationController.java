@@ -1,6 +1,5 @@
 package com.example.controllers;
 
-import com.example.dao.UserDAO;
 import com.example.domain.User;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ public class RegistrationController {
         model.addAttribute("user", new User());
         return "registration";
     }
+
     @PostMapping("/registration")
     public String createUser(@ModelAttribute("user") @Valid User user,
                           BindingResult bindingResult,
