@@ -54,6 +54,7 @@ public class UserCoursesRESTController {
             throw new NoSuchCourseException("No courses by entered keyword(s) found. To find most of them use ?keyword=course. " +
                     "For multiple keywords use this pattern: ?keyword=course%20spring");
         }
+        coursesList.forEach(n -> n.setLessonsList(lessonService.getLessonsListByCourseId(n.getId())));
         return coursesList;
     }
 

@@ -20,7 +20,7 @@
 <body>
 <div class="container">
     <h2><div th:text="${course.getTitle()}"></div></h2>
-    <a href="/user/courses">To my courses list</a>
+    <a href="/user">To main page</a>
     <br><br>
     <div th:text="${course.getDescription()}"></div>
     <div th:if="${course.isNonPublic() == true}">Non public course</div>
