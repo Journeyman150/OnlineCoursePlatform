@@ -3,7 +3,7 @@
       xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <title>Spring Security Example</title>
+    <title>Home</title>
     <style>
         p {
             font-size: xx-large;
@@ -20,6 +20,8 @@
         <h1>Welcome to the course web platform!</h1>
 
         <p>Click <a th:href="@{/hello}">here</a> to continue.</p>
+
+        <p>Or <a th:href="@{/api}">here</a> to see REST API info.</p>
     </div>
 </body>
 </html>

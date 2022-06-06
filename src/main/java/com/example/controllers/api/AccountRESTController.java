@@ -45,6 +45,10 @@ public class AccountRESTController {
     @PatchMapping("/change_password")
     public User changePassword(@RequestBody List<String> passwords) {
         User user = userService.getUserById(userService.getAuthorizedUser().getId());
+        if (passwords.size() != 2) {
+            throw new InvalidUserDataException("The passed list should contain two passwords: " +
+                    "the first one is the old password, the second one is the new password.");
+        }
         if (!userService.passwordMatches(passwords.get(0), user)) {
             throw new InvalidUserDataException("Passed password does not match the old password.");
         }

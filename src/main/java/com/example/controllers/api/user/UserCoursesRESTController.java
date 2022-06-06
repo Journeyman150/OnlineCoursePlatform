@@ -43,10 +43,16 @@ public class UserCoursesRESTController {
     }
 
     @GetMapping()
-    public List<Course> getCoursesListByKeyword(@RequestParam("keyword") String keyword) {
+    public List<Course> getCoursesListByKeyword(@RequestParam(value = "keyword", required = false) String keyword) {
         List<Course> coursesList = courseService.findCourses(keyword);
+        if (keyword == null || keyword.matches("\s*")) {
+            throw new RuntimeException("Required request parameter 'keyword' for method parameter type String is not present. " +
+                    "Request examples: .../api/user/courses?keyword=course; " +
+                    "or .../api/user/courses?keyword=java%20core (for multiple keywords)");
+        }
         if (coursesList.isEmpty()) {
-            throw new NoSuchCourseException("No courses by entered keyword(s) found");
+            throw new NoSuchCourseException("No courses by entered keyword(s) found. To find most of them use ?keyword=course. " +
+                    "For multiple keywords use this pattern: ?keyword=course%20spring");
         }
         return coursesList;
     }

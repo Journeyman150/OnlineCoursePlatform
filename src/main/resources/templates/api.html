@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>REST API</title>
+    <style>
+        p {
+            font-size: xx-large;
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+        div {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 10%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Course web platform API</h1>
+
+        <p><a th:href="@{/swagger-ui/}">Swagger UI</a></p>
+
+        <p style="font-size: x-large">For authorization, you need to send POST request to http://194.87.206.85:9090/login with "username"(email) and "password"
+        parameters. If authorization is successful, you need to use the cookie's "JSESSIONID" value to send REST requests to any
+            http://194.87.206.85:9090/api mappings, except http://194.87.206.85:9090/api/registration.
+            <br><br>
+            For demonstration GET request <b>http://194.87.206.85:9090/api/user/courses?keyword="keyword"</b> doesn't require authorization.</p>
+
+        <p style="font-size: x-large">Example of authorization via Postman:</p>
+        <img th:src="@{/images/postman-login.png}">
+        <br><br>
+        <a style="font-size: x-large">Body of successful authorization:</a>
+        <br>
+        <img th:src="@{/images/body-of-successful-auth.png}">
+        <br><br>
+        <img th:src="@{/images/postman-login-cookie.png}">
+    </div>
+</body>
+</html>

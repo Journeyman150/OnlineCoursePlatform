@@ -4,16 +4,11 @@ import com.example.domain.Role;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -29,7 +24,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                    .mvcMatchers("/", "/home", "/registration", "/api", "/api/registration").permitAll()
+                    .mvcMatchers("/", "/home", "/registration", "/api", "/api/registration",
+                            "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**",
+                            "/images/**", "/api/user/courses").permitAll()
                     .mvcMatchers("/account", "/api/account").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
                     .mvcMatchers("/user/**", "/api/user/**").hasAnyRole(Role.USER.name(), Role.AUTHOR.name())
                     .mvcMatchers("/author/**", "/api/author/**").hasRole(Role.AUTHOR.name())
