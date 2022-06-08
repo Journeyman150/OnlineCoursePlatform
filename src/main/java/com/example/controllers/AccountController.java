@@ -68,15 +68,15 @@ public class AccountController {
         User user = userService.getUserById(userService.getAuthorizedUser().getId());
         if (!userService.passwordMatches(currentPassword, user)) {
             model.addAttribute("currentPasswordErrorMessage", "You entered wrong password.");
-            return "account";
+            return getAccountPage(model);
         }
         if (newPassword.length() < 7) {
             model.addAttribute("newPasswordErrorMessage", "Password length must be greater than 6 characters.");
-            return "account";
+            return getAccountPage(model);
         }
         if (!newPassword.equals(confirmPassword)) {
             model.addAttribute("confirmPasswordErrorMessage", "Passwords do not match.");
-            return "account";
+            return getAccountPage(model);
         }
         userService.changePassword(user.getId(), newPassword);
         model.addAttribute("successMessage", "Password changed successfully.");

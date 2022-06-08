@@ -16,17 +16,16 @@
             font-size: large;
         }
         .rows {
-            width: 100%;
+            margin-left: 1em;
             display: flex;
             flex-wrap: wrap;
-            row-gap: 2em;
-            column-gap: 1em;
+            gap: 1em;
         }
         .coursePlate {
             padding: 0.5em;
             border: 1px solid #CCC;
             border-radius: 1em;
-            width: 25%;
+            width: 30%;
         }
         .courseDescription {
             margin-top: 0.5em;
@@ -40,6 +39,8 @@
         .pagination {
             display: inline-block;
             font-size: large;
+            margin-bottom: 1em;
+            margin-left: 2em;
         }
     </style>
 </head>
@@ -66,7 +67,6 @@
     <br>
     <div class="rows">
     <th:block th:each="course : ${coursesPage}" th:if="${coursesPage.totalPages > 0}">
-        <br>
         <div class="coursePlate">
             <a th:if="${coursesPage.totalPages > 0}" th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
             <br>
@@ -78,13 +78,14 @@
     <br>
     <div th:if="${coursesPage.totalPages > 0}" class="pagination"
          th:each="pageNumber : ${pageNumbers}">
-        <a th:href="@{/user(keyword=${keyword}, size=${coursesPage.size}, page=${pageNumber})}"
+        <a style="margin-right: 1em"
+           th:href="@{/user(keyword=${keyword}, size=${coursesPage.size}, page=${pageNumber})}"
            th:text="${pageNumber}"
-           th:class="${pageNumber==coursesPage.number + 1} ? active"></a>&emsp;
+           th:class="${pageNumber==coursesPage.number + 1} ? active"></a>
     </div>
     <hr>
     <form th:action="@{/logout}" method="POST">
-        <input type="submit" value="Sign Out"/>
+        <input style="margin-top: 1em" type="submit" value="Sign Out"/>
     </form>
 </div>
 </body>
