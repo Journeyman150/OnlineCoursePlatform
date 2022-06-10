@@ -80,11 +80,15 @@ public class UserController {
             String authorName = author.getName() + " " + author.getSurname();
             authorMap.put(authorId, authorName);
         }
-        int balance = userService.getUserById(userService.getAuthorizedUser().getId()).getBalance();
+        try {
+            int balance = userService.getUserById(userService.getAuthorizedUser().getId()).getBalance();
+            model.addAttribute("balance", balance);
+        } catch (Exception e) {
+            System.out.println("Not authorized request.");
+        }
         model.addAttribute("keyword", keyword);
         model.addAttribute("coursesPage", coursesPage);
         model.addAttribute("authorMap", authorMap);
-        model.addAttribute("balance", balance);
         if (coursesPage.isEmpty() && keyword != null && !keyword.matches("\s*")) {
             model.addAttribute("noResults", "The search has not given any results.");
         }

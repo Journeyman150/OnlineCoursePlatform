@@ -32,11 +32,12 @@
     </form>
     <hr>
     <b>Lessons list: </b>
+    <br><br>
     <div th:each="lesson: ${course.getLessonsList()}">
         <a th:href="@{/author/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
         th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
+        <br><br>
     </div>
-    <br>
     <form th:action="@{/author/course/{courseId}/lessons/new(courseId=${course.getId()})}" th:method="GET">
         <input type="submit" value="New lesson">
     </form>

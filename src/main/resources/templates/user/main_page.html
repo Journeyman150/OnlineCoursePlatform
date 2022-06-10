@@ -25,7 +25,7 @@
             padding: 0.5em;
             border: 1px solid #CCC;
             border-radius: 1em;
-            width: 30%;
+            width: 28%;
         }
         .courseDescription {
             margin-top: 0.5em;
@@ -84,9 +84,11 @@
            th:class="${pageNumber==coursesPage.number + 1} ? active"></a>
     </div>
     <hr>
+    <div sec:authorize="isAuthenticated()">
     <form th:action="@{/logout}" method="POST">
         <input style="margin-top: 1em" type="submit" value="Sign Out"/>
     </form>
+    </div>
 </div>
 </body>
 </html>
