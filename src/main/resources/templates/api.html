@@ -7,21 +7,25 @@
     <style>
         p {
             font-size: xx-large;
-            margin-left: 10%;
-            margin-right: 10%;
         }
         div {
             font-family: Arial;
-            text-align: center;
             margin-top: 10%;
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
 <body>
     <div>
-        <h1>Course web platform API</h1>
+        <h1 style="text-align: center">Course web platform API</h1>
 
-        <p><a th:href="@{/swagger-ui/}">Swagger UI</a></p>
+        <p style="text-align: center"><a th:href="@{/swagger-ui/}">Swagger UI</a></p>
 
         <p style="font-size: x-large">For authorization, you need to send POST request to http://194.87.206.85:9090/login with "username"(email) and "password"
         parameters. If authorization is successful, you need to use the cookie's "JSESSIONID" value to send REST requests to any
@@ -32,7 +36,7 @@
         <p style="font-size: x-large">Example of authorization via Postman:</p>
         <img th:src="@{/images/postman-login.png}">
         <br><br>
-        <a style="font-size: x-large">Body of successful authorization:</a>
+        <p style="font-size: x-large">Body of successful authorization:</p>
         <br>
         <img th:src="@{/images/body-of-successful-auth.png}">
         <br><br>
