@@ -1,6 +1,5 @@
-package com.example.service;
+package com.example.search_engine;
 
-import com.example.search_engine.SearchData;
 import org.junit.Before;
 import org.junit.Test;
 
