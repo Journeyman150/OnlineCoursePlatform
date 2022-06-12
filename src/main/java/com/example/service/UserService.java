@@ -24,7 +24,6 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
-    private List<User> filteredUsersList;
     private UsersSearchData usersSearchData;
 
     @Autowired
@@ -34,7 +33,6 @@ public class UserService implements UserDetailsService {
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
         this.usersSearchData = usersSearchData;
-        filteredUsersList = new ArrayList<>();
     }
 
     @Override
@@ -50,6 +48,7 @@ public class UserService implements UserDetailsService {
         } else return user.getId();
     }
 
+    @Nullable
     public User getUserById(long userId) {
         return userDAO.getUserById(userId);
     }
@@ -67,7 +66,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getFilteredUsersList(String keyword) {
-        filteredUsersList.clear();
+        List<User> filteredUsersList = new ArrayList<>();
         Set<Long> idxes = usersSearchData.findIndexes(keyword);
         System.out.println(idxes);
         if (!idxes.contains(-1L))
