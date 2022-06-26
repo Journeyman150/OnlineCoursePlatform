@@ -94,6 +94,10 @@ public class AuthorController {
             model.addAttribute("message", "User with entered email not found.");
             return getCourse(courseId, model);
         }
+        if (courseInvitationService.getInvitedUsersIdListByCourseId(courseId).contains(userId)) {
+            model.addAttribute("message", "User with entered email already invited.");
+            return getCourse(courseId, model);
+        }
         courseInvitationService.addInvitation(courseId, userId);
         model.addAttribute("message", "User with email " + userEmail + " invited for this course.");
         return getCourse(courseId, model);
