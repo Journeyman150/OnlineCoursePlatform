@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Course</title>
@@ -20,7 +21,7 @@
 <body>
 <div class="container">
     <h2><div th:text="${course.getTitle()}"></div></h2>
-    <a href="/user">To main page</a>
+    <a href="../main_page">To main page</a>
     <br><br>
     <div th:text="${course.getDescription()}"></div>
     <div th:if="${course.isNonPublic() == true}">Non public course</div>
@@ -28,7 +29,7 @@
     <b>Lessons list: </b>
     <br><br>
     <div th:each="lesson: ${course.getLessonsList()}">
-        <a th:href="@{/user/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
+        <a th:href="@{/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
             th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
         <br><br>
     </div>
@@ -37,9 +38,12 @@
     <div th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a> subscriber.</div>
     <div th:if="${subscribersNum != 1}"><a th:text="${subscribersNum}"></a> subscribers.</div>
     <hr>
-    <form th:if="${!userHasAccessToCourse}" th:action="@{/user/course/subscribe}" method="POST">
+    <form th:if="${!userHasAccessToCourse}" th:action="@{/course/subscribe}"
+          method="POST" onsubmit="return confirm('Are you sure you want to subscribe this course?')">
         <div th:if="${course.getPrice() > 0 && !userHasAccessToCourse}">
-            <div>Price: <a th:text="${course.getPrice()}"></a> (your balance: <b th:text="${balance}"></b>)</div>
+            <div>Price: <a th:text="${course.getPrice()}"></a>
+                <a sec:authorize="isAuthenticated()"> (your balance: <b th:text="${balance}"></b>) </a>
+            </div>
         </div>
         <div th:if="${course.getPrice() == 0}">
             <div>Free course</div>

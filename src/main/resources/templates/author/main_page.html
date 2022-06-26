@@ -25,7 +25,7 @@
 <!--    <a href="author/statistic">Statistics</a>&emsp;-->
     <a href="../account">Account</a>&emsp;
 <!--    <a href="../notifications">Notifications</a>&emsp;-->
-    <a href="../user">Learning</a>&emsp;
+    <a href="../main_page">Learning</a>&emsp;
     <a sec:authorize="isAuthenticated()"><b style="font-size: medium" th:text="'Your balance: ' + ${balance}"></b></a>
     <hr>
     <form th:action="@{/logout}" method="post">

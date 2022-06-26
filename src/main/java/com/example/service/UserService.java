@@ -8,6 +8,8 @@ import com.example.search_engine.IndexedData;
 import com.example.search_engine.UsersSearchData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -53,8 +55,14 @@ public class UserService implements UserDetailsService {
         return userDAO.getUserById(userId);
     }
 
+    @Nullable
     public User getAuthorizedUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user instanceof UserDetails) {
+            return (User) user;
+        } else {
+            return null;
+        }
     }
 
     public boolean isUserAlreadyExist(String email) {

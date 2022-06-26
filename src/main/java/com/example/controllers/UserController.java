@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping("/user")
 public class UserController {
     @Value("${authorRolePrice}")
     private int authorRolePrice;
@@ -58,7 +57,7 @@ public class UserController {
         this.courseInvitationService = courseInvitationService;
     }
 
-    @GetMapping()
+    @GetMapping("/main_page")
     public String getUserMainPage(Model model,
                                   @RequestParam(name = "keyword", required = false) String keyword,
                                   @RequestParam("page") Optional<Integer> page,
@@ -120,16 +119,28 @@ public class UserController {
                             Model model) {
         User user = userService.getAuthorizedUser();
         Course course = courseService.getCourseById(courseId);
-        boolean userHasAccessToCourse = accessControlService.userHasAccessToCourse(user.getId(), courseId);
-        if (course == null || (course.isNonPublic() & !userHasAccessToCourse)) {
-            model.addAttribute("errorMessage", "Access denied.");
-            return "error/error_page";
+        if (user != null) {
+            boolean userHasAccessToCourse = accessControlService.userHasAccessToCourse(user.getId(), courseId);
+            if (course == null || (course.isNonPublic() & !userHasAccessToCourse)) {
+                model.addAttribute("errorMessage", "Access denied.");
+                return "error/error_page";
+            }
+            course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
+            model.addAttribute("course", course);
+            model.addAttribute("userHasAccessToCourse", userHasAccessToCourse);
+            model.addAttribute("subscribersNum", courseSubscribeService.getSubscribedUsersNumberByCourseId(courseId));
+            model.addAttribute("balance", userService.getUserById(user.getId()).getBalance());
         }
-        course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
-        model.addAttribute("course", course);
-        model.addAttribute("userHasAccessToCourse", userHasAccessToCourse);
-        model.addAttribute("subscribersNum", courseSubscribeService.getSubscribedUsersNumberByCourseId(courseId));
-        model.addAttribute("balance", userService.getUserById(user.getId()).getBalance());
+        if (user == null) {
+            if (course == null || course.isNonPublic()) {
+                model.addAttribute("errorMessage", "Access denied.");
+                return "error/error_page";
+            }
+            course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
+            model.addAttribute("course", course);
+            model.addAttribute("userHasAccessToCourse", false);
+            model.addAttribute("subscribersNum", courseSubscribeService.getSubscribedUsersNumberByCourseId(courseId));
+        }
         return "user/course";
     }
     @PostMapping("/course/subscribe")
@@ -137,15 +148,16 @@ public class UserController {
                                     Model model) {
         Course course = courseService.getPublicCourseById(courseId);
         User user = userService.getUserById(userService.getAuthorizedUser().getId());
-        if (course == null
-            || accessControlService.userHasAccessToCourse(user.getId(), course.getId())
-            || course.isNonPublic()) {
+        if (course == null || course.isNonPublic()) {
             return "error/error_page";
+        }
+        if (accessControlService.userHasAccessToCourse(user.getId(), course.getId())) {
+            return getCourse(courseId, model);
         }
         User author = userService.getUserById(course.getAuthorId());
         if (user.getId() == author.getId()) {
             courseSubscribeService.subscribe(courseId, user.getId());
-            return "redirect:/user/course/" + courseId;
+            return "redirect:/course/" + courseId;
         }
         if (user.getBalance() < course.getPrice()) {
             model.addAttribute("transactionResults", "Not enough funds on your balance.");
@@ -157,7 +169,7 @@ public class UserController {
         } else {
             courseSubscribeService.subscribeUserAndMakePayment(user, author, course);
         }
-        return "redirect:/user/course/" + courseId;
+        return "redirect:/course/" + courseId;
     }
     @GetMapping("/course/{courseId}/lesson/{num}")
     public String getLesson(@PathVariable("courseId") long courseId,
@@ -223,7 +235,7 @@ public class UserController {
             throw new Exception("User with id " + user.getId() + " does not have invitation for course with id " + courseId);
         }
         courseSubscribeService.subscribe(courseId, user.getId());
-        return "redirect:/user/invitations";
+        return "redirect:/invitations";
     }
 
     @GetMapping("/become_a_teacher")
@@ -242,6 +254,6 @@ public class UserController {
         userService.changeRole(user.getId(), Role.AUTHOR.name());
         userService.updateUserBalance(user.getId(), user.getBalance() - authorRolePrice);
         request.logout();
-        return "redirect:/user";
+        return "redirect:/main_page";
     }
 }

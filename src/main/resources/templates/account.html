@@ -23,7 +23,7 @@
     <h2>My account</h2>
     <br>
     <div sec:authorize="isAuthenticated()">
-        <a href="/user">Back to Learn</a>
+        <a href="/main_page">Back to Learn</a>
         <br><br>
     </div>
     <div sec:authorize="hasRole('ROLE_AUTHOR')">

@@ -47,16 +47,16 @@
 <body>
 <div class="container">
     <h2>Learning</h2>
-    <a href="user/courses">My learning</a>&emsp;
+    <a href="../courses">My learning</a>&emsp;
 <!--    <a href="user/statistic">Statistics</a>&emsp;-->
     <a href="../account">My Account</a>&emsp;
-    <a href="user/invitations">Invitations</a>&emsp;
-    <a sec:authorize="hasRole('ROLE_USER')" href="user/become_a_teacher">Become a teacher</a>
+    <a href="../invitations">Invitations</a>&emsp;
+    <a sec:authorize="hasRole('ROLE_USER')" href="../become_a_teacher">Become a teacher</a>
     <a sec:authorize="hasRole('ROLE_AUTHOR')" href="../author">Teaching</a>&emsp;
     <a sec:authorize="isAuthenticated()"><b style="font-size: medium" th:text="'Your balance: ' + ${balance}"></b></a>
     <hr>
     <div style="color:rgba(1,49,169,0.6)">Enter keyword "course" to find most of them:</div>
-    <form th:action="@{/user}" th:method="GET">
+    <form th:action="@{/main_page}" th:method="GET">
         <div>
             <label for="search">Find courses:</label>
             <input name="keyword" type="text" id="search">
@@ -68,7 +68,7 @@
     <div class="rows">
     <th:block th:each="course : ${coursesPage}" th:if="${coursesPage.totalPages > 0}">
         <div class="coursePlate">
-            <a th:if="${coursesPage.totalPages > 0}" th:href="@{/user/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
+            <a th:if="${coursesPage.totalPages > 0}" th:href="@{/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
             <br>
             <div class="courseDescription" th:if="${coursesPage.totalPages > 0}" th:text="${course.getDescription()}"></div>
             <i class="author" style="color:gray" th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
@@ -79,7 +79,7 @@
     <div th:if="${coursesPage.totalPages > 0}" class="pagination"
          th:each="pageNumber : ${pageNumbers}">
         <a style="margin-right: 1em"
-           th:href="@{/user(keyword=${keyword}, size=${coursesPage.size}, page=${pageNumber})}"
+           th:href="@{/main_page(keyword=${keyword}, size=${coursesPage.size}, page=${pageNumber})}"
            th:text="${pageNumber}"
            th:class="${pageNumber==coursesPage.number + 1} ? active"></a>
     </div>

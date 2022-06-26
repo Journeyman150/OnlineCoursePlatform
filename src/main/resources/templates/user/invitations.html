@@ -32,23 +32,23 @@
 <div class="container">
     <h2>Invitations</h2>
     <br>
-    <a href="/user">Go back</a>
+    <a href="../main_page">To main page</a>
     <div th:text="${message}"></div>
     <br>
     <th:block th:each="course : ${coursesList}">
         <br>
         <div class="coursePlate">
             <a th:if="${subscribedCoursesIdSet.contains(course.getId())}"
-               th:text="${course.getTitle()}" th:href="@{/user/course/{id}(id=${course.getId()})}"></a>
+               th:text="${course.getTitle()}" th:href="@{/course/{id}(id=${course.getId()})}"></a>
             <a th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
                th:text="${course.getTitle()}"></a>
             <br>
             <div class="courseDescription" th:text="${course.getDescription()}"></div>
             <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
             <form th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
-                  th:method="POST" th:action="@{/user/accept_invitation}">
+                  th:method="POST" th:action="@{/accept_invitation}">
                 <input type="hidden" name="courseId" th:value="${course.getId()}">
-                <input type="submit" value="Accept invitation">
+                <input style="font-size: large" type="submit" value="Accept invitation">
             </form>
         </div>
     </th:block>

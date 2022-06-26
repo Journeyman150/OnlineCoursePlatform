@@ -16,13 +16,13 @@
 <body>
 <div class="container">
     <h2><div th:text="${'Lesson ' + lesson.getNum()}"></div></h2>
-    <a th:href="@{/user/course/{courseId}(courseId=${lesson.getCourseId()})}">Go back</a>
+    <a th:href="@{/course/{courseId}(courseId=${lesson.getCourseId()})}">Go back</a>
     <br><br>
     <div th:text="'Title: ' + ${lesson.getTitle()}"></div>
     <div th:text="'Description: ' + ${lesson.getDescription()}">Description:</div>
     <br>
     <div>Watch lesson:</div>
-    <video width="640" height="480" controls th:src="@{/user/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
+    <video width="640" height="480" controls th:src="@{/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
     <br>
 </div>
 </body>
