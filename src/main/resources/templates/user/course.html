@@ -33,6 +33,9 @@
             th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
         <br><br>
     </div>
+    <div>Watch course demo:</div>
+    <video width="640" height="480" controls th:src="@{/course/{courseId}/demo_video(courseId=${course.getId()})}"></video>
+    <br>
     <div style="color:red" th:text="${errorMessage}"></div>
     <hr>
     <div th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a> subscriber.</div>

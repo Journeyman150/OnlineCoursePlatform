@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -189,7 +190,20 @@ public class UserController {
         model.addAttribute("lesson", lesson);
         return "user/lesson";
     }
-
+    @GetMapping("/course/{courseId}/demo_video")
+    public ResponseEntity<Resource> getDemoVideo(@PathVariable long courseId) throws AccessDeniedException {
+        User user = userService.getAuthorizedUser();
+        if (user == null && courseService.getCourseById(courseId).isNonPublic()) {
+            throw new AccessDeniedException("Access to file denied.");
+        }
+        List<Lesson> lessons = lessonService.getLessonsListByCourseId(courseId);
+        int num = lessons.stream().mapToInt(Lesson::getNum).min().orElse(0);
+        Resource resource = new FileSystemResource(lessonService.getFile(courseId, num));
+        return ResponseEntity.ok()
+                .contentLength(2L*1024*1024*1024)
+                .contentType(MediaType.MULTIPART_MIXED)
+                .body(resource);
+    }
     @GetMapping("/course/{courseId}/lesson/{num}/video")
     public ResponseEntity<Resource> getLessonVideo(@PathVariable long courseId,
                                                    @PathVariable int num) throws IOException {
