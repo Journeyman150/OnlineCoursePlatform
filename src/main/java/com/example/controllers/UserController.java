@@ -187,6 +187,9 @@ public class UserController {
             model.addAttribute("errorMessage", "Lesson doesn't exist.");
             return "error/error_page";
         }
+        Course course = courseService.getCourseById(courseId);
+        course.setLessonsList(lessonService.getLessonsListByCourseId(courseId));
+        model.addAttribute("course", course);
         model.addAttribute("lesson", lesson);
         return "user/lesson";
     }

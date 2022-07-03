@@ -4,58 +4,79 @@
 <head>
     <meta charset="UTF-8">
     <title>Course</title>
-    <style>
-        .container {
-            margin-left: 10%;
-            margin-top: 5%;
-            margin-right: 10%;
-            font-size: large;
-            font-family: Arial;
-        }
-        input {
-            font-size: large;
-            margin-top: 0.5em;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/learning-style.css">
 </head>
 <body>
-<div class="container">
-    <h2><div th:text="${course.getTitle()}"></div></h2>
-    <a href="../main_page">To main page</a>
-    <br><br>
-    <div th:text="${course.getDescription()}"></div>
-    <div th:if="${course.isNonPublic() == true}">Non public course</div>
-    <br>
-    <b>Lessons list: </b>
-    <br><br>
-    <div th:each="lesson: ${course.getLessonsList()}">
-        <a th:href="@{/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}"
-            th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
-        <br><br>
+<header>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+            </a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/courses">My learning</a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/invitations">Invitations</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+            <a href="/author">Teaching</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+            <a href="/become_a_teacher">Become a teacher</a>
+        </div>
     </div>
-    <h4>Watch course demo:</h4>
-    <video width="640" height="480" style="background-color: #191919" controls th:src="@{/course/{courseId}/demo_video(courseId=${course.getId()})}"></video>
-    <br>
-    <div style="color:red" th:text="${errorMessage}"></div>
-    <hr>
-    <div th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a> subscriber.</div>
-    <div th:if="${subscribersNum != 1}"><a th:text="${subscribersNum}"></a> subscribers.</div>
-    <hr>
-    <form th:if="${!userHasAccessToCourse}" th:action="@{/course/subscribe}"
-          method="POST" onsubmit="return confirm('Are you sure you want to subscribe this course?')">
-        <div th:if="${course.getPrice() > 0 && !userHasAccessToCourse}">
-            <div>Price: <a th:text="${course.getPrice()}"></a>
-                <a sec:authorize="isAuthenticated()"> (your balance: <b th:text="${balance}"></b>) </a>
+    <div class="navbar__block">
+        <div sec:authorize="isAuthenticated()" class="navbar__menu-item navbar__balance">
+            <b th:text="'Balance: ' + ${balance}"></b>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/account">
+                <img src="/icons/account-icon.png" alt="My account">
+            </a>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="lesson-list">
+        <b><div class="lesson-list__item lesson-list__section-item">Lesson list:</div></b>
+        <div th:each="lesson: ${course.getLessonsList()}">
+            <a th:href="@{/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}">
+                <div class="lesson-list__item lesson-list__sub-item"
+                     th:text="${lesson.getNum() + '. ' + lesson.getTitle()}">lesson 0</div>
+            </a>
+        </div>
+    </div>
+    <div class="course-data">
+        <h2 class="course-data__ver-item" th:text="${course.getTitle()}">Title</h2>
+        <div class="course-data__ver-item top-border" th:text="${course.getDescription()}">Description</div>
+        <div class="course-data__ver-item remark bot-border" th:if="${course.isNonPublic() == true}">Non public course</div>
+        <div class="course-data__ver-item above-video-item">Watch course demo:</div>
+        <video class="video" width="80%" height="50%" style="background-color: #191919" controls th:src="@{/course/{courseId}/demo_video(courseId=${course.getId()})}"></video>
+        <div class="course-data__ver-item" style="color:red" th:text="${errorMessage}"></div>
+        <form class="course-data__ver-item under-video-items" th:if="${!userHasAccessToCourse}" th:action="@{/course/subscribe}"
+              method="POST" onsubmit="return confirm('Are you sure you want to subscribe this course?')">
+            <div class="under-video__hor-item" th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a>&nbsp;subscriber.</div>
+            <div class="under-video__hor-item" th:if="${subscribersNum != 1}"><a th:text="${subscribersNum}"></a>&nbsp;subscribers.</div>
+            <div th:if="${course.getPrice() > 0 && !userHasAccessToCourse}">
+                <div class="under-video__hor-item">Price: <a th:text="${course.getPrice()}"></a>
+                    <a sec:authorize="isAuthenticated()"> (your balance: <b th:text="${balance}"></b>) </a>
+                </div>
             </div>
-        </div>
-        <div th:if="${course.getPrice() == 0}">
-            <div>Free course</div>
-        </div>
-        <input name="courseId" type="hidden" th:value="${course.getId()}">
-        <input type="submit" value="Subscribe"/>
-    </form>
-    <div th:if="${userHasAccessToCourse}">You are subscribed to the course.</div>
-    <div th:text="${transactionResults}"></div>
+            <div th:if="${course.getPrice() == 0}">
+                <div class="under-video__hor-item">Free course</div>
+            </div>
+            <input name="courseId" type="hidden" th:value="${course.getId()}">
+            <input class="under-video__hor-item" type="submit" value="Subscribe"/>
+        </form>
+        <div th:if="${userHasAccessToCourse}"><br></div>
+        <div class="top-border"></div>
+        <div class="course-data__ver-item" th:if="${userHasAccessToCourse}">You are subscribed to the course.</div>
+        <div class="course-data__ver-item" th:text="${transactionResults}"></div>
+    </div>
+    <div class="empty-block"></div>
 </div>
 </body>
 </html>

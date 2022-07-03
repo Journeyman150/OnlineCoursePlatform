@@ -15,16 +15,16 @@
                 </a>
             </div>
             <div class="navbar__menu-item">
-                <a href="../courses">My learning</a>
+                <a href="/courses">My learning</a>
             </div>
             <div class="navbar__menu-item">
-                <a href="../invitations">Invitations</a>
+                <a href="/invitations">Invitations</a>
             </div>
             <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
-                <a href="../author">Teaching</a>
+                <a href="/author">Teaching</a>
             </div>
             <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
-                <a href="../become_a_teacher">Become a teacher</a>
+                <a href="/become_a_teacher">Become a teacher</a>
             </div>
         </div>
         <div class="navbar__block">
@@ -32,7 +32,7 @@
                 <b th:text="'Balance: ' + ${balance}"></b>
             </div>
             <div class="navbar__menu-item">
-                <a href="../account">
+                <a href="/account">
                     <img src="/icons/account-icon.png" alt="My account">
                 </a>
             </div>

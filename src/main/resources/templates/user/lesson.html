@@ -1,29 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>lesson</title>
-    <style>
-        .container {
-            margin-left: 10%;
-            margin-top: 5%;
-            margin-right: 10%;
-            font-family: Arial;
-            font-size: large;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/learning-style.css">
+
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/learning-style.css">
 </head>
 <body>
+<header>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+            </a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/courses">My learning</a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/invitations">Invitations</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+            <a href="/author">Teaching</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+            <a href="/become_a_teacher">Become a teacher</a>
+        </div>
+    </div>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/account">
+                <img src="/icons/account-icon.png" alt="My account">
+            </a>
+        </div>
+    </div>
+</header>
 <div class="container">
-    <h2><div th:text="${'Lesson ' + lesson.getNum()}"></div></h2>
-    <a th:href="@{/course/{courseId}(courseId=${lesson.getCourseId()})}">Go back</a>
-    <br><br>
-    <div th:text="'Title: ' + ${lesson.getTitle()}"></div>
-    <div th:text="'Description: ' + ${lesson.getDescription()}">Description:</div>
-    <br>
-    <div>Watch lesson:</div>
-    <video width="640" height="480" style="background-color: #191919" controls th:src="@{/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
-    <br>
+    <div class="lesson-list">
+        <b><div class="lesson-list__item lesson-list__section-item">Lesson list:</div></b>
+        <div th:each="lesson: ${course.getLessonsList()}">
+            <a th:href="@{/course/{courseId}/lesson/{num}(courseId=${course.getId()}, num=${lesson.getNum()})}">
+                <div class="lesson-list__item lesson-list__sub-item"
+                     th:text="${lesson.getNum() + '. ' + lesson.getTitle()}">lesson 0</div>
+            </a>
+        </div>
+    </div>
+    <div class="course-data">
+        <h2 class="course-data__ver-item"th:text="${'Lesson ' + lesson.getNum()}">Lesson num</h2>
+        <div class="course-data__ver-item top-border" style="font-weight: bold"
+             th:text="${lesson.getTitle()}">Title</div>
+        <div class="course-data__ver-item bot-border"
+             th:text="${lesson.getDescription()}">Description</div>
+        <div class="course-data__ver-item above-video-item">Watch lesson:</div>
+        <video class="video" width="80%" height="50%" style="background-color: #191919" controls th:src="@{/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
+        <br>
+    </div>
 </div>
 </body>
 </html>
