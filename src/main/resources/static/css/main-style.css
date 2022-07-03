@@ -70,7 +70,7 @@ header {
     background-color: #fdf2e6;
     border-radius: 0.5em;
 }
-input {
+.input-search {
     font-size: large;
     padding: 0.25em;
     border: 1px solid #ccc;
@@ -95,7 +95,7 @@ input {
 }
 .input-button:hover {
     color: #191919;
-    background-color: #ded8d4;
+    background-color: #e5deda;
     border-color: #ded8d4;
 }
 .input-button:focus {
@@ -159,8 +159,7 @@ input {
     transition: all 0.1s ease-in;
 }
 .pagination__page:hover {
-    background-color: #c4ae96;
-    color: #3f3f3f;
+    background-color: #d97100;
 }
 .pagination__page-number {
     padding: 1em;
@@ -172,12 +171,22 @@ footer {
     width: 100%;
     background-color: #e0e0e0;
     justify-content: space-between;
+    align-content: center;
 }
 .bottom-box__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
     flex-basis: 33%;
     font-size: 0.8em;
-    margin: 2em;
+    margin: 1.5em;
 }
-.bottom-box__item div{
-    text-align: center;
+.bottom-box__item__center {
+    justify-content: space-around;
+}
+.bottom-box__item__center div {
+    padding-left: 1em;
+    padding-right: 1em;
+    margin: 0.5em;
+    /*min-width: 100px;*/
 }

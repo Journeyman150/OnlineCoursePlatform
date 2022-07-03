@@ -34,9 +34,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers("/admin/**", "/api/admin/**").hasRole(Role.ADMIN.name())
                     .anyRequest().authenticated()
                 .and()
-                    .formLogin().loginPage("/login").permitAll()
+                    .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/main_page")
+                    .permitAll()
                 .and()
-                    .logout().permitAll();
+                    .logout()
+                    .permitAll();
     }
 
     @Bean

@@ -43,9 +43,9 @@
             <div style="color:#c5b19b">Enter keyword "course" to find most of them:</div>
             <form th:action="@{/main_page}" th:method="GET">
                 <div>
-                    <input class="input-field" name="keyword" type="search" placeholder="Course name or description"
+                    <input class="input-search input-field" name="keyword" type="search" placeholder="Course name or description"
                     aria-label="Search">
-                    <input class="input-button" type="submit" value="Search">
+                    <input class="input-search input-button" type="submit" value="Search">
                 </div>
             </form>
             <div th:text="${noResults}"></div>
@@ -84,16 +84,17 @@
         </div>
     </div>
     <footer class="bottom-box">
-        <div class="bottom-box__item">
-            2022. Demo version
+        <div class="bottom-box__item bottom-box__item__left">
+            <div>2022. Demo version</div>
+        </div>
+        <div class="bottom-box__item bottom-box__item__center">
+            <div><a href="/">Hello page</a></div>
+            <div><a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a></div>
+            <div><a href="/api">REST api info</a></div>
         </div>
         <div class="bottom-box__item">
             <div>
-            <a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a>
             </div>
-        </div>
-        <div class="bottom-box__item">
-            <a></a>
         </div>
     </footer>
 </body>

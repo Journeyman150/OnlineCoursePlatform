@@ -4,67 +4,62 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Login </title>
-    <style>
-        form {
-            /* Расположим форму по центру страницы */
-            margin: 0 auto;
-            width: 30%;
-            /* Определим контур формы */
-            padding: 1em;
-            border: 1px solid #CCC;
-            border-radius: 1em;
-        }
-        /*label {*/
-        /*    display: inline-block;*/
-        /*    width: 250px;*/
-        /*    text-align: right;*/
-        /*}*/
-
-        input {
-            margin-top: 1em;
-            font-size: large;
-            width: 60%;
-            position: relative;
-            left: 50%;
-            transform: translate(-50%, 0);
-            box-sizing: border-box;
-            border: 1px solid #999;
-        }
-        div {
-            font-size: large;
-        }
-        button {
-            /* Этот дополнительный внешний отступ примерно равен расстоянию
-               между текстами-подсказками и текстовыми полями */
-            margin-top: 1em;
-            position: relative;
-            left: 50%;
-            transform: translate(-50%, 0);
-            font-size: large;
-        }
-        .text {
-            margin-top: 1em;
-            text-align: center;
-            font-family: Arial;
-            font-size: large;
-        }
-
-    </style>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/enter-style.css">
 </head>
 <body>
+<header>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+            </a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="../courses">My learning</a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="../invitations">Invitations</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+            <a href="../author">Teaching</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+            <a href="../become_a_teacher">Become a teacher</a>
+        </div>
+    </div>
+    <div class="navbar__block">
+        <div>
+        </div>
+    </div>
+</header>
 <form th:action="@{/login}" method="post">
     <div class="text"><h3>Welcome! Please log in:</h3></div>
     <div class="text" style="color: red" th:if="${param.logout}">
         You have been logged out.
     </div>
-    <input type="text" name="username" placeholder="Email"/>
+    <input class="input-user-data input-user-data__field" type="text" name="username" placeholder="Email"/>
+    <input class="input-user-data input-user-data__field" type="password" name="password" placeholder="Password"/>
+    <br>
+    <button class="input-user-data input-user-data__button" type="submit">Log in</button>
     <div class="text" style="color: red" th:if="${param.error}">
         Invalid username and/or password.
     </div>
-    <input type="password" name="password" placeholder="Password"/>
     <br>
-    <button type="submit">Log in</button>
-    <div class="text"><a href="/registration" class="button">Sign up</a></div>
+    <div class="text"><a href="/registration" class="button"><div class="log-in-sign-up">Sign up</div></a></div>
 </form>
+<footer class="bottom-box">
+    <div class="bottom-box__item bottom-box__item__left">
+        <div>2022. Demo version</div>
+    </div>
+    <div class="bottom-box__item bottom-box__item__center">
+        <div><a href="/">Hello page</a></div>
+        <div><a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a></div>
+        <div><a href="/api">REST api info</a></div>
+    </div>
+    <div class="bottom-box__item">
+        <div></div>
+    </div>
+</footer>
 </body>
 </html>

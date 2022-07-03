@@ -1,0 +1,55 @@
+form {
+    margin: 0 auto;
+    padding-top: 1em;
+    max-width: 22em;
+    box-shadow: 0 0 1em 0 #fdf2e6;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.input-user-data {
+    margin-top: 0.5em;
+    padding: 0.5em;
+    width: 70%;
+    font-size: large;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    box-sizing: border-box;
+    border: 1px solid #c9c9c9;
+    border-radius: 4px;
+}
+.input-user-data__field {
+    color: #3f3f3f;
+}
+.input-user-data:focus {
+    outline: none;
+}
+.input-user-data__button {
+    color: #fdf2e6;
+    font-weight: bold;
+    background-color: #e77900;
+    border-color: #e37802;
+    transition: all 0.1s ease-in;
+}
+.input-user-data__button:hover {
+    background-color: #d97100;
+}
+.text {
+    text-align: center;
+}
+.text a {
+    color: #e77900;
+}
+.log-in-sign-up {
+    margin-top: 1.5em;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #e3dfdd;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    transition: all 0.1s ease-in;
+}
+.log-in-sign-up:hover {
+    background-color: #fdf9f5;
+}
