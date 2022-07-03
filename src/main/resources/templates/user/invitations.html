@@ -1,55 +1,98 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Invitations</title>
+    <link rel="stylesheet" href="/css/main-style.css">
+<!--    <link rel="stylesheet" href="/static/css/main-style.css">-->
     <style>
         .container {
-            margin-left: 10%;
-            margin-top: 5%;
-            margin-right: 10%;
-            font-size: large;
-            font-family: Arial;
+            padding-left: 2em;
         }
         .coursePlate {
-            padding: 0.5em;
-            border: 1px solid #CCC;
-            border-radius: 1em;
-            width: 25%;
-            max-height: 100px;
+            margin-bottom: 1em;
         }
-        .courseDescription {
-            text-overflow:ellipsis;
-            overflow:hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            white-space: normal;
+        .subscribe-to-course {
+            font-size: large;
+            padding: 0.2em;
+            margin-top: 0.5em;
+            border-radius: 5px;
+            border: 1px solid #d97100;
+            background-color: #e77900;
+            color: #fdf2e6;
+            transition: all 0.1s ease-in;
+        }
+        .subscribe-to-course:hover {
+            background-color: #d97100;
         }
     </style>
 </head>
 <body>
+<header>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+            </a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/courses">My learning</a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/invitations">Invitations</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+            <a href="/author">Teaching</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+            <a href="/become_a_teacher">Become a teacher</a>
+        </div>
+    </div>
+    <div class="navbar__block">
+        <div sec:authorize="isAuthenticated()" class="navbar__menu-item navbar__balance">
+            <b th:text="'Balance: ' + ${balance}"></b>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/account">
+                <img src="/icons/account-icon.png" alt="My account">
+            </a>
+        </div>
+    </div>
+</header>
 <div class="container">
     <h2>Invitations</h2>
-    <br>
-    <a href="../main_page">To main page</a>
     <div th:text="${message}"></div>
-    <br>
     <th:block th:each="course : ${coursesList}">
-        <br>
         <div class="coursePlate">
             <a th:if="${subscribedCoursesIdSet.contains(course.getId())}"
-               th:text="${course.getTitle()}" th:href="@{/course/{id}(id=${course.getId()})}"></a>
+               th:href="@{/course/{id}(id=${course.getId()})}">
+                <div>
+                    <b th:text="${course.getTitle()}">Title</b>
+                    <br>
+                <div class="courseDescription" th:text="${course.getDescription()}">Description</div>
+                <div class="author" th:text="${authorMap.get(course.getAuthorId())}">Author</div>
+                <form th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
+                      th:method="POST" th:action="@{/accept_invitation}">
+                    <input type="hidden" name="courseId" th:value="${course.getId()}">
+                    <input class="subscribe-to-course" type="submit" value="Accept invitation">
+                </form>
+                </div>
+            </a>
             <a th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
-               th:text="${course.getTitle()}"></a>
-            <br>
-            <div class="courseDescription" th:text="${course.getDescription()}"></div>
-            <i th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
-            <form th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
-                  th:method="POST" th:action="@{/accept_invitation}">
-                <input type="hidden" name="courseId" th:value="${course.getId()}">
-                <input style="font-size: large" type="submit" value="Accept invitation">
-            </form>
+               th:href="@{/course/{id}(id=${course.getId()})}">
+                <div>
+                    <b th:text="${course.getTitle()}">Title</b>
+                    <br>
+                    <div class="courseDescription" th:text="${course.getDescription()}">Description</div>
+                    <div class="author" th:text="${authorMap.get(course.getAuthorId())}">Author</div>
+                    <form th:if="${!subscribedCoursesIdSet.contains(course.getId())}"
+                          th:method="POST" th:action="@{/accept_invitation}">
+                        <input type="hidden" name="courseId" th:value="${course.getId()}">
+                        <input class="subscribe-to-course" type="submit" value="Accept invitation">
+                    </form>
+                </div>
+            </a>
         </div>
     </th:block>
 </div>

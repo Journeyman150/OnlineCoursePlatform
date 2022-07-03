@@ -97,7 +97,7 @@ public class UserController {
 
     @GetMapping("/courses")
     public String getCoursesPage(Model model) {
-        User user = userService.getAuthorizedUser();
+        User user = userService.getUserById(userService.getAuthorizedUser().getId());
         List<Course> coursesList = courseSubscribeService.getCoursesListBySubscribedUserId(user.getId());
         if (coursesList.isEmpty()) {
             model.addAttribute("message", "You have not subscribed to any course yet.");
@@ -112,6 +112,7 @@ public class UserController {
         }
         model.addAttribute("coursesList", coursesList);
         model.addAttribute("authorMap", authorMap);
+        model.addAttribute("balance", user.getBalance());
         return "user/courses";
     }
 
@@ -200,6 +201,9 @@ public class UserController {
             throw new AccessDeniedException("Access to file denied.");
         }
         List<Lesson> lessons = lessonService.getLessonsListByCourseId(courseId);
+        if (lessons.isEmpty()) {
+            return null;
+        }
         int num = lessons.stream().mapToInt(Lesson::getNum).min().orElse(0);
         Resource resource = new FileSystemResource(lessonService.getFile(courseId, num));
         return ResponseEntity.ok()
@@ -222,7 +226,7 @@ public class UserController {
     }
     @GetMapping("/invitations")
     public String getInvitations(Model model) {
-        User user = userService.getAuthorizedUser();
+        User user = userService.getUserById(userService.getAuthorizedUser().getId());
         List<Long> coursesIdList = courseInvitationService.getCoursesIdListByInvitedUserId(user.getId());
         List<Course> coursesList = new ArrayList<>();
         if (coursesIdList.isEmpty()) {
@@ -241,6 +245,7 @@ public class UserController {
         model.addAttribute("authorMap", authorMap);
         model.addAttribute("subscribedCoursesIdSet", subscribedCoursesIdSet);
         model.addAttribute("coursesList", coursesList);
+        model.addAttribute("balance", user.getBalance());
         return "user/invitations";
     }
 

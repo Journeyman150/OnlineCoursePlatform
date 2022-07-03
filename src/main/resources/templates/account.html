@@ -4,54 +4,90 @@
 <head>
     <meta charset="UTF-8">
     <title>Account</title>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/enter-style.css">
     <style>
         .container {
-            margin-left: 10%;
-            margin-top: 5%;
-            margin-right: 10%;
-            font-size: large;
-            font-family: Arial;
+            padding-left: 2em;
+            padding-right: 2em;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            background-color: rgba(171, 171, 171, 0.98);
+            border-top: 1px solid #838383;
         }
-        input {
-            font-size: large;
-            margin-top: 0.5em;
+        .content-wrapper {
+            width: 24em;
+            background-color: white;
+        }
+        .input-user-data__field {
+            width: 70%;
+        }
+        .input-user-data__button {
+            width: 70%;
+            margin-bottom: 1em;
+        }
+        .padding-text {
+            padding-left: 28px;
+            font-weight: bold;
+        }
+        .sub-header {
+            padding-bottom: 1em;
         }
     </style>
 </head>
 <body>
+<header>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+            </a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/courses">My learning</a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/invitations">Invitations</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+            <a href="/author">Teaching</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+            <a href="/become_a_teacher">Become a teacher</a>
+        </div>
+    </div>
+    <div class="navbar__block">
+        <div sec:authorize="isAuthenticated()" class="navbar__menu-item navbar__balance">
+            <b th:text="'Balance: ' + ${user.getBalance()}"></b>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/account">
+                <img src="/icons/account-icon.png" alt="My account">
+            </a>
+        </div>
+    </div>
+</header>
 <div class="container">
-    <h2>My account</h2>
-    <br>
-    <div sec:authorize="isAuthenticated()">
-        <a href="/main_page">Back to Learn</a>
-        <br><br>
-    </div>
-    <div sec:authorize="hasRole('ROLE_AUTHOR')">
-        <a href="/author">Back to Teach</a>
-        <br><br>
-    </div>
-    <div sec:authorize="hasRole('ROLE_ADMIN')">
-        <a href="/admin">Back to Administer</a>
-        <br><br>
-    </div>
-    <br>
-    <div th:text="'Email: ' + ${user.getEmail()}"></div>
-    <div th:text="'Name: ' + ${user.getName()}"></div>
-    <div th:text="'Surname: ' + ${user.getSurname()}"></div>
-    <div th:text="'Balance: ' + ${user.getBalance()}"></div>
+    <div class="content-wrapper">
+    <h2 class="padding-text">My account</h2>
+    <div class="padding-text" th:text="'Email: ' + ${user.getEmail()}">Email</div>
+    <div class="padding-text" th:text="'Name: ' + ${user.getName()}">Name</div>
+    <div class="padding-text" th:text="'Surname: ' + ${user.getSurname()}">Surname</div>
+    <div class="padding-text sub-header" th:text="'Balance: ' + ${user.getBalance()}">Balance</div>
     <form th:action="@{/logout}" method="POST">
-        <input style="margin-top: 1em" type="submit" value="Log Out"/>
+        <input class="input-user-data input-user-data__button" type="submit" value="Log Out"/>
     </form>
     <hr><br>
-    Update data:
+    <div class="padding-text sub-header">Update data:</div>
     <form th:method="PATCH" th:action="@{/account/update}">
-        <input type="text" name="email" th:value="${user.getEmail()}">
-        <div style="color:red" th:text="${emailErrorMessage}">Error</div>
-        <input type="text" name="name" th:value="${user.getName()}">
-        <div style="color:red" th:text="${nameErrorMessage}">Error</div>
-        <input type="text" name="surname" th:value="${user.getSurname()}">
-        <div style="color:red" th:text="${surnameErrorMessage}">Error</div>
-        <input type="submit" value="Update">
+        <input class="input-user-data input-user-data__field" type="text" name="email" th:value="${user.getEmail()}">
+        <div class="text" style="color:red" th:text="${emailErrorMessage}">Error</div>
+        <input class="input-user-data input-user-data__field" type="text" name="name" th:value="${user.getName()}">
+        <div class="text" style="color:red" th:text="${nameErrorMessage}">Error</div>
+        <input class="input-user-data input-user-data__field" type="text" name="surname" th:value="${user.getSurname()}">
+        <div class="text" style="color:red" th:text="${surnameErrorMessage}">Error</div>
+        <input class="input-user-data input-user-data__button" type="submit" value="Update">
 <!--        <input type="text" th:field="*{email}">-->
 <!--        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>-->
 <!--        <br>-->
@@ -64,22 +100,23 @@
 <!--        <input type="submit" value="Update">-->
     </form>
     <hr><br>
-    Change password:
+    <div class="padding-text sub-header">Change password:</div>
     <form th:method="PATCH" th:action="@{/account/change_password}">
-        <input type="password" name="currentPassword" placeholder="Current password">
-        <div style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
-        <input type="password" name="newPassword" placeholder="New password">
-        <div style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
-        <input type="password" name="confirmPassword" placeholder="Confirm password">
-        <div style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
-        <input type="submit" value="Change password">
+        <input class="input-user-data input-user-data__field" type="password" name="currentPassword" placeholder="Current password">
+        <div class="text" style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
+        <input class="input-user-data input-user-data__field" type="password" name="newPassword" placeholder="New password">
+        <div class="text" style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
+        <input class="input-user-data input-user-data__field" type="password" name="confirmPassword" placeholder="Confirm password">
+        <div class="text" style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
+        <input class="input-user-data input-user-data__button" type="submit" value="Change password">
     </form>
-    <div style="color: darkgreen; margin-top: 0.5em" th:text="${successMessage}"></div>
+    <div class="text" style="color: darkgreen; margin-top: 0.5em" th:text="${successMessage}"></div>
     <hr><br>
     <form th:action="@{/account}" th:method="DELETE" onsubmit="return confirm('Are you sure you want to delete account?')">
-        <input type="submit" value="Delete account.">
+        <input class="input-user-data input-user-data__button" type="submit" value="Delete account.">
     </form>
-    <div style="color:red; margin-top: 0.5em" th:text="${message}"></div>
+    <div class="text" style="color:red; margin-top: 0.5em" th:text="${message}"></div>
+    </div>
 </div>
 </body>
 </html>
