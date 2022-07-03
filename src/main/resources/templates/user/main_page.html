@@ -4,91 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <title>Main page</title>
-    <style>
-        .container {
-            margin-left: 10%;
-            margin-top: 5%;
-            margin-right: 10%;
-            font-family: Arial;
-            font-size: large;
-        }
-        input {
-            font-size: large;
-        }
-        .rows {
-            margin-left: 1em;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1em;
-        }
-        .coursePlate {
-            padding: 0.5em;
-            border: 1px solid #CCC;
-            border-radius: 1em;
-            width: 28%;
-        }
-        .courseDescription {
-            margin-top: 0.5em;
-            text-overflow:ellipsis;
-            overflow:hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            white-space: normal;
-        }
-        .pagination {
-            display: inline-block;
-            font-size: large;
-            margin-bottom: 1em;
-            margin-left: 2em;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/main-style.css">
 </head>
 <body>
-<div class="container">
-    <h2>Learning</h2>
-    <a href="../courses">My learning</a>&emsp;
-<!--    <a href="user/statistic">Statistics</a>&emsp;-->
-    <a href="../account">My Account</a>&emsp;
-    <a href="../invitations">Invitations</a>&emsp;
-    <a sec:authorize="hasRole('ROLE_USER')" href="../become_a_teacher">Become a teacher</a>
-    <a sec:authorize="hasRole('ROLE_AUTHOR')" href="../author">Teaching</a>&emsp;
-    <a sec:authorize="isAuthenticated()"><b style="font-size: medium" th:text="'Your balance: ' + ${balance}"></b></a>
-    <hr>
-    <div style="color:rgba(1,49,169,0.6)">Enter keyword "course" to find most of them:</div>
-    <form th:action="@{/main_page}" th:method="GET">
-        <div>
-            <label for="search">Find courses:</label>
-            <input name="keyword" type="text" id="search">
-            <input type="submit" value="Search">
+    <header>
+        <div class="navbar__block">
+            <div class="navbar__menu-item">
+                <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+                </a>
+            </div>
+            <div class="navbar__menu-item">
+                <a href="../courses">My learning</a>
+            </div>
+            <div class="navbar__menu-item">
+                <a href="../invitations">Invitations</a>
+            </div>
+            <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+                <a href="../author">Teaching</a>
+            </div>
+            <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+                <a href="../become_a_teacher">Become a teacher</a>
+            </div>
         </div>
-    </form>
-    <div th:text="${noResults}"></div>
-    <br>
-    <div class="rows">
-    <th:block th:each="course : ${coursesPage}" th:if="${coursesPage.totalPages > 0}">
-        <div class="coursePlate">
-            <a th:if="${coursesPage.totalPages > 0}" th:href="@{/course/{id}(id=${course.getId()})}" th:text="${course.getTitle()}"></a>
+        <div class="navbar__block">
+            <div sec:authorize="isAuthenticated()" class="navbar__menu-item navbar__balance">
+                <b th:text="'Balance: ' + ${balance}"></b>
+            </div>
+            <div class="navbar__menu-item">
+                <a href="../account">
+                    <img src="/icons/account-icon.png" alt="My account">
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="main-box">
+        <div class="search-box">
+            <div style="color:#c5b19b">Enter keyword "course" to find most of them:</div>
+            <form th:action="@{/main_page}" th:method="GET">
+                <div>
+                    <input class="input-field" name="keyword" type="search" placeholder="Course name or description"
+                    aria-label="Search">
+                    <input class="input-button" type="submit" value="Search">
+                </div>
+            </form>
+            <div th:text="${noResults}"></div>
             <br>
-            <div class="courseDescription" th:if="${coursesPage.totalPages > 0}" th:text="${course.getDescription()}"></div>
-            <i class="author" style="color:gray" th:text="'Author: ' + ${authorMap.get(course.getAuthorId())}"></i>
         </div>
-    </th:block>
+        <div class="course-plate__box">
+        <div class="rows">
+            <th:block th:each="course : ${coursesPage}" th:if="${coursesPage.totalPages > 0}">
+                <div class="coursePlate">
+                    <a th:if="${coursesPage.totalPages > 0}" th:href="@{/course/{id}(id=${course.getId()})}">
+                        <div>
+                        <b th:text="${course.getTitle()}"></b>
+                        <br>
+                        <div class="courseDescription" th:if="${coursesPage.totalPages > 0}" th:text="${course.getDescription()}"></div>
+                        <div class="author" th:text="${authorMap.get(course.getAuthorId())}"></div>
+                        </div>
+                    </a>
+                </div>
+            </th:block>
+            </div>
+        </div>
+        <div class="pagination">
+        <div th:each="pageNumber : ${pageNumbers}">
+            <div class="pagination__page" th:if="${coursesPage.totalPages > 0}">
+                <div>
+                <a th:href="@{/main_page(keyword=${keyword}, size=${coursesPage.size}, page=${pageNumber})}">
+                    <div class="pagination__page-number">
+                    <div th:text="${pageNumber}"
+                         th:class="${pageNumber==coursesPage.number + 1} ? active">
+                    </div>
+                    </div>
+                </a>
+                </div>
+            </div>
+        </div>
+        </div>
     </div>
-    <br>
-    <div th:if="${coursesPage.totalPages > 0}" class="pagination"
-         th:each="pageNumber : ${pageNumbers}">
-        <a style="margin-right: 1em"
-           th:href="@{/main_page(keyword=${keyword}, size=${coursesPage.size}, page=${pageNumber})}"
-           th:text="${pageNumber}"
-           th:class="${pageNumber==coursesPage.number + 1} ? active"></a>
-    </div>
-    <hr>
-    <div sec:authorize="isAuthenticated()">
-    <form th:action="@{/logout}" method="POST">
-        <input style="margin-top: 1em" type="submit" value="Sign Out"/>
-    </form>
-    </div>
-</div>
+    <footer class="bottom-box">
+        <div class="bottom-box__item">
+            2022. Demo version
+        </div>
+        <div class="bottom-box__item">
+            <div>
+            <a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a>
+            </div>
+        </div>
+        <div class="bottom-box__item">
+            <a></a>
+        </div>
+    </footer>
 </body>
 </html>

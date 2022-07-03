@@ -22,7 +22,7 @@
     <div th:text="'Description: ' + ${lesson.getDescription()}">Description:</div>
     <br>
     <div>Watch lesson:</div>
-    <video width="640" height="480" controls th:src="@{/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
+    <video width="640" height="480" style="background-color: #191919" controls th:src="@{/course/{courseId}/lesson/{num}/video(courseId=${lesson.getCourseId()}, num = ${lesson.getNum()})}"></video>
     <br>
 </div>
 </body>

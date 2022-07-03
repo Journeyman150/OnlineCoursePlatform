@@ -33,8 +33,8 @@
             th:text="${'Lesson ' + lesson.getNum() + '. ' + lesson.getTitle()}"></a>
         <br><br>
     </div>
-    <div>Watch course demo:</div>
-    <video width="640" height="480" controls th:src="@{/course/{courseId}/demo_video(courseId=${course.getId()})}"></video>
+    <h4>Watch course demo:</h4>
+    <video width="640" height="480" style="background-color: #191919" controls th:src="@{/course/{courseId}/demo_video(courseId=${course.getId()})}"></video>
     <br>
     <div style="color:red" th:text="${errorMessage}"></div>
     <hr>

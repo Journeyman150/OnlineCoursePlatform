@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .mvcMatchers("/", "/home", "/registration", "/api", "/api/registration",
                             "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**",
-                            "/images/**", "/api/user/courses").permitAll()
+                            "/images/**", "/css/**", "/icons/**", "/api/user/courses").permitAll()
                     .mvcMatchers("/main_page", "/course/{id:[0-9]+}", "/course/{id:[0-9]+}/demo_video").permitAll()
                     .mvcMatchers("/account", "/api/account").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
                     .mvcMatchers("/author/**", "/api/author/**").hasRole(Role.AUTHOR.name())

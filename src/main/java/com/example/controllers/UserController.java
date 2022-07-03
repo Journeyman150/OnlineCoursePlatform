@@ -64,7 +64,7 @@ public class UserController {
                                   @RequestParam("page") Optional<Integer> page,
                                   @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(6);
+        int pageSize = size.orElse(8);
         Page<Course> coursesPage = courseService.findPaginated(keyword, PageRequest.of(currentPage - 1, pageSize));
         int totalPages = coursesPage.getTotalPages();
         if (totalPages > 0) {

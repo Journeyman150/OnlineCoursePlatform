@@ -39,6 +39,9 @@
     <div th:text="'Name: ' + ${user.getName()}"></div>
     <div th:text="'Surname: ' + ${user.getSurname()}"></div>
     <div th:text="'Balance: ' + ${user.getBalance()}"></div>
+    <form th:action="@{/logout}" method="POST">
+        <input style="margin-top: 1em" type="submit" value="Log Out"/>
+    </form>
     <hr><br>
     Update data:
     <form th:method="PATCH" th:action="@{/account/update}">

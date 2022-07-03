@@ -42,6 +42,9 @@
         <input type="submit" value="New lesson">
     </form>
     <hr>
+    <h4>Watch course demo:</h4>
+    <video width="640" height="480" style="background-color: #191919" controls th:src="@{/course/{courseId}/demo_video(courseId=${course.getId()})}"></video>
+    <br>
     <div th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a> subscriber.</div>
     <div th:if="${subscribersNum != 1}"><a th:text="${subscribersNum}"></a> subscribers.</div>
     <hr>
