@@ -4,24 +4,40 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>Home</title>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/enter-style.css">
+
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/enter-style.css">
     <style>
-        p {
+        .hello-container-wrapper {
             font-size: xx-large;
-        }
-        div {
-            font-family: Arial;
-            text-align: center;
-            margin-top: 10%;
         }
     </style>
 </head>
 <body>
-    <div>
-        <h1>Welcome to the course web platform!</h1>
+    <div class="hello-container-wrapper">
+        <div class="hello-container">
+            <h3 class="text">Welcome to the course web platform!</h3>
 
-        <p>Click <a th:href="@{/main_page}">here</a> to continue.</p>
+            <p class="text">Click <a href="/main_page">here</a> to continue.</p>
 
-        <p>Or <a th:href="@{/api}">here</a> to see REST API info.</p>
+            <p class="text">Or <a href="/api">here</a> to see REST API info.</p>
+        </div>
     </div>
+    <footer class="bottom-box">
+        <div class="bottom-box__item bottom-box__item__left">
+            <div>2022. Demo version</div>
+        </div>
+        <div class="bottom-box__item bottom-box__item__center">
+            <div><a href="/">Hello page</a></div>
+            <div><a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a></div>
+            <div><a href="/api">REST api info</a></div>
+        </div>
+        <div class="bottom-box__item">
+            <div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

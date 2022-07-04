@@ -61,8 +61,8 @@
             <div class="under-video__hor-item" th:if="${subscribersNum == 1}"><a th:text="${subscribersNum}"></a>&nbsp;subscriber.</div>
             <div class="under-video__hor-item" th:if="${subscribersNum != 1}"><a th:text="${subscribersNum}"></a>&nbsp;subscribers.</div>
             <div th:if="${course.getPrice() > 0 && !userHasAccessToCourse}">
-                <div class="under-video__hor-item">Price: <a th:text="${course.getPrice()}"></a>
-                    <a sec:authorize="isAuthenticated()"> (your balance: <b th:text="${balance}"></b>) </a>
+                <div class="under-video__hor-item">Price:&nbsp;<a th:text="${course.getPrice()}"></a>
+                    <a sec:authorize="isAuthenticated()">&nbsp;(your balance: <b th:text="${balance}"></b>)</a>
                 </div>
             </div>
             <div th:if="${course.getPrice() == 0}">

@@ -1,27 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Teach</title>
+    <title>Become a Teacher</title>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/enter-style.css">
     <style>
-        .container {
-            margin-left: 10%;
-            margin-top: 5%;
-            margin-right: 10%;
-            font-size: large;
-            font-family: Arial;
+        .user-form {
+            padding: 2.5em 1em;
         }
     </style>
 </head>
 <body>
+<header>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+            </a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/courses">My learning</a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/invitations">Invitations</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+            <a href="/author">Teaching</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+            <a href="/become_a_teacher">Become a teacher</a>
+        </div>
+    </div>
+    <div class="navbar__block">
+        <div sec:authorize="isAuthenticated()" class="navbar__menu-item navbar__balance">
+            <b th:text="'Balance: ' + ${balance}"></b>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/account">
+                <img src="/icons/account-icon.png" alt="My account">
+            </a>
+        </div>
+    </div>
+</header>
 <div class="container">
-    <h2>Become a teacher</h2>
-    <div>*After this operation, you will be logged out to re-login.</div>
-      <form th:method="POST" th:action="@{/become_a_teacher}">
-          <div>Price: 1000</div>
-          <input type="submit" value="Become a teacher"/>
+      <form class="user-form" th:method="POST" th:action="@{/become_a_teacher}"
+            onsubmit="return confirm('Are you sure you want to delete account?')">
+          <h2 class="text">Become a teacher</h2>
+          <div class="text"><b>Price: 1000</b></div>
+          <input type="submit" class="input-user-data input-user-data__button" value="Become a teacher"/>
+          <div class="text" style="color:red" th:text="${transactionResults}"></div>
       </form>
-    <div style="color:red" th:text="${transactionResults}"></div>
+    <div class="text" style="margin-top: 0.5em">*After this operation, you will be logged out to re-login.</div>
+
 </div>
+<footer class="bottom-box">
+    <div class="bottom-box__item bottom-box__item__left">
+        <div>2022. Demo version</div>
+    </div>
+    <div class="bottom-box__item bottom-box__item__center">
+        <div><a href="/">Hello page</a></div>
+        <div><a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a></div>
+        <div><a href="/api">REST api info</a></div>
+    </div>
+    <div class="bottom-box__item">
+        <div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
