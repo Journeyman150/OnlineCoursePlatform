@@ -39,11 +39,11 @@ public class RegistrationController {
         }
         if (userService.isUserAlreadyExist(user.getEmail())) {
             model.addAttribute("userAlreadyExistMessage",
-                    "Пользователь с таким адресом электронной почты уже существует.");
+                    "User with this email is already registered.");
             return "registration";
         }
         if (!user.getPassword().equals(confirmPassword)) {
-            model.addAttribute("confirmPasswordErrorMessage", "Пароли не совпадают.");
+            model.addAttribute("confirmPasswordErrorMessage", "Passwords do not match.");
             return "registration";
         }
         userService.save(user);

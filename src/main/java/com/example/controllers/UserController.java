@@ -101,7 +101,6 @@ public class UserController {
         List<Course> coursesList = courseSubscribeService.getCoursesListBySubscribedUserId(user.getId());
         if (coursesList.isEmpty()) {
             model.addAttribute("message", "You have not subscribed to any course yet.");
-            return "user/courses";
         }
         Map<Long, String> authorMap = new HashMap<>();
         for (int i = 0; i < coursesList.size(); i++) {
@@ -231,7 +230,6 @@ public class UserController {
         List<Course> coursesList = new ArrayList<>();
         if (coursesIdList.isEmpty()) {
             model.addAttribute("message", "You have no active course invitations.");
-            return "user/invitations";
         } else {
             coursesIdList.forEach(n -> coursesList.add(courseService.getCourseById(n)));
         }
@@ -261,7 +259,9 @@ public class UserController {
     }
 
     @GetMapping("/become_a_teacher")
-    public String getBecomeATeacherPage() {
+    public String getBecomeATeacherPage(Model model) {
+        User user = userService.getUserById(userService.getAuthorizedUser().getId());
+        model.addAttribute("balance", user.getBalance());
         return "user/become_a_teacher";
     }
 
@@ -271,7 +271,7 @@ public class UserController {
         User user = userService.getUserById(userService.getAuthorizedUser().getId());
         if (user.getBalance() < authorRolePrice) {
             model.addAttribute("transactionResults", "Not enough funds on your balance.");
-            return "user/become_a_teacher";
+            return getBecomeATeacherPage(model);
         }
         userService.changeRole(user.getId(), Role.AUTHOR.name());
         userService.updateUserBalance(user.getId(), user.getBalance() - authorRolePrice);
