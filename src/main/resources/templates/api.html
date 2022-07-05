@@ -4,43 +4,111 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>REST API</title>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/enter-style.css">
+
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/enter-style.css">
     <style>
-        p {
-            font-size: xx-large;
-        }
-        div {
-            font-family: Arial;
-            margin-top: 10%;
-            margin-left: 10%;
-            margin-right: 10%;
+        .hello-container {
+            width: 70%;
+            max-width: 92%;
         }
         img {
-            display: block;
+            width: 100%;
+        }
+        @media screen and (max-width: 900px) {
+            .hello-container {
+                min-width: 92%;
+            }
+        }
+        .swagger-ui-button {
+            font-weight: bold;
+            padding: 1em;
+            max-width: 10em;
             margin-left: auto;
             margin-right: auto;
+            border-radius: 6px;
+            box-shadow: 0 0 0.8em 0 #fdf2e6;
+            transition: all 0.1s ease-in;
+        }
+        .swagger-ui-button:hover {
+            box-shadow: 0 0 0.4em 0 #f6eadd;
+            background-color: #fffefd;
+        }
+        .swagger-ui-button__wrapper a {
+            text-decoration: none;
+            color: #424242;
         }
     </style>
 </head>
 <body>
-    <div>
-        <h1 style="text-align: center">Course web platform API</h1>
+    <header>
+        <div class="navbar__block">
+            <div class="navbar__menu-item">
+                <a href="/main_page">
+                    <img src="/icons/main-icon.png" alt="Main page">
+                </a>
+            </div>
+            <div class="navbar__menu-item">
+                <a href="/courses">My learning</a>
+            </div>
+            <div class="navbar__menu-item">
+                <a href="/invitations">Invitations</a>
+            </div>
+            <div sec:authorize="hasRole('ROLE_AUTHOR')" class="navbar__menu-item">
+                <a href="/author">Teaching</a>
+            </div>
+            <div sec:authorize="hasRole('ROLE_USER')" class="navbar__menu-item">
+                <a href="/become_a_teacher">Become a teacher</a>
+            </div>
+        </div>
+        <div class="navbar__block">
+<!--            <div sec:authorize="isAuthenticated()" class="navbar__menu-item navbar__balance">-->
+<!--                <b th:text="'Balance: ' + ${balance}"></b>-->
+<!--            </div>-->
+            <div class="navbar__menu-item">
+                <a href="/account">
+                    <img src="/icons/account-icon.png" alt="My account">
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="hello-container">
+        <h1 style="text-align: center">REST API</h1>
 
-        <p style="text-align: center"><a th:href="@{/swagger-ui/}">Swagger UI</a></p>
+        <div class="swagger-ui-button__wrapper" style="text-align: center">
+            <a th:href="@{/swagger-ui/}"><div class="swagger-ui-button">Swagger UI</div></a>
+        </div>
 
-        <p style="font-size: x-large">For authorization, you need to send POST request to http://194.87.206.85:9090/login with "username"(email) and "password"
+        <p>For authorization, you need to send POST request to http://194.87.206.85:9090/login with "username"(email) and "password"
         parameters. If authorization is successful, you need to use the cookie's "JSESSIONID" value to send REST requests to any
             http://194.87.206.85:9090/api mappings, except http://194.87.206.85:9090/api/registration.
             <br><br>
             For demonstration GET request <b>http://194.87.206.85:9090/api/user/courses?keyword="keyword"</b> doesn't require authorization.</p>
 
-        <p style="font-size: x-large">Example of authorization via Postman:</p>
+        <p>Example of authorization via Postman:</p>
         <img th:src="@{/images/postman-login.png}">
         <br><br>
-        <p style="font-size: x-large">Body of successful authorization:</p>
+        <p>Body of successful authorization:</p>
         <br>
         <img th:src="@{/images/body-of-successful-auth.png}">
         <br><br>
         <img th:src="@{/images/postman-login-cookie.png}">
     </div>
+    <footer class="bottom-box">
+        <div class="bottom-box__item bottom-box__item__left">
+            <div>2022. Demo version</div>
+        </div>
+        <div class="bottom-box__item bottom-box__item__center">
+            <div><a href="/">Hello page</a></div>
+            <div><a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a></div>
+            <div><a href="/api">REST api info</a></div>
+        </div>
+        <div class="bottom-box__item">
+            <div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

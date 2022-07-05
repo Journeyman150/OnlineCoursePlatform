@@ -13,12 +13,13 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-            background-color: rgba(171, 171, 171, 0.98);
+            background-color: rgba(234, 233, 233, 0.98);
             border-top: 1px solid #838383;
         }
         .content-wrapper {
             width: 24em;
             background-color: white;
+            box-shadow: 0 0 1em 0 #fdf2e6;
         }
         .input-user-data__field {
             width: 70%;
@@ -70,52 +71,52 @@
 </header>
 <div class="container">
     <div class="content-wrapper">
-    <h2 class="padding-text">My account</h2>
-    <div class="padding-text" th:text="'Email: ' + ${user.getEmail()}">Email</div>
-    <div class="padding-text" th:text="'Name: ' + ${user.getName()}">Name</div>
-    <div class="padding-text" th:text="'Surname: ' + ${user.getSurname()}">Surname</div>
-    <div class="padding-text sub-header" th:text="'Balance: ' + ${user.getBalance()}">Balance</div>
-    <form th:action="@{/logout}" method="POST">
-        <input class="input-user-data input-user-data__button" type="submit" value="Log Out"/>
-    </form>
-    <hr><br>
-    <div class="padding-text sub-header">Update data:</div>
-    <form th:method="PATCH" th:action="@{/account/update}">
-        <input class="input-user-data input-user-data__field" type="text" name="email" th:value="${user.getEmail()}">
-        <div class="text" style="color:red" th:text="${emailErrorMessage}">Error</div>
-        <input class="input-user-data input-user-data__field" type="text" name="name" th:value="${user.getName()}">
-        <div class="text" style="color:red" th:text="${nameErrorMessage}">Error</div>
-        <input class="input-user-data input-user-data__field" type="text" name="surname" th:value="${user.getSurname()}">
-        <div class="text" style="color:red" th:text="${surnameErrorMessage}">Error</div>
-        <input class="input-user-data input-user-data__button" type="submit" value="Update">
-<!--        <input type="text" th:field="*{email}">-->
-<!--        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>-->
-<!--        <br>-->
-<!--        <input type="text" th:field="*{name}">-->
-<!--        <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>-->
-<!--        <br>-->
-<!--        <input type="text" th:field="*{surname}">-->
-<!--        <div style="color:red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</div>-->
-<!--        <br>-->
-<!--        <input type="submit" value="Update">-->
-    </form>
-    <hr><br>
-    <div class="padding-text sub-header">Change password:</div>
-    <form th:method="PATCH" th:action="@{/account/change_password}">
-        <input class="input-user-data input-user-data__field" type="password" name="currentPassword" placeholder="Current password">
-        <div class="text" style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
-        <input class="input-user-data input-user-data__field" type="password" name="newPassword" placeholder="New password">
-        <div class="text" style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
-        <input class="input-user-data input-user-data__field" type="password" name="confirmPassword" placeholder="Confirm password">
-        <div class="text" style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
-        <input class="input-user-data input-user-data__button" type="submit" value="Change password">
-    </form>
-    <div class="text" style="color: darkgreen; margin-top: 0.5em" th:text="${successMessage}"></div>
-    <hr><br>
-    <form th:action="@{/account}" th:method="DELETE" onsubmit="return confirm('Are you sure you want to delete account?')">
-        <input class="input-user-data input-user-data__button" type="submit" value="Delete account.">
-    </form>
-    <div class="text" style="color:red; margin-top: 0.5em" th:text="${message}"></div>
+        <h2 class="padding-text">My account</h2>
+        <div class="padding-text" th:text="'Email: ' + ${user.getEmail()}">Email</div>
+        <div class="padding-text" th:text="'Name: ' + ${user.getName()}">Name</div>
+        <div class="padding-text" th:text="'Surname: ' + ${user.getSurname()}">Surname</div>
+        <div class="padding-text sub-header" th:text="'Balance: ' + ${user.getBalance()}">Balance</div>
+        <form th:action="@{/logout}" method="POST">
+            <input class="input-user-data input-user-data__button" type="submit" value="Log Out"/>
+        </form>
+        <hr><br>
+        <div class="padding-text sub-header">Update data:</div>
+        <form th:method="PATCH" th:action="@{/account/update}">
+            <input class="input-user-data input-user-data__field" type="text" name="email" th:value="${user.getEmail()}">
+            <div class="text" style="color:red" th:text="${emailErrorMessage}">Error</div>
+            <input class="input-user-data input-user-data__field" type="text" name="name" th:value="${user.getName()}">
+            <div class="text" style="color:red" th:text="${nameErrorMessage}">Error</div>
+            <input class="input-user-data input-user-data__field" type="text" name="surname" th:value="${user.getSurname()}">
+            <div class="text" style="color:red" th:text="${surnameErrorMessage}">Error</div>
+            <input class="input-user-data input-user-data__button" type="submit" value="Update">
+    <!--        <input type="text" th:field="*{email}">-->
+    <!--        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</div>-->
+    <!--        <br>-->
+    <!--        <input type="text" th:field="*{name}">-->
+    <!--        <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>-->
+    <!--        <br>-->
+    <!--        <input type="text" th:field="*{surname}">-->
+    <!--        <div style="color:red" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</div>-->
+    <!--        <br>-->
+    <!--        <input type="submit" value="Update">-->
+        </form>
+        <hr><br>
+        <div class="padding-text sub-header">Change password:</div>
+        <form th:method="PATCH" th:action="@{/account/change_password}">
+            <input class="input-user-data input-user-data__field" type="password" name="currentPassword" placeholder="Current password">
+            <div class="text" style="color:red" th:text="${currentPasswordErrorMessage}">Error</div>
+            <input class="input-user-data input-user-data__field" type="password" name="newPassword" placeholder="New password">
+            <div class="text" style="color:red" th:text="${newPasswordErrorMessage}">Error</div>
+            <input class="input-user-data input-user-data__field" type="password" name="confirmPassword" placeholder="Confirm password">
+            <div class="text" style="color:red" th:text="${confirmPasswordErrorMessage}">Error</div>
+            <input class="input-user-data input-user-data__button" type="submit" value="Change password">
+        </form>
+        <div class="text" style="color: darkgreen; margin-top: 0.5em" th:text="${successMessage}"></div>
+        <hr><br>
+        <form th:action="@{/account}" th:method="DELETE" onsubmit="return confirm('Are you sure you want to delete account?')">
+            <input class="input-user-data input-user-data__button" type="submit" value="Delete account.">
+        </form>
+        <div class="text" style="color:red; margin-top: 0.5em" th:text="${message}"></div>
     </div>
 </div>
 </body>
