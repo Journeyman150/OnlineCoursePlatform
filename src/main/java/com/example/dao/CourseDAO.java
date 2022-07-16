@@ -92,6 +92,10 @@ public class CourseDAO {
                 courseId);
     }
 
+    public void updateIconSource(String iconSource, long courseId) {
+        jdbcTemplate.update("UPDATE courses SET icon_source=? WHERE course_id=?", iconSource, courseId);
+    }
+
     public void delete(long courseId) {
         jdbcTemplate.update("DELETE FROM courses WHERE course_id=?", courseId);
     }

@@ -22,7 +22,7 @@
     <h2>Create new course</h2>
     <a href="./">Go back</a>
     <br><br>
-    <form th:method="POST" th:action="@{/author/courses/new}" th:object="${course}">
+    <form th:method="POST" th:action="@{/author/courses/new}" th:object="${course}" enctype="multipart/form-data">
         <label for="title"> </label>
         <input type="text" th:field="*{title}" id="title" placeholder="Title">
         <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Error</div>
@@ -41,6 +41,10 @@
         <br>
         <label for="nonPublic">Non public</label>
         <input type="radio" th:field="*{nonPublic}" id="nonPublic" value="true">
+        <br>
+        <label for="file">Upload course icon (Max size 1MB):</label>
+        <input type="file" name="courseIcon" id="file" accept="image/*">
+        <div style="color:red" th:text="${iconSizeError}">iconSizeError</div>
         <br>
 
         <input type="submit" value="Create course">

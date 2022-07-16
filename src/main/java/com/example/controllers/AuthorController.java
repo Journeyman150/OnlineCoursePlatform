@@ -11,6 +11,7 @@ import com.example.service.UserService;
 import com.example.service.access.AccessControlService;
 import com.example.service.access.CourseInvitationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -29,6 +30,8 @@ import java.util.Set;
 @Controller
 @RequestMapping("/author")
 public class AuthorController {
+    @Value("${maxIconSize}")
+    private long maxIconSize;
     private final UserService userService;
     private final CourseService courseService;
     private final LessonService lessonService;
@@ -110,13 +113,19 @@ public class AuthorController {
     }
 
     @PostMapping("/courses/new")
-    public String createCourse(@ModelAttribute("course") @Valid Course course, BindingResult bindingResult) {
+    public String createCourse(@ModelAttribute("course") @Valid Course course, BindingResult bindingResult,
+                               @RequestParam(value = "courseIcon") MultipartFile courseIcon,
+                               Model model) {
         if (bindingResult.hasErrors()) {
+            return "author/courses_new";
+        }
+        if (courseIcon.getSize() > maxIconSize) {
+            model.addAttribute("iconSizeError", "Max icon size must be less than 1Mb.");
             return "author/courses_new";
         }
         User author = userService.getAuthorizedUser();
         course.setAuthorId(author.getId());
-        courseService.save(course);
+        courseService.save(course, courseIcon);
         return "redirect:/author/courses";
     }
 
@@ -135,6 +144,7 @@ public class AuthorController {
     @PatchMapping("/course/{id}")
     public String updateCourse(@PathVariable("id") long courseId,
                                @ModelAttribute("course") @Valid Course course, BindingResult bindingResult,
+                               @RequestParam(value = "courseIcon") MultipartFile courseIcon,
                                Model model) {
         User author = userService.getAuthorizedUser();
         if (!accessControlService.authorHasAccessToCourse(author, courseId)) {
@@ -144,7 +154,11 @@ public class AuthorController {
         if (bindingResult.hasErrors()) {
             return "author/course_edit";
         }
-        courseService.update(course, courseId);
+        if (courseIcon.getSize() > maxIconSize) {
+            model.addAttribute("iconSizeError", "Max icon size must be less than 1Mb.");
+            return "author/course_edit";
+        }
+        courseService.update(course, courseIcon, courseId);
         return "redirect:/author/courses";
     }
 

@@ -40,7 +40,7 @@ public class AdminCoursesRESTController {
 
     @PostMapping()
     public Course createCourse(@RequestBody Course course) {
-        long courseId = courseService.save(course);
+        long courseId = courseService.save(course, null);
         course.setId(courseId);
         return course;
     }
@@ -50,7 +50,7 @@ public class AdminCoursesRESTController {
         if (courseService.getCourseById(course.getId()) == null) {
             throw new NoSuchCourseException("Course with id " + course.getId() + " not found");
         }
-        courseService.update(course, course.getId());
+        courseService.update(course, null, course.getId());
         return course;
     }
 

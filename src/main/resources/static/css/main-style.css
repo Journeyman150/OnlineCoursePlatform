@@ -11,6 +11,8 @@ body {
 }
 header {
     position: sticky;
+    padding-left: 1em;
+    padding-right: 1em;
     display: flex;
     flex-wrap: wrap;
     background-color: rgba(38, 38, 38, 0.98);
@@ -141,8 +143,10 @@ header {
 .coursePlate__info {
 }
 .coursePlate__icon img {
-    height: 65px;
+    max-height: 65px;
+    max-width: 65px;
     margin-left: 1em;
+    border-radius: 0.3em;
 }
 .coursePlate a {
     text-decoration: none;
