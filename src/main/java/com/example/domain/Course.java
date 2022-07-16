@@ -16,6 +16,8 @@ public class Course {
     @NotBlank(message = "Description should not be empty.")
     private String description;
 
+    private String iconSource;
+
     private List<Lesson> lessonsList;
 
     private boolean nonPublic;
@@ -61,6 +63,14 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getIconSource() {
+        return iconSource;
+    }
+
+    public void setIconSource(String iconSource) {
+        this.iconSource = iconSource;
     }
 
     public List<Lesson> getLessonsList() {

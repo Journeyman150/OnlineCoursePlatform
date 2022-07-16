@@ -51,12 +51,20 @@
     <th:block th:each="course : ${coursesList}" th:if="${coursesList.size() > 0}">
         <div class="coursePlate">
             <a th:if="${coursesList.size() > 0}" th:href="@{/course/{id}(id=${course.getId()})}">
-            <div>
-                <b th:text="${course.getTitle()}">Title</b>
-                <br>
-            <div class="courseDescription" th:if="${coursesList.size() > 0}" th:text="${course.getDescription()}">Description</div>
-            <div class="author" th:text="${authorMap.get(course.getAuthorId())}">Author</div>
-            </div>
+                <div class="coursePlate__inside-flex-wrapper first-row">
+                    <div class="coursePlate__info">
+                        <b th:text="${course.getTitle()}">Title</b>
+                        <br>
+                        <div class="courseDescription" th:text="${course.getDescription()}">Description</div>
+                    </div>
+                    <div class="coursePlate__icon">
+                        <img th:src="@{/course/{courseId}/icon(courseId=${course.getId()})}">
+                    </div>
+                </div>
+                <div class="coursePlate__inside-flex-wrapper sec-row">
+                    <div th:text="${authorMap.get(course.getAuthorId())}">Author</div>
+                    <div></div>
+                </div>
             </a>
         </div>
     </th:block>

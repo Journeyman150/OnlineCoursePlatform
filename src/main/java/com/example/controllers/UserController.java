@@ -193,6 +193,18 @@ public class UserController {
         model.addAttribute("lesson", lesson);
         return "user/lesson";
     }
+    @GetMapping("/course/{courseId}/icon")
+    public ResponseEntity<Resource> getCourseIcon(@PathVariable long courseId) throws AccessDeniedException {
+        User user = userService.getAuthorizedUser();
+        if (user == null && courseService.getCourseById(courseId).isNonPublic()) {
+            throw new AccessDeniedException("Access to file denied.");
+        }
+        String iconSource = courseService.getCourseById(courseId).getIconSource();
+        Resource resource = new FileSystemResource(courseService.getCourseIcon(iconSource));
+        return ResponseEntity.ok()
+                .contentType(MediaType.MULTIPART_MIXED)
+                .body(resource);
+    }
     @GetMapping("/course/{courseId}/demo_video")
     public ResponseEntity<Resource> getDemoVideo(@PathVariable long courseId) throws AccessDeniedException {
         User user = userService.getAuthorizedUser();

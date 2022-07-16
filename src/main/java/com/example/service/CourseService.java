@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +25,15 @@ import java.util.Set;
 public class CourseService {
     private final CourseDAO courseDAO;
     private final CoursesSearchData coursesSearchData;
+    private final StorageService storageService;
 
     @Autowired
     public CourseService(CourseDAO courseDAO,
-                         CoursesSearchData coursesSearchData) {
+                         CoursesSearchData coursesSearchData,
+                         StorageService storageService) {
         this.courseDAO = courseDAO;
         this.coursesSearchData = coursesSearchData;
+        this.storageService = storageService;
     }
 
     public List<Course> findCourses(String keyword) {
@@ -127,5 +131,9 @@ public class CourseService {
 
     public List<IndexedData> getPublicCoursesSearchDataList() {
         return courseDAO.getPublicCoursesSearchDataList();
+    }
+
+    public File getCourseIcon(String iconSource) {
+        return storageService.load(iconSource);
     }
 }

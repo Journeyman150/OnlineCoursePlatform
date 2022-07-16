@@ -56,11 +56,20 @@
             <th:block th:each="course : ${coursesPage}" th:if="${coursesPage.totalPages > 0}">
                 <div class="coursePlate">
                     <a th:if="${coursesPage.totalPages > 0}" th:href="@{/course/{id}(id=${course.getId()})}">
-                        <div>
-                        <b th:text="${course.getTitle()}"></b>
-                        <br>
-                        <div class="courseDescription" th:if="${coursesPage.totalPages > 0}" th:text="${course.getDescription()}"></div>
-                        <div class="author" th:text="${authorMap.get(course.getAuthorId())}"></div>
+                        <div class="coursePlate__inside-flex-wrapper first-row">
+                        <div class="coursePlate__info">
+                            <b th:text="${course.getTitle()}"></b>
+                            <br>
+                            <div class="courseDescription" th:if="${coursesPage.totalPages > 0}" th:text="${course.getDescription()}"></div>
+                        </div>
+                        <div class="coursePlate__icon">
+                            <img th:src="@{/course/{courseId}/icon(courseId=${course.getId()})}">
+                        </div>
+                        </div>
+                        <div class="coursePlate__inside-flex-wrapper sec-row">
+                            <div th:text="${authorMap.get(course.getAuthorId())}"></div>
+                            <div th:if="${course.getPrice() > 0}" class="price" style="color: #e77900" th:text="'Price: ' + ${course.getPrice()}"></div>
+                            <div th:if="${course.getPrice() == 0}" class="price" style="color: #6ea40f">Free course</div>
                         </div>
                     </a>
                 </div>

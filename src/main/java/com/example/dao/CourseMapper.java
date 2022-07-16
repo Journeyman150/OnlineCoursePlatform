@@ -15,6 +15,7 @@ public class CourseMapper implements RowMapper<Course> {
         course.setId(rs.getLong("course_id"));
         course.setTitle(rs.getString("title"));
         course.setDescription(rs.getString("description"));
+        course.setIconSource(rs.getString("icon_source"));
         course.setAuthorId(rs.getLong("author_id"));
         course.setPrice(rs.getInt("price"));
         course.setNonPublic(rs.getBoolean("non_public"));

@@ -28,7 +28,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .mvcMatchers("/", "/home", "/registration", "/api", "/api/registration",
                             "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**",
                             "/images/**", "/css/**", "/icons/**", "/api/user/courses").permitAll()
-                    .mvcMatchers("/main_page", "/course/{id:[0-9]+}", "/course/{id:[0-9]+}/demo_video").permitAll()
+                    .mvcMatchers("/main_page", "/course/{id:[0-9]+}",
+                            "/course/{id:[0-9]+}/demo_video", "/course/{id:[0-9]+}/icon").permitAll()
                     .mvcMatchers("/account", "/api/account").hasAnyRole(Role.USER.name(), Role.ADMIN.name(), Role.AUTHOR.name())
                     .mvcMatchers("/author/**", "/api/author/**").hasRole(Role.AUTHOR.name())
                     .mvcMatchers("/admin/**", "/api/admin/**").hasRole(Role.ADMIN.name())
