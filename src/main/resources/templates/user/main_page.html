@@ -6,9 +6,6 @@
     <title>Main page</title>
     <link rel="stylesheet" href="/css/main-style.css">
     <style>
-        footer {
-            margin-top: 1em;
-        }
         .topCoursePlate {
             background-color: #fffdfa;
         }
@@ -104,7 +101,7 @@
             <div class="top-courses-header__text">Our top <a th:text="${courseSubsMap.size()}"></a> courses</div>
         </div>
 
-        <div class="course-plate__box">
+        <div style="margin-bottom: 1em" class="course-plate__box">
         <div class="rows">
             <th:block th:each="entry : ${courseSubsMap}">
                 <div class="coursePlate topCoursePlate">
