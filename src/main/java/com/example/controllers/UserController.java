@@ -92,6 +92,18 @@ public class UserController {
         if (coursesPage.isEmpty() && keyword != null && !keyword.matches("\s*")) {
             model.addAttribute("noResults", "The search has not given any results.");
         }
+        //top 10 courses view
+        Map<Course, Long> courseSubsMap = courseSubscribeService.getTopPublicCoursesMapToSubsCount(10);
+        Map<Long, String> topCoursesAuthorMap = new HashMap<>();
+        courseSubsMap.forEach((k, v) -> {
+            User author = userService.getUserById(k.getAuthorId());
+            String authorName = author.getName() + " " + author.getSurname();
+            topCoursesAuthorMap.put(k.getAuthorId(), authorName);
+        });
+        model.addAttribute("courseSubsMap", courseSubsMap);
+        model.addAttribute("topCoursesAuthorMap", topCoursesAuthorMap);
+
+
         return "user/main_page";
     }
 

@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 
 public class Course {
     private long id;
@@ -31,6 +32,19 @@ public class Course {
     public Course(String title, String description) {
         this.title = title;
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return id == course.id && authorId == course.authorId && nonPublic == course.nonPublic && price == course.price && Objects.equals(title, course.title) && Objects.equals(description, course.description) && Objects.equals(iconSource, course.iconSource) && Objects.equals(lessonsList, course.lessonsList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public long getId() {

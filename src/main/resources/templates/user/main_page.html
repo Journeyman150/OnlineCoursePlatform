@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <title>Main page</title>
     <link rel="stylesheet" href="/css/main-style.css">
+    <style>
+        footer {
+            margin-top: 1em;
+        }
+        .topCoursePlate {
+            background-color: #fffdfa;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -74,7 +82,7 @@
                     </a>
                 </div>
             </th:block>
-            </div>
+        </div>
         </div>
         <div class="pagination">
         <div th:each="pageNumber : ${pageNumbers}">
@@ -89,6 +97,38 @@
                 </a>
                 </div>
             </div>
+        </div>
+        </div>
+
+        <div class="top-courses-header">
+            <div class="top-courses-header__text">Our top <a th:text="${courseSubsMap.size()}"></a> courses</div>
+        </div>
+
+        <div class="course-plate__box">
+        <div class="rows">
+            <th:block th:each="entry : ${courseSubsMap}">
+                <div class="coursePlate topCoursePlate">
+                    <a th:href="@{/course/{id}(id=${entry.getKey().getId()})}">
+                        <div class="coursePlate__inside-flex-wrapper first-row">
+                            <div class="coursePlate__info">
+                                <b th:text="${entry.getKey().getTitle()}"></b>
+                                <br>
+                                <div class="courseDescription" th:text="${entry.getKey().getDescription()}"></div>
+                            </div>
+                            <div class="coursePlate__icon">
+                                <img th:src="@{/course/{courseId}/icon(courseId=${entry.getKey().getId()})}">
+                            </div>
+                        </div>
+                        <div class="coursePlate__inside-flex-wrapper sec-row">
+                            <div th:text="${topCoursesAuthorMap.get(entry.getKey().getAuthorId())}"></div>
+                            <div th:if="${entry.getValue() != 1}" th:text="${entry.getValue()} + ' subs'"></div>
+                            <div th:if="${entry.getValue() == 1}" th:text="${entry.getValue()} + ' sub'"></div>
+                            <div th:if="${entry.getKey().getPrice() > 0}" class="price" style="color: #e77900" th:text="'Price: ' + ${entry.getKey().getPrice()}"></div>
+                            <div th:if="${entry.getKey().getPrice() == 0}" class="price" style="color: #6ea40f">Free course</div>
+                        </div>
+                    </a>
+                </div>
+            </th:block>
         </div>
         </div>
     </div>

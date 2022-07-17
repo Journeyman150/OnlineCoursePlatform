@@ -114,6 +114,17 @@ header {
     color: #191919;
     background-color: #e77900;
 }
+.top-courses-header {
+    border-radius: 0.5em;
+    padding: 1em;
+    margin-bottom: 1em;
+    background-color: #fdf2e6;
+    color: #e77900;
+}
+.top-courses-header__text {
+    text-align: center;
+    font-size: x-large;
+}
 .course-plate__box {
     height: 100%;
     padding-left: 0.5%;
