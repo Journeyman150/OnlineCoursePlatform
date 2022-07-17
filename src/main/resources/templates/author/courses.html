@@ -1,53 +1,116 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
+    <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/css/author-style.css">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/author-style.css">
     <style>
-        .description {
-            width: 400px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow:ellipsis;
-        }
-        .container {
-            margin-left: 10%;
-            margin-top: 5%;
-            margin-right: 10%;
-            font-size: large;
-        }
-        input {
+        .coursePlate {
+            width: 100%;
             margin-top: 0.5em;
-            font-size: large;
-            font-family: Times New Roman;
         }
     </style>
 </head>
 <body>
-<div class="container">
+<header>
+    <div class="navbar__block">
+        <div class="navbar__menu-item">
+            <a href="/main_page">
+                <img src="/icons/main-icon.png" alt="Main page">
+            </a>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/courses">My learning</a>
+        </div>
+<!--        <div class="navbar__menu-item">-->
+<!--            <a href="/invitations">Invitations</a>-->
+<!--        </div>-->
+    </div>
+    <div class="navbar__block">
+        <div sec:authorize="isAuthenticated()" class="navbar__menu-item navbar__balance">
+            <b th:text="'Balance: ' + ${balance}"></b>
+        </div>
+        <div class="navbar__menu-item">
+            <a href="/account">
+                <img src="/icons/account-icon.png" alt="My account">
+            </a>
+        </div>
+    </div>
+</header>
+<div class="author-container">
     <h2>My courses</h2>
-    <br>
-    <a href="/author">Go back</a>
-    <br>
-    <h3>Public courses:</h3>
-    <div th:each="course : ${publicCoursesList}">
-        <a th:href="@{/author/course/{id}(id=${course.getId()})}"
-           th:text="${course.getTitle()}"></a>
-        <div class="description" th:text="${course.getDescription()}"></div>
-        <br>
-    </div>
-    <hr>
-    <h3>Non public courses:</h3>
-    <div th:each="course : ${nonPublicCoursesList}">
-        <a th:href="@{/author/course/{id}(id=${course.getId()})}"
-           th:text="${course.getTitle()}"></a>
-        <div class="description" th:text="${course.getDescription()}"></div>
-        <br>
-    </div>
-    <hr>
     <form action="/author/courses/new">
-        <input type="submit" value="New course">
+        <input class="input-author-data input-author-data__button" type="submit" value="New course">
     </form>
+    <br>
+    <div class="courses-container">
+        <div class="author-courses author-courses__public">
+            <h3>Public courses:</h3>
+            <div th:each="course : ${publicCoursesList}">
+                <div class="coursePlate coursePlate__public">
+                <a th:href="@{/author/course/{id}(id=${course.getId()})}">
+                    <div class="coursePlate__inside-flex-wrapper first-row">
+                        <div class="coursePlate__info">
+                            <b th:text="${course.getTitle()}"></b>
+                            <br>
+                            <div class="courseDescription" th:text="${course.getDescription()}"></div>
+                        </div>
+                        <div class="coursePlate__icon">
+                            <img th:src="@{/course/{courseId}/icon(courseId=${course.getId()})}">
+                        </div>
+                    </div>
+                    <div class="coursePlate__inside-flex-wrapper sec-row">
+                        <div th:text="${subsMap.get(course.getId())} + ' subs'"></div>
+                        <div th:if="${course.getPrice() > 0}" class="price" style="color: #e77900" th:text="'Price: ' + ${course.getPrice()}"></div>
+                        <div th:if="${course.getPrice() == 0}" class="price" style="color: #6ea40f">Free course</div>
+                    </div>
+                </a>
+                </div>
+            </div>
+        </div>
+        <div class="author-courses author-courses__non-public">
+            <h3>Non public courses:</h3>
+            <div th:each="course : ${nonPublicCoursesList}">
+                <div class="coursePlate coursePlate__non-public">
+                <a th:href="@{/author/course/{id}(id=${course.getId()})}">
+                    <div class="coursePlate__inside-flex-wrapper first-row">
+                        <div class="coursePlate__info">
+                            <b th:text="${course.getTitle()}"></b>
+                            <br>
+                            <div class="courseDescription" th:text="${course.getDescription()}"></div>
+                        </div>
+                        <div class="coursePlate__icon">
+                            <img th:src="@{/course/{courseId}/icon(courseId=${course.getId()})}">
+                        </div>
+                    </div>
+                    <div class="coursePlate__inside-flex-wrapper sec-row">
+                        <div th:text="${subsMap.get(course.getId())} + ' subs'"></div>
+                        <div th:if="${course.getPrice() > 0}" class="price" style="color: #e77900" th:text="'Price: ' + ${course.getPrice()}"></div>
+                        <div th:if="${course.getPrice() == 0}" class="price" style="color: #6ea40f">Free course</div>
+                    </div>
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<footer class="bottom-box">
+    <div class="bottom-box__item bottom-box__item__left">
+        <div>2022. Demo version</div>
+    </div>
+    <div class="bottom-box__item bottom-box__item__center">
+        <div><a href="/">Hello page</a></div>
+        <div><a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a></div>
+        <div><a href="/api">REST api info</a></div>
+    </div>
+    <div class="bottom-box__item">
+        <div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

@@ -25,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -53,19 +56,30 @@ public class AuthorController {
         this.courseInvitationService = courseInvitationService;
         this.courseSubscribeService = courseSubscribeService;
     }
-
-    @GetMapping()
-    public String getAuthorMainPage(Model model) {
-        int balance = userService.getUserById(userService.getAuthorizedUser().getId()).getBalance();
-        model.addAttribute("balance", balance);
-        return "author/main_page";
-    }
+//
+//    @GetMapping()
+//    public String getAuthorMainPage(Model model) {
+//        int balance = userService.getUserById(userService.getAuthorizedUser().getId()).getBalance();
+//        model.addAttribute("balance", balance);
+//        return "author/main_page";
+//    }
 
     @GetMapping("/courses")
-    public String getCoursesPage(Model model) {
-        User author = userService.getAuthorizedUser();
-        model.addAttribute("publicCoursesList", courseService.getPublicListByAuthorId(author.getId()));
-        model.addAttribute("nonPublicCoursesList", courseService.getNonPublicListByAuthorId(author.getId()));
+    public String getAuthorCoursesPage(Model model) {
+        User author = userService.getUserById(userService.getAuthorizedUser().getId());
+
+        List<Course> publicCoursesList = courseService.getPublicListByAuthorId(author.getId());
+        List<Course> nonPublicCoursesList = courseService.getNonPublicListByAuthorId(author.getId());
+        Map<Long, Long> subsMap = new HashMap<>();
+        publicCoursesList.forEach(n ->
+                subsMap.put(n.getId(), courseSubscribeService.getSubscribedUsersNumberByCourseId(n.getId())));
+        nonPublicCoursesList.forEach(n ->
+                subsMap.put(n.getId(), courseSubscribeService.getSubscribedUsersNumberByCourseId(n.getId())));
+
+        model.addAttribute("subsMap", subsMap);
+        model.addAttribute("publicCoursesList", publicCoursesList);
+        model.addAttribute("nonPublicCoursesList", nonPublicCoursesList);
+        model.addAttribute("balance", author.getBalance());
         return "author/courses";
     }
 
