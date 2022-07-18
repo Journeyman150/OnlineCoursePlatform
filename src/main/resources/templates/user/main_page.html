@@ -5,11 +5,6 @@
     <meta charset="UTF-8">
     <title>Main page</title>
     <link rel="stylesheet" href="/css/main-style.css">
-    <style>
-        .topCoursePlate {
-            background-color: #fffdfa;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -117,11 +112,11 @@
                             </div>
                         </div>
                         <div class="coursePlate__inside-flex-wrapper sec-row">
-                            <div th:text="${topCoursesAuthorMap.get(entry.getKey().getAuthorId())}"></div>
-                            <div th:if="${entry.getValue() != 1}" th:text="${entry.getValue()} + ' subs'"></div>
-                            <div th:if="${entry.getValue() == 1}" th:text="${entry.getValue()} + ' sub'"></div>
-                            <div th:if="${entry.getKey().getPrice() > 0}" class="price" style="color: #e77900" th:text="'Price: ' + ${entry.getKey().getPrice()}"></div>
-                            <div th:if="${entry.getKey().getPrice() == 0}" class="price" style="color: #6ea40f">Free course</div>
+                            <div class="sec-row_wide-item" th:text="${topCoursesAuthorMap.get(entry.getKey().getAuthorId())}"></div>
+                            <div class="sec-row_narrow-item" th:if="${entry.getValue() != 1}" th:text="${entry.getValue()} + ' subs'"></div>
+                            <div class="sec-row_narrow-item" th:if="${entry.getValue() == 1}" th:text="${entry.getValue()} + ' sub'"></div>
+                            <div class="sec-row_narrow-item price" th:if="${entry.getKey().getPrice() > 0}" style="color: #e77900" th:text="'Price: ' + ${entry.getKey().getPrice()}"></div>
+                            <div class="sec-row_narrow-item price" th:if="${entry.getKey().getPrice() == 0}" style="color: #6ea40f">Free course</div>
                         </div>
                     </a>
                 </div>

@@ -8,6 +8,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    background-color: #fbfbfb;
 }
 header {
     position: sticky;
@@ -74,13 +75,19 @@ header {
         margin-right: 1em;
     }
 }
-.search-box {
+.search-box,
+.top-courses-header {
     margin-top: 1em;
     margin-bottom: 1em;
     padding-left: 1em;
     padding-right: 1em;
     background-color: #fdf2e6;
     border-radius: 0.5em;
+    box-shadow: 0em 0.15em 0.5em -0.15em #d9d6d5,
+                0.30em 0.25em 0.5em -0.3em #d9d6d5,
+                -0.30em 0.25em 0.5em -0.3em #d9d6d5,
+                0em -0.15em 0.3em 0em #ffffff,
+                inset 0em 0.6em 0.5em -0.6em #ffffff;
 }
 .input-search {
     font-size: large;
@@ -115,10 +122,10 @@ header {
     background-color: #e77900;
 }
 .top-courses-header {
-    border-radius: 0.5em;
+    /*border-radius: 0.5em;*/
     padding: 1em;
-    margin-bottom: 1em;
-    background-color: #fdf2e6;
+    /*margin-bottom: 1em;*/
+    /*background-color: #fdf2e6;*/
     color: #e77900;
 }
 .top-courses-header__text {
@@ -139,6 +146,7 @@ header {
 .coursePlate {
     border-radius: 0.5em;
     width: 47%;
+    background-color: white;
     box-shadow: 0em 0.08em 0.5em 0em #d9d6d5;
     transition: all 0.15s ease-in;
 }
@@ -146,10 +154,31 @@ header {
     background-color: #fff8f1;
     border-color: #f3ede9;
 }
+.topCoursePlate {
+    background-color: #fffdfa!important;
+}
+.topCoursePlate:hover {
+    background-color: #fff8f1!important;
+    border-color: #f3ede9;
+}
 .coursePlate__inside-flex-wrapper {
     padding: 0.5em;
     display: flex;
     justify-content: space-between;
+}
+.sec-row {
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 0 0.56em 0.56em;
+}
+.sec-row_wide-item {
+    flex-basis: 40%;
+}
+.sec-row_narrow-item {
+    flex-basis: 25%;
+}
+.price {
+    text-align: right;
 }
 .coursePlate__info {
 }
@@ -173,11 +202,6 @@ header {
     white-space: normal;
     font-size: 0.9em;
 }
-.sec-row {
-    font-size: 0.9em;
-    font-weight: bold;
-    padding: 0 0.56em 0.56em;
-}
 .pagination {
     display: flex;
     font-size: large;
@@ -192,6 +216,8 @@ header {
     margin-right: 0.5em;
     border-radius: 6px;
     background-color: #e77900;
+    box-shadow: inset 0em 0.2em 0.4em -0.2em #9f5301,
+                inset 0em -0.3em 0.35em -0.25em #fda23d;
     transition: all 0.1s ease-in;
 }
 .pagination__page:hover {
