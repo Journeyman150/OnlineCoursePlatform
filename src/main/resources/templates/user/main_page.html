@@ -43,9 +43,15 @@
             <div style="color:#c5b19b">Enter keyword "course" to find most of them:</div>
             <form th:action="@{/main_page}" th:method="GET">
                 <div>
-                    <input class="input-search input-field" name="keyword" type="search" placeholder="Author or course name/description"
-                    aria-label="Search">
+                    <input class="input-search input-field" name="keyword" type="search"
+                           placeholder="Author or course name/description" th:value="${keyword}"
+                           aria-label="Search">
                     <input class="input-search input-button" type="submit" value="Search">
+
+                    <label for="freeTrue">Free courses</label>
+                    <input type="checkbox" name="free" id="freeTrue" th:checked="${checkedFree}" th:value="${true}">
+                    <label for="paidTrue">Paid courses</label>
+                    <input type="checkbox" name="paid" id="paidTrue" th:checked="${checkedPaid}" th:value="${true}">
                 </div>
             </form>
             <div th:text="${noResults}"></div>

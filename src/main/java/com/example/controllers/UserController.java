@@ -61,11 +61,26 @@ public class UserController {
     @GetMapping("/main_page")
     public String getUserMainPage(Model model,
                                   @RequestParam(name = "keyword", required = false) String keyword,
+                                  @RequestParam(name = "free", required = false) boolean free,
+                                  @RequestParam(name = "paid", required = false) boolean paid,
                                   @RequestParam("page") Optional<Integer> page,
                                   @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(8);
-        Page<Course> coursesPage = courseService.findPaginated(keyword, PageRequest.of(currentPage - 1, pageSize));
+        List<Course> coursesList = courseService.findCourses(keyword);
+        List<Course> filteredCoursesList;
+        if (!free && !paid) {
+            free = true;
+            paid = true;
+        }
+        if (!free) {
+            filteredCoursesList = coursesList.stream().filter(n -> n.getPrice() > 0).collect(Collectors.toList());
+        } else if (!paid) {
+            filteredCoursesList = coursesList.stream().filter(n -> n.getPrice() == 0).collect(Collectors.toList());
+        } else {
+            filteredCoursesList = coursesList;
+        }
+        Page<Course> coursesPage = courseService.getPaginated(filteredCoursesList, PageRequest.of(currentPage - 1, pageSize));
         int totalPages = coursesPage.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -87,6 +102,8 @@ public class UserController {
             System.out.println("Not authorized request.");
         }
         model.addAttribute("keyword", keyword);
+        model.addAttribute("checkedFree", free);
+        model.addAttribute("checkedPaid", paid);
         model.addAttribute("coursesPage", coursesPage);
         model.addAttribute("authorMap", authorMap);
         if (coursesPage.isEmpty() && keyword != null && !keyword.matches("\s*")) {

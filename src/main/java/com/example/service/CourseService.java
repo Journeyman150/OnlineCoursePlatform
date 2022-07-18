@@ -44,32 +44,23 @@ public class CourseService {
         if (keyword == null || keyword.matches("\s*")) {
             return new ArrayList<>();
         }
-        List<Course> coursesList = new ArrayList<>();
-        coursesSearchData.findIndexes(CoursesSearchData.getSeparateKeywords(keyword))
-                .forEach(n -> {
-                    if (n != -1L)
-                        coursesList.add(courseDAO.getPublicCourseById(n));
-                });
-        return coursesList;
+        Set<Long> set = coursesSearchData.findIndexes(CoursesSearchData.getSeparateKeywords(keyword));
+        Set<Long> set2 = this.getPublicCoursesIdSetByAuthorsId(userService.getUserIdSet(keyword));
+        set.addAll(set2);
+        if (set.size() == 1 && set.contains(-1L)) {
+            return new ArrayList<>();
+        }
+        String indexesStr = set.toString();
+        return courseDAO.getCoursesListByIndexes(indexesStr.substring(1, indexesStr.length() - 1));
     }
 
-    public Page<Course> findPaginated(String keyword, Pageable pageable) {
-        if (keyword == null || keyword.matches("\s*")) {
+    public Page<Course> getPaginated(List<Course> coursesList, Pageable pageable) {
+        if (coursesList == null || coursesList.isEmpty()) {
             return new PageImpl<Course>(Collections.emptyList(), PageRequest.of(1, 1), 0);
         }
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
-        Set<Long> set = coursesSearchData.findIndexes(CoursesSearchData.getSeparateKeywords(keyword));
-        Set<Long> set2 = this.getPublicCoursesIdSetByAuthorsId(userService.getUserIdSet(keyword));
-        set.addAll(set2);
-        if (set.size() == 1 && set.contains(-1L)) {
-            return new PageImpl<Course>(Collections.emptyList(), PageRequest.of(1, 1), 0);
-        }
-        //set.forEach(n -> coursesList.add(courseDAO.getPublicCourseById(n)));
-        String indexesStr = set.toString();
-        List<Course> coursesList =
-                new ArrayList<>(courseDAO.getCoursesListByIndexes(indexesStr.substring(1, indexesStr.length() - 1)));
 
         List<Course> list;
 
