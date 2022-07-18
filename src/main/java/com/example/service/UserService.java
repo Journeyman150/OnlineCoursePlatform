@@ -65,6 +65,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public Set<Long> getUserIdSet(String keyword) {
+        String [] separatedKeywords = UsersSearchData.getSeparateKeywords(keyword);
+        return usersSearchData.findIndexes(separatedKeywords);
+    }
+
     public boolean isUserAlreadyExist(String email) {
         return userDAO.getUserByEmail(email) != null;
     }

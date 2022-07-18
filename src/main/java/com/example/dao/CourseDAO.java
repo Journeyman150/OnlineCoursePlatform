@@ -39,6 +39,12 @@ public class CourseDAO {
         return jdbcTemplate.query("SELECT * FROM courses WHERE author_id=? AND non_public=false", courseMapper, authorId);
     }
 
+    public List<Long> getPublicCoursesIdByAuthorId(long authorId) {
+        return jdbcTemplate.query("SELECT course_id FROM courses WHERE author_id=? AND non_public=false",
+                (rs, rowNum) -> rs.getLong("course_id"),
+                authorId);
+    }
+
     public List<Course> getNonPublicCoursesByAuthorId(long authorId) {
         return jdbcTemplate.query("SELECT * FROM courses WHERE author_id=? AND non_public=true", courseMapper, authorId);
     }

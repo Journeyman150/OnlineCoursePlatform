@@ -18,10 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CourseService {
@@ -30,14 +27,17 @@ public class CourseService {
     private final CourseDAO courseDAO;
     private final CoursesSearchData coursesSearchData;
     private final StorageService storageService;
+    private final UserService userService;
 
     @Autowired
     public CourseService(CourseDAO courseDAO,
                          CoursesSearchData coursesSearchData,
-                         StorageService storageService) {
+                         StorageService storageService,
+                         UserService userService) {
         this.courseDAO = courseDAO;
         this.coursesSearchData = coursesSearchData;
         this.storageService = storageService;
+        this.userService = userService;
     }
 
     public List<Course> findCourses(String keyword) {
@@ -61,7 +61,9 @@ public class CourseService {
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
         Set<Long> set = coursesSearchData.findIndexes(CoursesSearchData.getSeparateKeywords(keyword));
-        if (set.contains(-1L)) {
+        Set<Long> set2 = this.getPublicCoursesIdSetByAuthorsId(userService.getUserIdSet(keyword));
+        set.addAll(set2);
+        if (set.size() == 1 && set.contains(-1L)) {
             return new PageImpl<Course>(Collections.emptyList(), PageRequest.of(1, 1), 0);
         }
         //set.forEach(n -> coursesList.add(courseDAO.getPublicCourseById(n)));
@@ -109,6 +111,12 @@ public class CourseService {
     @Nullable
     public Course getPublicCourseById(long courseId) {
         return courseDAO.getPublicCourseById(courseId);
+    }
+
+    public Set<Long> getPublicCoursesIdSetByAuthorsId(Set<Long> authorsId) {
+        Set<Long> coursesSet = new HashSet<>();
+        authorsId.forEach(n -> coursesSet.addAll(courseDAO.getPublicCoursesIdByAuthorId(n)));
+        return coursesSet;
     }
 
     @Transactional

@@ -103,7 +103,6 @@ public class UserController {
         model.addAttribute("courseSubsMap", courseSubsMap);
         model.addAttribute("topCoursesAuthorMap", topCoursesAuthorMap);
 
-
         return "user/main_page";
     }
 
