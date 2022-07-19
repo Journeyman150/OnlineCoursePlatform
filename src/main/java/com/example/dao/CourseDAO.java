@@ -111,4 +111,8 @@ public class CourseDAO {
                 (rs, rowNum) -> new IndexedData(rs.getLong("course_id"),
                         rs.getString("title"), rs.getString("description")));
     }
+
+    public Long getAllCoursesCount() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM courses", Long.class);
+    }
 }

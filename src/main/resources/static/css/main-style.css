@@ -82,12 +82,14 @@ header {
     padding-left: 1em;
     padding-right: 1em;
     background-color: #fdf2e6;
+    background-image: linear-gradient(#f6ebde, #f6ebde 1%, #fdf2e6 10%, #fdf2e6);
     border-radius: 0.5em;
     box-shadow: 0em 0.15em 0.5em -0.15em #d9d6d5,
                 0.30em 0.25em 0.5em -0.3em #d9d6d5,
                 -0.30em 0.25em 0.5em -0.3em #d9d6d5,
                 0em -0.15em 0.3em 0em #ffffff,
-                inset 0em 0.6em 0.5em -0.6em #ffffff;
+                inset 0em -0.40em 0.7em -0.6em #ffffff,
+                inset 0em 0.15em 0.325em -0.05em #ffffff;
 }
 .input-search {
     font-size: large;
@@ -204,6 +206,7 @@ header {
 }
 .pagination {
     display: flex;
+    flex-wrap: wrap;
     font-size: large;
     margin-top: 1em;
     margin-bottom: 1em;
@@ -213,7 +216,11 @@ header {
     color: #fdf2e6;
 }
 .pagination__page {
-    margin-right: 0.5em;
+    width: 3em;
+    text-align: center;
+    margin-right: 0.25em;
+    margin-left: 0.25em;
+    margin-bottom: 0.5em;
     border-radius: 6px;
     background-color: #e77900;
     box-shadow: inset 0em 0.2em 0.4em -0.2em #9f5301,
@@ -224,7 +231,8 @@ header {
     background-color: #d97100;
 }
 .pagination__page-number {
-    padding: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 footer {
     margin-top: auto;

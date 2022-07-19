@@ -155,4 +155,8 @@ public class CourseService {
     public File getCourseIcon(String iconSource) {
         return storageService.load(iconSource);
     }
+
+    public Long getAllCoursesCount() {
+        return courseDAO.getAllCoursesCount();
+    }
 }

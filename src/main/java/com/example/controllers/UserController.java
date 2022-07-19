@@ -66,7 +66,7 @@ public class UserController {
                                   @RequestParam("page") Optional<Integer> page,
                                   @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(8);
+        int pageSize = size.orElse(20);
         List<Course> coursesList = courseService.findCourses(keyword);
         List<Course> filteredCoursesList;
         if (!free && !paid) {
@@ -119,7 +119,8 @@ public class UserController {
         });
         model.addAttribute("courseSubsMap", courseSubsMap);
         model.addAttribute("topCoursesAuthorMap", topCoursesAuthorMap);
-
+        //footer
+        model.addAttribute("coursesCount", courseService.getAllCoursesCount());
         return "user/main_page";
     }
 

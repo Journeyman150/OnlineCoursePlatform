@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Main page</title>
     <link rel="stylesheet" href="/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/main-style.css">
 </head>
 <body>
     <header>
@@ -40,7 +41,7 @@
     </header>
     <div class="main-box">
         <div class="search-box">
-            <div style="color:#c5b19b">Enter keyword "course" to find most of them:</div>
+            <div style="color:#c5b19b">Most of the courses are parsed from wiki</div>
             <form th:action="@{/main_page}" th:method="GET">
                 <div>
                     <input class="input-search input-field" name="keyword" type="search"
@@ -138,6 +139,7 @@
             <div><a href="/">Hello page</a></div>
             <div><a href="https://github.com/Journeyman150/OnlineCoursePlatform">Github link</a></div>
             <div><a href="/api">REST api info</a></div>
+            <div><b th:text="${coursesCount}"></b> courses</div>
         </div>
         <div class="bottom-box__item">
             <div>
