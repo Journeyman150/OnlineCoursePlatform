@@ -67,7 +67,9 @@ public class UserController {
                                   @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(20);
+        long startTime = System.currentTimeMillis();
         List<Course> coursesList = courseService.findCourses(keyword);
+        long searchTime = System.currentTimeMillis() - startTime;
         List<Course> filteredCoursesList;
         if (!free && !paid) {
             free = true;
@@ -80,6 +82,7 @@ public class UserController {
         } else {
             filteredCoursesList = coursesList;
         }
+        long filterTime = System.currentTimeMillis() - startTime - searchTime;
         Page<Course> coursesPage = courseService.getPaginated(filteredCoursesList, PageRequest.of(currentPage - 1, pageSize));
         int totalPages = coursesPage.getTotalPages();
         if (totalPages > 0) {
@@ -101,13 +104,19 @@ public class UserController {
         } catch (Exception e) {
             System.out.println("Not authorized request.");
         }
+        long otherTime = System.currentTimeMillis() - startTime - searchTime - filterTime;
         model.addAttribute("keyword", keyword);
         model.addAttribute("checkedFree", free);
         model.addAttribute("checkedPaid", paid);
         model.addAttribute("coursesPage", coursesPage);
         model.addAttribute("authorMap", authorMap);
-        if (coursesPage.isEmpty() && keyword != null && !keyword.matches("\s*")) {
-            model.addAttribute("noResults", "The search has not given any results.");
+        model.addAttribute("resultsNum", coursesList.size());
+        if (coursesList.isEmpty() && keyword != null && !keyword.matches("\s*")) {
+            model.addAttribute("noResults", true);
+        } else {
+            model.addAttribute("searchTime", searchTime);
+            model.addAttribute("filterTime", filterTime);
+            model.addAttribute("otherTime", otherTime);
         }
         //top 10 courses view
         Map<Course, Long> courseSubsMap = courseSubscribeService.getTopPublicCoursesMapToSubsCount(10);

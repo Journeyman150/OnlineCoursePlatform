@@ -123,6 +123,13 @@ header {
     color: #191919;
     background-color: #e77900;
 }
+.search-box__info-wrapper {
+    height: 1em;
+}
+.search-box__info {
+    color: #c5b19b;
+    font-size: smaller;
+}
 .top-courses-header {
     /*border-radius: 0.5em;*/
     padding: 1em;

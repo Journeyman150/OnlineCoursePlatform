@@ -41,7 +41,9 @@
     </header>
     <div class="main-box">
         <div class="search-box">
-            <div style="color:#c5b19b">Most of the courses are parsed from wiki</div>
+            <div class="search-box__info-wrapper">
+                <div class="search-box__info"> Most of the courses are parsed from wiki</div>
+            </div>
             <form th:action="@{/main_page}" th:method="GET">
                 <div>
                     <input class="input-search input-field" name="keyword" type="search"
@@ -55,8 +57,15 @@
                     <input type="checkbox" name="paid" id="paidTrue" th:checked="${checkedPaid}" th:value="${true}">
                 </div>
             </form>
-            <div th:text="${noResults}"></div>
-            <br>
+            <div class="search-box__info-wrapper">
+                <div class="search-box__info" th:if="${noResults}">The search has not given any results</div>
+                <div class="search-box__info" th:if="${resultsNum > 0}">
+                    <a th:text="'Results: ' + ${resultsNum}"></a>
+                    <a th:text="' | search time: ' + ${searchTime} + ' ms'"></a>
+                    <a th:text="' | filter time: ' + ${filterTime} + ' ms'"></a>
+                    <a th:text="' | other time: ' + ${otherTime} + ' ms'"></a>
+                </div>
+            </div>
         </div>
         <div class="course-plate__box">
         <div class="rows">
