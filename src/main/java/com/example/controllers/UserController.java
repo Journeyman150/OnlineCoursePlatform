@@ -246,15 +246,18 @@ public class UserController {
     @GetMapping("/course/{courseId}/demo_video")
     public ResponseEntity<Resource> getDemoVideo(@PathVariable long courseId) throws AccessDeniedException {
         User user = userService.getAuthorizedUser();
-        if (user == null && courseService.getCourseById(courseId).isNonPublic()) {
+        if (courseService.getCourseById(courseId) == null ||
+                user == null && courseService.getCourseById(courseId).isNonPublic()) {
             throw new AccessDeniedException("Access to file denied.");
         }
         List<Lesson> lessons = lessonService.getLessonsListByCourseId(courseId);
+        Resource resource;
         if (lessons.isEmpty()) {
-            return null;
+            resource = new FileSystemResource(courseService.getCourseDemo(courseId));
+        } else {
+            int num = lessons.stream().mapToInt(Lesson::getNum).min().orElse(0);
+            resource = new FileSystemResource(lessonService.getFile(courseId, num));
         }
-        int num = lessons.stream().mapToInt(Lesson::getNum).min().orElse(0);
-        Resource resource = new FileSystemResource(lessonService.getFile(courseId, num));
         return ResponseEntity.ok()
                 .contentLength(2L*1024*1024*1024)
                 .contentType(MediaType.MULTIPART_MIXED)

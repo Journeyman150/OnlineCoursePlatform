@@ -2,7 +2,6 @@ package com.example.service;
 
 import com.example.dao.CourseDAO;
 import com.example.domain.Course;
-import com.example.domain.User;
 import com.example.search_engine.CoursesSearchData;
 import com.example.search_engine.IndexedData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.util.*;
 
@@ -158,5 +156,10 @@ public class CourseService {
 
     public Long getAllCoursesCount() {
         return courseDAO.getAllCoursesCount();
+    }
+
+    public File getCourseDemo(long courseId) {
+        String absolutePath = courseDAO.getCourseDemoVideo(courseId);
+        return storageService.load(absolutePath);
     }
 }

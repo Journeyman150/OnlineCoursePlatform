@@ -112,7 +112,25 @@ public class CourseDAO {
                         rs.getString("title"), rs.getString("description")));
     }
 
+    public List<IndexedData> getFreePublicCoursesSearchDataList() {
+        return jdbcTemplate.query("SELECT course_id, title, description FROM courses " +
+                        "WHERE non_public = false AND price = 0",
+                (rs, rowNum) -> new IndexedData(rs.getLong("course_id"),
+                        rs.getString("title"), rs.getString("description")));
+    }
+
+    public List<IndexedData> getPaidPublicCoursesSearchDataList() {
+        return jdbcTemplate.query("SELECT course_id, title, description FROM courses " +
+                        "WHERE non_public = false AND price > 0",
+                (rs, rowNum) -> new IndexedData(rs.getLong("course_id"),
+                        rs.getString("title"), rs.getString("description")));
+    }
+
     public Long getAllCoursesCount() {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM courses", Long.class);
+    }
+
+    public String getCourseDemoVideo(long courseId) {
+        return jdbcTemplate.queryForObject("SELECT demo_video FROM courses WHERE course_id = ?", String.class, courseId);
     }
 }
